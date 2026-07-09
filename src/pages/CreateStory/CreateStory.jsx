@@ -24,9 +24,13 @@ function CreateStory() {
     try {
       setLoading(true);
 
-      await createStory(storyName.trim());
+      const story = await createStory(storyName.trim());
 
-      navigate("/");
+        navigate("/invite-partner", {
+        state: {
+            storyId: story.id,
+        },
+        });
     } catch (error) {
       console.error(error);
       alert(error.message || "Unable to create story.");
