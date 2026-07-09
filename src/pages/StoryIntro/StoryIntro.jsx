@@ -5,6 +5,8 @@ import styles from "./StoryIntro.module.css";
 import Button from "../../ui/Button/Button";
 import Container from "../../ui/Container/Container";
 import PageLayout from "../../ui/PageLayout/PageLayout";
+import Heading from "../../ui/Heading/Heading";
+import Text from "../../ui/Text/Text";
 
 function StoryIntro() {
   const navigate = useNavigate();
@@ -13,15 +15,15 @@ function StoryIntro() {
     <PageLayout>
       <Container>
         <div className={styles.content}>
-          <h1 className={styles.heading}>
+          <Heading>
             Every great love story
             <br />
             begins with a
             <br />
             single moment.
-          </h1>
+          </Heading>
 
-          <p className={styles.body}>
+          <Text secondary>
             The first text.
             <br />
             The first laugh.
@@ -35,10 +37,10 @@ function StoryIntro() {
             <br />
             Momentry gives those moments
             a home.
-          </p>
+          </Text>
 
           <Button
-            onClick={() => navigate("/create-story")}
+            onClick={() => navigate("/auth")}
           >
             Continue
           </Button>
