@@ -1,22 +1,38 @@
+import { useNavigate } from "react-router-dom";
+
 import styles from "./Welcome.module.css";
 
+import Button from "../../components/Button/Button";
+import Container from "../../components/Container/Container";
+import PageLayout from "../../components/PageLayout/PageLayout";
+
 function Welcome() {
+  const navigate = useNavigate();
+
+  const handleStart = () => {
+    navigate("/story-introduction");
+  };
+
   return (
-    <main className={styles.container}>
-      <div className={styles.content}>
-        <h1 className={styles.logo}>Momentry</h1>
+    <PageLayout>
+      <Container>
+        <div className={styles.content}>
+          <h1 className={styles.logo}>
+            Momentry
+          </h1>
 
-        <p className={styles.tagline}>
-          Because Every Love Story
-          <br />
-          Deserves a Home.
-        </p>
+          <p className={styles.tagline}>
+            Because Every Love Story
+            <br />
+            Deserves a Home.
+          </p>
 
-        <button className={styles.button}>
-          Begin Your Story
-        </button>
-      </div>
-    </main>
+          <Button onClick={handleStart}>
+            Begin Your Story
+          </Button>
+        </div>
+      </Container>
+    </PageLayout>
   );
 }
 
