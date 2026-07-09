@@ -8,15 +8,52 @@ import PageLayout from "../../ui/PageLayout/PageLayout";
 import Heading from "../../ui/Heading/Heading";
 import Text from "../../ui/Text/Text";
 
+import { supabase } from "../../services/supabase/supabaseClient";
+
 function Auth() {
   const [isSignUp, setIsSignUp] = useState(true);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+
+    try {
+      if (isSignUp) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+
+        if (error) {
+          alert(error.message);
+        } else {
+          alert(
+            "Account created successfully!\n\nPlease check your email to verify your account."
+          );
+        }
+      } else {
+        alert("Login will be implemented in the next commit.");
+      }
+    } catch (err) {
+      alert("Something went wrong.");
+      console.error(err);
+    }
+
+    setLoading(false);
+  };
 
   return (
     <PageLayout>
       <Container>
         <div className={styles.content}>
           <Heading>
-            {isSignUp ? "Create your account" : "Welcome back"}
+            {isSignUp
+              ? "Create your account"
+              : "Welcome back"}
           </Heading>
 
           <Text secondary>
@@ -30,22 +67,38 @@ function Auth() {
               className={styles.input}
               type="email"
               placeholder="Email address"
+              value={email}
+              onChange={(e) =>
+                setEmail(e.target.value)
+              }
             />
 
             <input
               className={styles.input}
               type="password"
               placeholder="Password"
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
             />
 
-            <Button>
-              {isSignUp ? "Create Account" : "Sign In"}
+            <Button
+              onClick={handleSubmit}
+            >
+              {loading
+                ? "Please wait..."
+                : isSignUp
+                ? "Create Account"
+                : "Sign In"}
             </Button>
           </div>
 
           <button
             className={styles.switchButton}
-            onClick={() => setIsSignUp(!isSignUp)}
+            onClick={() =>
+              setIsSignUp(!isSignUp)
+            }
           >
             {isSignUp
               ? "Already have an account? Sign In"
