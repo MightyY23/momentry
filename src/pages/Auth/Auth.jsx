@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import styles from "./Auth.module.css";
 
@@ -11,6 +12,8 @@ import Text from "../../ui/Text/Text";
 import { supabase } from "../../services/supabase/supabaseClient";
 
 function Auth() {
+  const navigate = useNavigate();
+
   const [isSignUp, setIsSignUp] = useState(true);
 
   const [email, setEmail] = useState("");
@@ -19,6 +22,11 @@ function Auth() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
+    if (!email || !password) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -32,15 +40,25 @@ function Auth() {
           alert(error.message);
         } else {
           alert(
-            "Account created successfully!\n\nPlease check your email to verify your account."
+            "Account created successfully!\n\nPlease verify your email before signing in."
           );
         }
       } else {
-        alert("Login will be implemented in the next commit.");
+        const { error } =
+          await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+
+        if (error) {
+          alert(error.message);
+        } else {
+          navigate("/create-story");
+        }
       }
-    } catch (err) {
+    } catch (error) {
+      console.error(error);
       alert("Something went wrong.");
-      console.error(err);
     }
 
     setLoading(false);
@@ -83,9 +101,7 @@ function Auth() {
               }
             />
 
-            <Button
-              onClick={handleSubmit}
-            >
+            <Button onClick={handleSubmit}>
               {loading
                 ? "Please wait..."
                 : isSignUp
