@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import styles from "./CreateStory.module.css";
 
@@ -6,24 +7,48 @@ import Button from "../../ui/Button/Button";
 import Container from "../../ui/Container/Container";
 import PageLayout from "../../ui/PageLayout/PageLayout";
 
+import { createStory } from "../../services/story/storyService";
+
 function CreateStory() {
+  const navigate = useNavigate();
+
   const [storyName, setStoryName] = useState("Our Story");
+  const [loading, setLoading] = useState(false);
+
+  async function handleContinue() {
+    if (!storyName.trim()) {
+      alert("Please enter a story title.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await createStory(storyName.trim());
+
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Unable to create story.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <PageLayout>
       <Container>
         <div className={styles.content}>
-
           <h1 className={styles.heading}>
-            What should we call
+            What should the cover
             <br />
-            your story?
+            of your storybook say?
           </h1>
 
           <p className={styles.body}>
-            Choose a name that feels special.
+            This title will appear every time
             <br />
-            You can always change it later.
+            you open your story.
           </p>
 
           <input
@@ -31,12 +56,15 @@ function CreateStory() {
             type="text"
             value={storyName}
             onChange={(e) => setStoryName(e.target.value)}
+            placeholder="Our Story"
           />
 
-          <Button>
-            Continue
+          <Button
+            onClick={handleContinue}
+            disabled={loading}
+          >
+            {loading ? "Creating Story..." : "Continue"}
           </Button>
-
         </div>
       </Container>
     </PageLayout>
