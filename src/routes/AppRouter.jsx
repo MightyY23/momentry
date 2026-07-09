@@ -5,6 +5,8 @@ import StoryIntro from "../pages/StoryIntro/StoryIntro";
 import Auth from "../pages/Auth/Auth";
 import CreateStory from "../pages/CreateStory/CreateStory";
 import InvitePartner from "../pages/InvitePartner/InvitePartner";
+import Home from "../pages/Home/Home";
+import AddMoment from "../pages/AddMoment/AddMoment";
 
 function AppRouter() {
   return (
@@ -28,13 +30,19 @@ function AppRouter() {
 
        <Route
         path="/home"
-        element={<h1 style={{ padding: "2rem" }}>🏠 Home Coming Soon</h1>}
+        element={<Home />}
        />
 
       <Route
         path="/create-story"
         element={<CreateStory />}
       />
+
+      <Route
+        path="/add-moment"
+        element={<AddMoment />}
+       />
+
     </Routes>
   );
 }

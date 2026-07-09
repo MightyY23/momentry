@@ -6,7 +6,6 @@ export async function createStory(title) {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-  console.log("Current user:", user);
 
   if (userError || !user) {
     throw new Error("User not authenticated.");
