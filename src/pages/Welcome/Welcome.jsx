@@ -2,9 +2,11 @@ import { useNavigate } from "react-router-dom";
 
 import styles from "./Welcome.module.css";
 
-import Button from "../../components/Button/Button";
-import Container from "../../components/Container/Container";
-import PageLayout from "../../components/PageLayout/PageLayout";
+import Button from "../../ui/Button/Button";
+import Container from "../../ui/Container/Container";
+import PageLayout from "../../ui/PageLayout/PageLayout";
+import Heading from "../../ui/Heading/Heading";
+import Text from "../../ui/Text/Text";
 
 function Welcome() {
   const navigate = useNavigate();
@@ -17,15 +19,15 @@ function Welcome() {
     <PageLayout>
       <Container>
         <div className={styles.content}>
-          <h1 className={styles.logo}>
+          <Heading>
             Momentry
-          </h1>
+          </Heading>
 
-          <p className={styles.tagline}>
+          <Text secondary>
             Because Every Love Story
             <br />
             Deserves a Home.
-          </p>
+          </Text>
 
           <Button onClick={handleStart}>
             Begin Your Story

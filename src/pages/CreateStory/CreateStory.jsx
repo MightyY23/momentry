@@ -2,9 +2,9 @@ import { useState } from "react";
 
 import styles from "./CreateStory.module.css";
 
-import Button from "../../components/Button/Button";
-import Container from "../../components/Container/Container";
-import PageLayout from "../../components/PageLayout/PageLayout";
+import Button from "../../ui/Button/Button";
+import Container from "../../ui/Container/Container";
+import PageLayout from "../../ui/PageLayout/PageLayout";
 
 function CreateStory() {
   const [storyName, setStoryName] = useState("Our Story");

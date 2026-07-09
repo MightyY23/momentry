@@ -2,9 +2,9 @@ import { useNavigate } from "react-router-dom";
 
 import styles from "./StoryIntro.module.css";
 
-import Button from "../../components/Button/Button";
-import Container from "../../components/Container/Container";
-import PageLayout from "../../components/PageLayout/PageLayout";
+import Button from "../../ui/Button/Button";
+import Container from "../../ui/Container/Container";
+import PageLayout from "../../ui/PageLayout/PageLayout";
 
 function StoryIntro() {
   const navigate = useNavigate();

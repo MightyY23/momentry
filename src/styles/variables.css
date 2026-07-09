@@ -1,25 +1,25 @@
 :root {
 
-  /* Colors */
+  /* =========================
+     COLORS
+  ========================== */
 
-  --background: #faf9f7;
-  --surface: #ffffff;
+  --color-background: #faf9f7;
+  --color-surface: #ffffff;
 
-  --text-primary: #1d1d1f;
-  --text-secondary: #6e6e73;
+  --color-text: #1d1d1f;
+  --color-text-secondary: #6e6e73;
 
-  --border: #e7e7e7;
+  --color-border: #e8e8e8;
 
-  --primary: #1d1d1f;
-  --primary-hover: #343438;
+  --color-primary: #1d1d1f;
+  --color-primary-hover: #343438;
 
-  /* Radius */
+  --color-danger: #d14343;
 
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-
-  /* Spacing */
+  /* =========================
+     SPACING
+  ========================== */
 
   --space-1: 8px;
   --space-2: 16px;
@@ -27,9 +27,49 @@
   --space-4: 32px;
   --space-5: 48px;
   --space-6: 64px;
+  --space-7: 96px;
 
-  /* Width */
+  /* =========================
+     BORDER RADIUS
+  ========================== */
 
-  --mobile-width: 420px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  /* =========================
+     TYPOGRAPHY
+  ========================== */
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.5rem;
+  --text-4xl: 3rem;
+
+  /* =========================
+     SHADOWS
+  ========================== */
+
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.04);
+
+  --shadow-md: 0 8px 24px rgba(0,0,0,.08);
+
+  /* =========================
+     TRANSITIONS
+  ========================== */
+
+  --transition-fast: 0.2s ease;
+
+  --transition-normal: 0.3s ease;
+
+  /* =========================
+     LAYOUT
+  ========================== */
+
+  --container-width: 420px;
 
 }
