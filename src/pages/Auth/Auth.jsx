@@ -11,6 +11,7 @@ import Text from "../../ui/Text/Text";
 
 import { supabase } from "../../services/supabase/supabaseClient";
 import { userHasStory } from "../../services/story/hasStory";
+import { getPendingInvitation } from "../../services/invitation/getPendingInvitation";
 
 function Auth() {
   const navigate = useNavigate();
@@ -23,12 +24,26 @@ function Auth() {
   const [loading, setLoading] = useState(false);
 
   async function handleSuccessfulLogin() {
-    const hasStory = await userHasStory();
+    try {
+      // 1. Check if the user has a pending invitation
+      const invitation = await getPendingInvitation(email);
 
-    if (hasStory) {
-      navigate("/home");
-    } else {
-      navigate("/create-story");
+      if (invitation) {
+        navigate("/accept-invitation");
+        return;
+      }
+
+      // 2. Check if the user already belongs to a story
+      const hasStory = await userHasStory();
+
+      if (hasStory) {
+        navigate("/home");
+      } else {
+        navigate("/create-story");
+      }
+    } catch (error) {
+      console.error("Login flow error:", error);
+      alert("Something went wrong while loading your account.");
     }
   }
 
@@ -55,11 +70,10 @@ function Auth() {
           );
         }
       } else {
-        const { error } =
-          await supabase.auth.signInWithPassword({
-            email,
-            password,
-          });
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
         if (error) {
           alert(error.message);

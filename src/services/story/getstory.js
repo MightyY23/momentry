@@ -3,23 +3,20 @@ import { supabase } from "../supabase/supabaseClient";
 export async function getMyStory() {
   const {
     data: { user },
-    error: userError,
   } = await supabase.auth.getUser();
 
-  if (userError || !user) {
-    throw new Error("User not authenticated.");
+  if (!user) {
+    throw new Error("User not logged in");
   }
 
-  // Find the story membership
+  // Find the story this user belongs to
   const { data: membership, error: membershipError } = await supabase
     .from("story_members")
     .select("story_id")
     .eq("user_id", user.id)
     .single();
 
-  if (membershipError) {
-    throw membershipError;
-  }
+  if (membershipError) throw membershipError;
 
   // Load the story
   const { data: story, error: storyError } = await supabase
@@ -28,9 +25,7 @@ export async function getMyStory() {
     .eq("id", membership.story_id)
     .single();
 
-  if (storyError) {
-    throw storyError;
-  }
+  if (storyError) throw storyError;
 
   return story;
 }
