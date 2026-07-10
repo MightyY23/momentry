@@ -35,7 +35,7 @@ function ViewMoment() {
 
   async function handleDelete() {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this moment?\n\nThis action cannot be undone."
+      "Are you sure you want to delete this moment?"
     );
 
     if (!confirmed) return;
@@ -92,35 +92,39 @@ function ViewMoment() {
             />
           )}
 
-          <h1>{moment.title}</h1>
+          <div className={styles.content}>
+            <h1 className={styles.title}>
+              ❤️ {moment.title}
+            </h1>
 
-          <p className={styles.date}>
-            📅 {new Date(moment.memory_date).toLocaleDateString()}
-          </p>
+            <p className={styles.date}>
+              {new Date(moment.memory_date).toLocaleDateString()}
+            </p>
 
-          <p className={styles.description}>
-            {moment.description}
-          </p>
+            <p className={styles.description}>
+              {moment.description}
+            </p>
 
-          <div className={styles.actions}>
-            <Button onClick={() => navigate("/home")}>
-              Back
-            </Button>
+            <div className={styles.actions}>
+              <Button onClick={() => navigate("/home")}>
+                Back
+              </Button>
 
-            <Button
-              onClick={() =>
-                navigate(`/edit-moment/${moment.id}`)
-              }
-            >
-              Edit
-            </Button>
+              <Button
+                onClick={() =>
+                  navigate(`/edit-moment/${moment.id}`)
+                }
+              >
+                Edit
+              </Button>
 
-            <Button
-              onClick={handleDelete}
-              disabled={deleting}
-            >
-              {deleting ? "Deleting..." : "Delete"}
-            </Button>
+              <Button
+                onClick={handleDelete}
+                disabled={deleting}
+              >
+                {deleting ? "Deleting..." : "Delete"}
+              </Button>
+            </div>
           </div>
         </div>
       </Container>

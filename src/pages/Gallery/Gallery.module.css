@@ -1,0 +1,81 @@
+.heading {
+  text-align: center;
+  margin-bottom: 50px;
+  font-size: 2.8rem;
+  font-weight: 700;
+}
+
+.grid {
+  column-count: 3;
+  column-gap: 20px;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+
+  border-radius: 22px;
+
+  margin-bottom: 20px;
+
+  cursor: pointer;
+
+  break-inside: avoid;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+
+  transition: all .3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+}
+
+.image {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+
+  transition: transform .45s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.08);
+}
+
+.overlay {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  padding: 18px;
+
+  background: linear-gradient(
+    transparent,
+    rgba(0,0,0,.85)
+  );
+
+  color: white;
+
+  opacity: 0;
+
+  transition: .3s;
+}
+
+.card:hover .overlay {
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    column-count: 1;
+  }
+}

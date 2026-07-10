@@ -10,6 +10,8 @@ import AddMoment from "../pages/AddMoment/AddMoment";
 import ViewMoment from "../pages/ViewMoment/ViewMoment";
 import EditMoment from "../pages/EditMoment/EditMoment";
 import AcceptInvitation from "../pages/AcceptInvitation/AcceptInvitation";
+import Gallery from "../pages/Gallery/Gallery";
+import Profile from "../pages/Profile/Profile";
 
 function AppRouter() {
   return (
@@ -59,6 +61,15 @@ function AppRouter() {
       <Route
         path="/accept-invitation"
         element={<AcceptInvitation />}
+      />
+
+      <Route
+        path="/gallery"
+        element={<Gallery />}
+      />
+      <Route
+        path="/profile"
+        element={<Profile />}
       />
 
     </Routes>

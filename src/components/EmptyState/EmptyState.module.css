@@ -1,0 +1,15 @@
+.emptyCard {
+  text-align: center;
+  padding: 40px;
+  border: 2px dashed var(--border);
+  border-radius: 20px;
+}
+
+.emptyCard h2 {
+  margin-bottom: 16px;
+}
+
+.emptyCard p {
+  margin-bottom: 24px;
+  color: var(--text-secondary);
+}

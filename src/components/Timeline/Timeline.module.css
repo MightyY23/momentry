@@ -1,0 +1,43 @@
+.timeline {
+  position: relative;
+
+  max-width: 900px;
+
+  margin: 60px auto;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 60px;
+}
+
+.timeline::before{
+  content:"";
+
+  position:absolute;
+
+  left:34px;
+
+  top:65px;
+
+  bottom:100px;
+
+  width:4px;
+
+  background:linear-gradient(
+      to bottom,
+      #ff6b81,
+      #ffb6c1
+  );
+
+  border-radius:10px;
+}
+
+.heading{
+  margin-left:70px;
+
+  font-size:2rem;
+
+  font-weight:700;
+}
