@@ -91,12 +91,18 @@ function Home() {
                   key={moment.id}
                   className={styles.momentCard}
                 >
+                  {moment.image_url && (
+                    <img
+                      src={moment.image_url}
+                      alt={moment.title}
+                      className={styles.momentImage}
+                    />
+                  )}
+
                   <h3>{moment.title}</h3>
 
                   <p className={styles.memoryDate}>
-                    {new Date(
-                      moment.memory_date
-                    ).toLocaleDateString()}
+                    {new Date(moment.memory_date).toLocaleDateString()}
                   </p>
 
                   <p>{moment.description}</p>
