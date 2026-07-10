@@ -9,6 +9,7 @@ import Home from "../pages/Home/Home";
 import AddMoment from "../pages/AddMoment/AddMoment";
 import ViewMoment from "../pages/ViewMoment/ViewMoment";
 import EditMoment from "../pages/EditMoment/EditMoment";
+import AcceptInvitation from "../pages/AcceptInvitation/AcceptInvitation";
 
 function AppRouter() {
   return (
@@ -53,6 +54,11 @@ function AppRouter() {
       <Route
         path="/edit-moment/:id"
         element={<EditMoment />}
+      />
+
+      <Route
+        path="/accept-invitation"
+        element={<AcceptInvitation />}
       />
 
     </Routes>
