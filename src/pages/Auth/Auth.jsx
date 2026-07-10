@@ -10,6 +10,7 @@ import Heading from "../../ui/Heading/Heading";
 import Text from "../../ui/Text/Text";
 
 import { supabase } from "../../services/supabase/supabaseClient";
+import { userHasStory } from "../../services/story/hasStory";
 
 function Auth() {
   const navigate = useNavigate();
@@ -20,6 +21,16 @@ function Auth() {
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
+
+  async function handleSuccessfulLogin() {
+    const hasStory = await userHasStory();
+
+    if (hasStory) {
+      navigate("/home");
+    } else {
+      navigate("/create-story");
+    }
+  }
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -53,15 +64,15 @@ function Auth() {
         if (error) {
           alert(error.message);
         } else {
-          navigate("/create-story");
+          await handleSuccessfulLogin();
         }
       }
     } catch (error) {
       console.error(error);
       alert("Something went wrong.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -86,9 +97,7 @@ function Auth() {
               type="email"
               placeholder="Email address"
               value={email}
-              onChange={(e) =>
-                setEmail(e.target.value)
-              }
+              onChange={(e) => setEmail(e.target.value)}
             />
 
             <input
@@ -96,9 +105,7 @@ function Auth() {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) =>
-                setPassword(e.target.value)
-              }
+              onChange={(e) => setPassword(e.target.value)}
             />
 
             <Button onClick={handleSubmit}>
@@ -112,9 +119,7 @@ function Auth() {
 
           <button
             className={styles.switchButton}
-            onClick={() =>
-              setIsSignUp(!isSignUp)
-            }
+            onClick={() => setIsSignUp(!isSignUp)}
           >
             {isSignUp
               ? "Already have an account? Sign In"

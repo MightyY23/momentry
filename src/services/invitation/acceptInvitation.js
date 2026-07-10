@@ -1,22 +1,24 @@
 import { supabase } from "../supabase/supabaseClient";
 
-export async function acceptInvitation(invitationId, storyId) {
+export async function acceptInvitation(invitation) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("User not found");
+  }
 
   // Add partner to story
   const { error: memberError } = await supabase
     .from("story_members")
     .insert({
-      story_id: storyId,
+      story_id: invitation.story_id,
       user_id: user.id,
       role: "partner",
     });
 
-  if (memberError) {
-    throw memberError;
-  }
+  if (memberError) throw memberError;
 
   // Mark invitation accepted
   const { error: invitationError } = await supabase
@@ -26,9 +28,9 @@ export async function acceptInvitation(invitationId, storyId) {
       accepted_at: new Date().toISOString(),
       accepted_by: user.id,
     })
-    .eq("id", invitationId);
+    .eq("id", invitation.id);
 
-  if (invitationError) {
-    throw invitationError;
-  }
+  if (invitationError) throw invitationError;
+
+  return true;
 }

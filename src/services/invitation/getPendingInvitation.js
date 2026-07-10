@@ -14,9 +14,7 @@ export async function getPendingInvitation(email) {
     .eq("status", "pending")
     .maybeSingle();
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
   return data;
 }
