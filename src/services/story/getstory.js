@@ -10,16 +10,27 @@ export async function getMyStory() {
     throw new Error("User not authenticated.");
   }
 
-  const { data, error } = await supabase
-    .from("stories")
-    .select("*")
-    .eq("owner_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(1);
+  // Find the story membership
+  const { data: membership, error: membershipError } = await supabase
+    .from("story_members")
+    .select("story_id")
+    .eq("user_id", user.id)
+    .single();
 
-  if (error) {
-    throw error;
+  if (membershipError) {
+    throw membershipError;
   }
 
-  return data.length ? data[0] : null;
+  // Load the story
+  const { data: story, error: storyError } = await supabase
+    .from("stories")
+    .select("*")
+    .eq("id", membership.story_id)
+    .single();
+
+  if (storyError) {
+    throw storyError;
+  }
+
+  return story;
 }
