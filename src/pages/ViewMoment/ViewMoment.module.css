@@ -1,0 +1,32 @@
+.card {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+.image {
+  width: 100%;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  object-fit: cover;
+  max-height: 500px;
+}
+
+.date {
+  margin: 16px 0;
+  color: var(--text-secondary);
+}
+
+.description {
+  line-height: 1.8;
+  margin-bottom: 32px;
+  white-space: pre-wrap;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+}

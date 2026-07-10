@@ -1,11 +1,12 @@
 import { supabase } from "../supabase/supabaseClient";
 
-export async function getMoments(storyId) {
+export async function updateMoment(id, updates) {
   const { data, error } = await supabase
     .from("moments")
-    .select("*")
-    .eq("story_id", storyId)
-    .order("memory_date", { ascending: true });
+    .update(updates)
+    .eq("id", id)
+    .select()
+    .single();
 
   if (error) {
     throw error;

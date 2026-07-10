@@ -7,6 +7,8 @@ import CreateStory from "../pages/CreateStory/CreateStory";
 import InvitePartner from "../pages/InvitePartner/InvitePartner";
 import Home from "../pages/Home/Home";
 import AddMoment from "../pages/AddMoment/AddMoment";
+import ViewMoment from "../pages/ViewMoment/ViewMoment";
+import EditMoment from "../pages/EditMoment/EditMoment";
 
 function AppRouter() {
   return (
@@ -42,6 +44,16 @@ function AppRouter() {
         path="/add-moment"
         element={<AddMoment />}
        />
+      
+      <Route
+        path="/moment/:id"
+        element={<ViewMoment />}
+      />
+
+      <Route
+        path="/edit-moment/:id"
+        element={<EditMoment />}
+      />
 
     </Routes>
   );

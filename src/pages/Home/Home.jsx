@@ -90,6 +90,7 @@ function Home() {
                 <div
                   key={moment.id}
                   className={styles.momentCard}
+                  onClick={() => navigate(`/moment/${moment.id}`)}
                 >
                   {moment.image_url && (
                     <img
