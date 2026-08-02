@@ -1,7 +1,20 @@
-    * {
+/* ==========================================================
+   RESET
+   ========================================================== */
+
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
+
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+
+  -webkit-text-size-adjust: 100%;
 }
 
 html,
@@ -12,26 +25,398 @@ body,
 }
 
 body {
-  background: var(--background);
-  color: var(--text-primary);
+  font-family: var(--font-family);
 
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  font-size: var(--text-lg);
+
+  line-height: 1.65;
+
+  color: var(--text);
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(255, 92, 141, .08),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      rgba(255, 92, 141, .05),
+      transparent 40%
+    ),
+    var(--background);
+
+  transition:
+    background var(--transition),
+    color var(--transition);
+
+  text-rendering: optimizeLegibility;
 
   -webkit-font-smoothing: antialiased;
+
+  -moz-osx-font-smoothing: grayscale;
+
+  overflow-x: hidden;
 }
 
-button,
+/* ==========================================================
+   ROOT
+   ========================================================== */
+
+#root {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100vh;
+}
+
+/* ==========================================================
+   TYPOGRAPHY
+   ========================================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text);
+
+  font-weight: 700;
+
+  line-height: 1.2;
+
+  letter-spacing: -.02em;
+}
+
+h1 {
+  font-size: var(--display-md);
+}
+
+h2 {
+  font-size: var(--heading-xl);
+}
+
+h3 {
+  font-size: var(--heading-lg);
+}
+
+h4 {
+  font-size: var(--heading-md);
+}
+
+h5 {
+  font-size: var(--heading-sm);
+}
+
+p {
+  color: var(--text-secondary);
+
+  line-height: 1.8;
+}
+
+small {
+  font-size: var(--text-xs);
+
+  color: var(--text-muted);
+}
+
+/* ==========================================================
+   LINKS
+   ========================================================== */
+
+a {
+  color: inherit;
+
+  text-decoration: none;
+
+  transition: color var(--transition);
+}
+
+a:hover {
+  color: var(--primary);
+}
+
+/* ==========================================================
+   IMAGES
+   ========================================================== */
+
+img,
+picture {
+  display: block;
+
+  max-width: 100%;
+
+  user-select: none;
+}
+
+svg {
+  display: block;
+}
+
+/* ==========================================================
+   BUTTONS
+========================================================== */
+
+button{
+  font:inherit;
+
+  color:inherit;
+
+  border:none;
+
+  outline:none;
+
+  background:none;
+
+  cursor:pointer;
+
+  appearance:none;
+
+  -webkit-appearance:none;
+
+  transition:
+    background-color .25s ease,
+    color .25s ease,
+    border-color .25s ease,
+    box-shadow .25s ease,
+    opacity .25s ease;
+
+  -webkit-tap-highlight-color:transparent;
+}
+
+button:focus{
+  outline:none;
+}
+
+button:focus-visible{
+  outline:3px solid rgba(255,92,141,.25);
+  outline-offset:3px;
+}
+
+button:disabled{
+  cursor:not-allowed;
+  opacity:.6;
+  pointer-events:none;
+}
+
+/* ==========================================================
+   FORMS
+   ========================================================== */
+
 input,
-textarea {
+textarea,
+select {
   font: inherit;
+
+  color: inherit;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-md);
+
+  background: var(--surface);
+
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
 }
 
-button {
-  cursor: pointer;
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+
+  border-color: var(--primary);
+
+  box-shadow:
+    0 0 0 4px rgba(255, 92, 141, .12);
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* ==========================================================
+   LISTS
+   ========================================================== */
+
+ul,
+ol {
+  list-style: none;
+}
+
+/* ==========================================================
+   TABLES
+   ========================================================== */
+
+table {
+  border-collapse: collapse;
+
+  width: 100%;
+}
+
+/* ==========================================================
+   SELECTION
+   ========================================================== */
+
+::selection {
+  background: var(--primary);
+
+  color: white;
+}
+
+/* ==========================================================
+   SCROLLBAR
+   ========================================================== */
+
+::-webkit-scrollbar {
+  width: 10px;
+
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 92, 141, .35);
+
+  border-radius: var(--radius-full);
+
+  border: 2px solid transparent;
+
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 92, 141, .55);
+
+  background-clip: content-box;
+}
+
+/* ==========================================================
+   FOCUS
+   ========================================================== */
+
+:focus-visible {
+  outline: 3px solid rgba(255, 92, 141, .35);
+
+  outline-offset: 3px;
+
+  border-radius: var(--radius-sm);
+}
+
+/* ==========================================================
+   HORIZONTAL RULE
+   ========================================================== */
+
+hr {
+  border: none;
+
+  height: 1px;
+
+  background: var(--border);
+}
+
+/* ==========================================================
+   UTILITIES
+   ========================================================== */
+
+.hidden {
+  display: none !important;
+}
+
+.visually-hidden {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  padding: 0;
+
+  margin: -1px;
+
+  overflow: hidden;
+
+  clip: rect(0, 0, 0, 0);
+
+  white-space: nowrap;
+
+  border: 0;
+}
+
+.surface {
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-xl);
+
+  box-shadow: var(--shadow);
+}
+
+.glass {
+  background: var(--glass-bg);
+
+  backdrop-filter: blur(var(--glass-blur));
+
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+
+  border: 1px solid var(--glass-border);
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width: 992px) {
+
+  body {
+    font-size: var(--text-md);
+  }
+
+  h1 {
+    font-size: var(--heading-xl);
+  }
+
+  h2 {
+    font-size: var(--heading-lg);
+  }
+}
+
+@media (max-width: 768px) {
+
+  body {
+    line-height: 1.6;
+  }
+
+  h1 {
+    font-size: var(--heading-lg);
+  }
+
+  h2 {
+    font-size: var(--heading-md);
+  }
+
+  h3 {
+    font-size: var(--heading-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+
+    animation-iteration-count: 1 !important;
+
+    transition-duration: .01ms !important;
+
+    scroll-behavior: auto !important;
+  }
 }

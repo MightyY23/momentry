@@ -1,0 +1,83 @@
+.hero{
+
+text-align:center;
+
+padding:60px 20px;
+
+}
+
+.hero h1{
+
+font-size:3rem;
+
+margin-bottom:15px;
+
+}
+
+.hero p{
+
+color:#777;
+
+}
+
+.timeline{
+
+max-width:900px;
+
+margin:auto;
+
+display:flex;
+
+flex-direction:column;
+
+gap:30px;
+
+padding-bottom:60px;
+
+}
+
+.card{
+
+background:white;
+
+border-radius:18px;
+
+overflow:hidden;
+
+box-shadow:0 12px 35px rgba(0,0,0,.08);
+
+}
+
+.card img{
+
+width:100%;
+
+height:420px;
+
+object-fit:cover;
+
+}
+
+.card h2{
+
+padding:20px;
+
+}
+
+.card p{
+
+padding:0 20px;
+
+line-height:1.7;
+
+}
+
+.card span{
+
+display:block;
+
+padding:20px;
+
+color:#999;
+
+}

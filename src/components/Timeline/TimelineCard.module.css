@@ -1,0 +1,538 @@
+/* =========================================================
+   TIMELINE CARD
+========================================================= */
+
+.card {
+  position: relative;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 28px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.98),
+      rgba(255,247,250,.95)
+    );
+
+  border: 1px solid rgba(255,255,255,.55);
+
+  backdrop-filter: blur(20px);
+
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.08);
+
+  cursor: pointer;
+
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease,
+    border-color .35s ease;
+}
+
+.card:hover {
+
+  border-color:
+    rgba(255,92,141,.25);
+
+  box-shadow:
+    0 28px 60px rgba(255,92,141,.15);
+
+}
+
+/* ========================================================= */
+
+.card::before{
+
+  content:"";
+
+  position:absolute;
+
+  top:-90px;
+  right:-90px;
+
+  width:180px;
+  height:180px;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,92,141,.18),
+      transparent 72%
+    );
+
+  pointer-events:none;
+
+}
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.imageWrapper{
+
+  position:relative;
+
+  height:260px;
+
+  overflow:hidden;
+
+}
+
+.image{
+
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
+  transition:
+    transform .6s ease;
+
+}
+
+.card:hover .image{
+
+  transform:scale(1.08);
+
+}
+
+.overlay{
+
+  position:absolute;
+
+  inset:0;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,.42),
+      rgba(0,0,0,.08) 40%,
+      transparent
+    );
+
+}
+
+/* =========================================================
+   FAVORITE
+========================================================= */
+
+.favorite{
+
+  position:absolute;
+
+  top:18px;
+  left:18px;
+
+  z-index:3;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
+
+  padding:9px 18px;
+
+  border-radius:999px;
+
+  background:
+    rgba(255,92,141,.88);
+
+  backdrop-filter:blur(14px);
+
+  color:white;
+
+  font-size:.82rem;
+
+  font-weight:600;
+
+  box-shadow:
+    0 12px 28px rgba(255,92,141,.35);
+
+  animation:
+    pulse 2.8s infinite;
+
+}
+
+/* =========================================================
+   DATE BADGE
+========================================================= */
+
+.dateBadge{
+
+  position:absolute;
+
+  bottom:18px;
+  right:18px;
+
+  z-index:3;
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  justify-content:center;
+
+  min-width:78px;
+
+  padding:12px;
+
+  border-radius:20px;
+
+  background:
+    rgba(255,255,255,.92);
+
+  backdrop-filter:blur(18px);
+
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.12);
+
+}
+
+.day{
+
+  font-size:1.8rem;
+
+  font-weight:800;
+
+  color:#222;
+
+  line-height:1;
+
+}
+
+.month{
+
+  margin-top:5px;
+
+  font-size:.72rem;
+
+  letter-spacing:2px;
+
+  font-weight:700;
+
+  color:#888;
+
+}
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.content{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:16px;
+
+  padding:28px;
+
+}
+
+.header{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:flex-start;
+
+  gap:14px;
+
+}
+
+.header h3{
+
+  margin:0;
+
+  flex:1;
+
+  font-size:1.45rem;
+
+  line-height:1.35;
+
+  color:#222;
+
+}
+
+.location{
+
+  flex-shrink:0;
+
+  padding:8px 14px;
+
+  border-radius:999px;
+
+  background:#ffeaf2;
+
+  color:#ff4d88;
+
+  font-size:.82rem;
+
+  font-weight:600;
+
+}
+
+/* ========================================================= */
+
+.date{
+
+  margin:0;
+
+  color:#8a8a8a;
+
+  font-size:.9rem;
+
+}
+
+/* ========================================================= */
+
+.description{
+
+  margin:0;
+
+  color:#666;
+
+  line-height:1.8;
+
+  display:-webkit-box;
+
+  -webkit-box-orient:vertical;
+
+  -webkit-line-clamp:3;
+
+  overflow:hidden;
+
+  min-height:86px;
+
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.actions{
+
+  display:flex;
+
+  gap:14px;
+
+  margin-top:auto;
+
+}
+
+.actions>*{
+
+  flex:1;
+
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width:992px){
+
+  .imageWrapper{
+
+    height:240px;
+
+  }
+
+}
+
+@media (max-width:768px){
+
+  .card{
+
+    border-radius:24px;
+
+  }
+
+  .imageWrapper{
+
+    height:220px;
+
+  }
+
+  .content{
+
+    padding:22px;
+
+  }
+
+  .header{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+  }
+
+  .header h3{
+
+    font-size:1.3rem;
+
+  }
+
+  .actions{
+
+    flex-direction:column;
+
+  }
+
+}
+
+@media (max-width:480px){
+
+  .imageWrapper{
+
+    height:190px;
+
+  }
+
+  .content{
+
+    padding:18px;
+
+    gap:14px;
+
+  }
+
+  .favorite{
+
+    font-size:.75rem;
+
+    padding:8px 14px;
+
+  }
+
+  .dateBadge{
+
+    min-width:64px;
+
+    padding:10px;
+
+  }
+
+  .day{
+
+    font-size:1.45rem;
+
+  }
+
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes pulse{
+
+  0%{
+    transform:scale(1);
+  }
+
+  50%{
+    transform:scale(1.06);
+  }
+
+  100%{
+    transform:scale(1);
+  }
+
+}
+/* =========================================================
+   LOCAL BUTTONS
+========================================================= */
+
+.readButton,
+.favoriteButton{
+
+    flex:1;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    gap:10px;
+
+    padding:14px 18px;
+
+    border:none;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    font-size:.95rem;
+
+    font-weight:700;
+
+    transition:.25s ease;
+}
+
+.readButton{
+
+    background:linear-gradient(
+        135deg,
+        #ff5c8d,
+        #ff80a7
+    );
+
+    color:white;
+
+    box-shadow:
+        0 10px 25px rgba(255,92,141,.25);
+}
+
+.readButton:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 16px 35px rgba(255,92,141,.35);
+}
+
+.favoriteButton{
+
+    background:#ffffff;
+
+    color:#444;
+
+    border:1px solid #ececec;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.05);
+}
+
+.favoriteButton:hover{
+
+    transform:translateY(-3px);
+
+    background:#fff7fa;
+
+    border-color:#ff9fbd;
+}
+
+@media(max-width:768px){
+
+.readButton,
+.favoriteButton{
+
+width:100%;
+
+}
+
+}

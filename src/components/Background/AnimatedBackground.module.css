@@ -1,0 +1,60 @@
+.background{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    z-index:-1;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff8f8,
+            #fffdfb,
+            #fff4f5
+        );
+}
+
+.blur1,
+.blur2,
+.blur3{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(90px);
+    opacity:.35;
+    animation:float 12s ease-in-out infinite;
+}
+
+.blur1{
+    width:320px;
+    height:320px;
+    background:#ff9aa2;
+    top:-80px;
+    left:-80px;
+}
+
+.blur2{
+    width:280px;
+    height:280px;
+    background:#ffd6a5;
+    top:180px;
+    right:-60px;
+    animation-delay:3s;
+}
+
+.blur3{
+    width:250px;
+    height:250px;
+    background:#ffc6ff;
+    bottom:-60px;
+    left:35%;
+    animation-delay:6s;
+}
+
+@keyframes float{
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-30px);
+    }
+}

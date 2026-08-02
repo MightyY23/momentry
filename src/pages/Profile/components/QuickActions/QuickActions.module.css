@@ -1,0 +1,75 @@
+.section{
+
+margin:60px 0;
+
+}
+
+.section h2{
+
+margin-bottom:25px;
+
+font-size:32px;
+
+}
+
+.grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+gap:24px;
+
+}
+
+.card{
+
+background:white;
+
+border-radius:24px;
+
+padding:30px;
+
+cursor:pointer;
+
+text-align:center;
+
+box-shadow:
+
+0 15px 35px rgba(0,0,0,.08);
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+box-shadow:
+
+0 25px 45px rgba(0,0,0,.12);
+
+}
+
+.icon{
+
+font-size:44px;
+
+margin-bottom:20px;
+
+}
+
+.card h3{
+
+margin:0;
+
+font-size:24px;
+
+}
+
+.card p{
+
+margin-top:10px;
+
+color:#777;
+
+}

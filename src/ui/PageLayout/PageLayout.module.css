@@ -1,13 +1,160 @@
-.page{
+.page {
+  position: relative;
 
-    min-height:100vh;
+  min-height: 100vh;
 
-    display:flex;
+  overflow: hidden;
 
-    justify-content:center;
+  background:
+    radial-gradient(circle at top left,
+      rgba(255, 92, 141, .10),
+      transparent 35%),
 
-    align-items:center;
+    radial-gradient(circle at top right,
+      rgba(255, 164, 188, .12),
+      transparent 40%),
 
-    padding:32px;
+    radial-gradient(circle at bottom,
+      rgba(255, 92, 141, .08),
+      transparent 45%),
 
+    var(--background);
+
+  color: var(--text);
+
+  transition:
+    background .4s ease,
+    color .4s ease;
+
+  padding: 32px;
+}
+
+/* ========================================= */
+
+.content {
+  position: relative;
+
+  z-index: 5;
+}
+
+/* ========================================= */
+
+.mesh {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.04),
+      transparent 50%
+    );
+
+  pointer-events: none;
+
+  z-index: 0;
+}
+
+/* ========================================= */
+
+.blob {
+  position: absolute;
+
+  border-radius: 50%;
+
+  filter: blur(90px);
+
+  opacity: .55;
+
+  animation: float 14s ease-in-out infinite;
+
+  pointer-events: none;
+}
+
+.blobOne {
+
+  width: 420px;
+  height: 420px;
+
+  background: rgba(255,92,141,.18);
+
+  top: -120px;
+  left: -80px;
+}
+
+.blobTwo {
+
+  width: 360px;
+  height: 360px;
+
+  background: rgba(255,170,195,.16);
+
+  right: -80px;
+
+  top: 180px;
+
+  animation-delay: 3s;
+}
+
+.blobThree {
+
+  width: 520px;
+  height: 520px;
+
+  background: rgba(255,120,170,.10);
+
+  bottom: -180px;
+
+  left: 35%;
+
+  animation-delay: 6s;
+}
+
+/* ========================================= */
+
+.noise {
+
+  position: absolute;
+
+  inset: 0;
+
+  opacity: .03;
+
+  background-image:
+    radial-gradient(#000 1px, transparent 1px);
+
+  background-size: 22px 22px;
+
+  pointer-events: none;
+
+  z-index: 1;
+}
+
+/* ========================================= */
+
+@media (max-width: 768px) {
+
+  .page {
+
+    padding: 20px;
+  }
+
+  .blobOne {
+
+    width: 240px;
+    height: 240px;
+  }
+
+  .blobTwo {
+
+    width: 220px;
+    height: 220px;
+  }
+
+  .blobThree {
+
+    width: 300px;
+    height: 300px;
+  }
 }

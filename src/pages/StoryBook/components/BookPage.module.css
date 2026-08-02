@@ -1,0 +1,622 @@
+/* ==========================================================
+   BOOK PAGE WRAPPER
+========================================================== */
+
+.wrapper{
+
+    display:flex;
+
+    justify-content:center;
+
+    margin:45px auto;
+
+    perspective:2600px;
+
+    transform-style:preserve-3d;
+
+}
+
+/* ==========================================================
+   BOOK
+========================================================== */
+
+.book{
+
+    display:flex;
+
+    width:min(1150px,96vw);
+
+    min-height:720px;
+
+    overflow:hidden;
+
+    border-radius:30px;
+
+    background:var(--page);
+
+    border:1px solid rgba(185,170,145,.35);
+
+    box-shadow:
+        0 40px 90px rgba(0,0,0,.18),
+        inset 0 0 0 1px rgba(255,255,255,.15);
+
+    animation:pageIn .6s ease;
+
+    transition:
+        transform .4s ease,
+        box-shadow .4s ease;
+
+}
+
+.book:hover{
+
+    transform:
+        translateY(-8px)
+        rotateX(2deg);
+
+    box-shadow:
+        0 55px 120px rgba(0,0,0,.22);
+
+}
+
+/* ==========================================================
+   PAPER THEMES
+========================================================== */
+
+.paper{
+
+    --page:#fffdf7;
+
+}
+
+.sepia{
+
+    --page:#f6ecd8;
+
+}
+
+.dark{
+
+    --page:#1d1f22;
+
+}
+
+.dark .leftPage,
+.dark .rightPage{
+
+    color:#ececec;
+
+}
+
+.dark h2{
+
+    color:white;
+
+}
+
+.dark .story{
+
+    color:#e3e3e3;
+
+}
+
+.dark .chapterLabel,
+.dark .pageNumber,
+.dark .footer,
+.dark .totalPages{
+
+    color:#b8b8b8;
+
+}
+
+.dark .quoteCard{
+
+    background:rgba(255,255,255,.05);
+
+}
+
+/* ==========================================================
+   PAGES
+========================================================== */
+
+.leftPage,
+.rightPage{
+
+    position:relative;
+
+    flex:1;
+
+    padding:65px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.12),
+            rgba(0,0,0,.02)
+        ),
+        var(--page);
+
+}
+
+/* Paper texture */
+
+.leftPage::before,
+.rightPage::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    opacity:.18;
+
+    background:
+
+        repeating-linear-gradient(
+            45deg,
+            rgba(0,0,0,.015),
+            rgba(0,0,0,.015) 2px,
+            transparent 2px,
+            transparent 6px
+        );
+
+}
+
+/* Page shadows */
+
+.leftPage::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    right:0;
+
+    width:18px;
+
+    height:100%;
+
+    background:
+        linear-gradient(
+            to left,
+            rgba(0,0,0,.08),
+            transparent
+        );
+
+}
+
+.rightPage::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+    width:18px;
+
+    height:100%;
+
+    background:
+        linear-gradient(
+            to right,
+            rgba(0,0,0,.08),
+            transparent
+        );
+
+}
+
+.leftPage{
+
+    border-right:1px solid rgba(180,180,180,.18);
+
+}
+
+/* ==========================================================
+   BOOK SPINE
+========================================================== */
+
+.spine{
+
+    width:42px;
+
+    position:relative;
+
+    background:
+        linear-gradient(
+            90deg,
+            #552d22,
+            #8a5d3b,
+            #552d22
+        );
+
+    box-shadow:
+        inset 4px 0 8px rgba(255,255,255,.15),
+        inset -5px 0 10px rgba(0,0,0,.35);
+
+}
+
+.spine::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:3px;
+
+    height:100%;
+
+    background:rgba(255,255,255,.15);
+
+}
+
+/* ==========================================================
+   CHAPTER LABEL
+========================================================== */
+
+.chapterLabel{
+
+    display:inline-block;
+
+    padding:8px 16px;
+
+    border-radius:999px;
+
+    background:rgba(176,53,103,.08);
+
+    color:var(--primary);
+
+    font-size:.82rem;
+
+    font-weight:700;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+    margin-bottom:24px;
+
+}
+
+/* ==========================================================
+   TITLE
+========================================================== */
+
+.leftPage h2{
+
+    margin:0;
+
+    font-family:"Cormorant Garamond", serif;
+
+    font-size:3.3rem;
+
+    font-weight:700;
+
+    color:#3c2b21;
+
+}
+
+.divider{
+
+    width:110px;
+
+    height:3px;
+
+    margin:22px 0 35px;
+
+    border-radius:999px;
+
+    background:
+        linear-gradient(
+            to right,
+            var(--primary),
+            transparent
+        );
+
+}
+
+/* ==========================================================
+   STORY
+========================================================== */
+
+.story{
+
+    font-family:"Cormorant Garamond", serif;
+
+    font-size:var(--font-size,24px);
+
+    line-height:2.1;
+
+    text-align:justify;
+
+    color:#433b34;
+
+}
+
+.story::first-letter{
+
+    float:left;
+
+    margin:
+        10px
+        12px
+        0
+        0;
+
+    font-size:82px;
+
+    line-height:.8;
+
+    font-weight:700;
+
+    color:var(--primary);
+
+}
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+.footer{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-top:40px;
+
+    padding-top:25px;
+
+    border-top:1px solid rgba(0,0,0,.08);
+
+    color:#8b7c6d;
+
+    font-size:.95rem;
+
+}
+
+/* ==========================================================
+   QUOTE PAGE
+========================================================== */
+
+.quoteCard{
+
+    height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:30px;
+
+    padding:45px;
+
+    text-align:center;
+
+    border-radius:22px;
+
+    background:rgba(176,53,103,.05);
+
+}
+
+.quoteCard svg{
+
+    color:var(--primary);
+
+}
+
+.quoteCard p{
+
+    margin:0;
+
+    font-family:"Cormorant Garamond", serif;
+
+    font-size:2rem;
+
+    line-height:1.8;
+
+    font-style:italic;
+
+    color:#6b5d50;
+
+}
+
+/* ==========================================================
+   PAGE NUMBER
+========================================================== */
+
+.pageNumber{
+
+    position:absolute;
+
+    bottom:24px;
+
+    right:30px;
+
+    font-family:"Cormorant Garamond", serif;
+
+    font-size:1.05rem;
+
+    font-style:italic;
+
+    color:#9b8b79;
+
+}
+
+.totalPages{
+
+    position:absolute;
+
+    left:30px;
+
+    bottom:24px;
+
+    text-align:left;
+
+    color:#9b8b79;
+
+    font-size:.9rem;
+
+    line-height:1.6;
+
+}
+
+/* ==========================================================
+   PAGE TURN
+========================================================== */
+
+@keyframes pageIn{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            rotateY(-16deg)
+            scale(.97);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            rotateY(0)
+            scale(1);
+
+    }
+
+}
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media(max-width:900px){
+
+.book{
+
+flex-direction:column;
+
+min-height:auto;
+
+}
+
+.spine{
+
+display:none;
+
+}
+
+.leftPage{
+
+border-right:none;
+
+border-bottom:1px solid rgba(0,0,0,.08);
+
+}
+
+.leftPage,
+.rightPage{
+
+padding:40px;
+
+}
+
+.leftPage h2{
+
+font-size:2.5rem;
+
+}
+
+.story{
+
+font-size:20px;
+
+}
+
+.quoteCard p{
+
+font-size:1.5rem;
+
+}
+
+}
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media(max-width:600px){
+
+.leftPage,
+.rightPage{
+
+padding:28px;
+
+}
+
+.leftPage h2{
+
+font-size:2rem;
+
+}
+
+.story{
+
+font-size:18px;
+
+line-height:1.9;
+
+}
+
+.story::first-letter{
+
+font-size:58px;
+
+}
+
+.quoteCard{
+
+padding:25px;
+
+}
+
+.quoteCard p{
+
+font-size:1.25rem;
+
+}
+
+.chapterLabel{
+
+font-size:.72rem;
+
+}
+
+.pageNumber,
+.totalPages{
+
+font-size:.8rem;
+
+}
+
+}

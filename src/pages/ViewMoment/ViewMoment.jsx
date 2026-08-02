@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 import PageLayout from "../../ui/PageLayout/PageLayout";
 import Container from "../../ui/Container/Container";
@@ -7,22 +11,70 @@ import Button from "../../ui/Button/Button";
 
 import styles from "./ViewMoment.module.css";
 
+import HeroImage from "./components/HeroImage";
+import MomentMeta from "./components/MomentMeta";
+import MemoryInfo from "./components/MemoryInfo";
+import ActionBar from "./components/ActionBar";
+import MemoryNavigator from "./components/MemoryNavigator";
+
 import { getMoment } from "../../services/moment/getMoment";
-import { deleteMoment } from "../../services/moment/deleteMoment";
+import { getAdjacentMoments } from "../../services/moment/getAdjacentMoments";
+
+import useMoments from "../../hooks/useMoments";
 
 function ViewMoment() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [moment, setMoment] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [deleting, setDeleting] = useState(false);
+  //---------------------------------------
+  // Global Context
+  //---------------------------------------
+
+  const { removeMoment } =
+    useMoments();
+
+  //---------------------------------------
+
+  const [moment, setMoment] =
+    useState(null);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [deleting, setDeleting] =
+    useState(false);
+
+  const [previousMoment, setPreviousMoment] =
+    useState(null);
+
+  const [nextMoment, setNextMoment] =
+    useState(null);
+
+  //---------------------------------------
+  // Load Memory
+  //---------------------------------------
 
   useEffect(() => {
     async function loadMoment() {
       try {
-        const data = await getMoment(id);
+        const data =
+          await getMoment(id);
+
         setMoment(data);
+
+        const adjacent =
+          await getAdjacentMoments(
+            data.story_id,
+            data.id
+          );
+
+        setPreviousMoment(
+          adjacent.previous
+        );
+
+        setNextMoment(
+          adjacent.next
+        );
       } catch (error) {
         console.error(error);
       } finally {
@@ -33,100 +85,190 @@ function ViewMoment() {
     loadMoment();
   }, [id]);
 
-  async function handleDelete() {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this moment?"
+  //---------------------------------------
+  // Keyboard Navigation
+  //---------------------------------------
+
+  useEffect(() => {
+    function handleKey(e) {
+      if (
+        e.key === "ArrowLeft" &&
+        previousMoment
+      ) {
+        navigate(
+          `/moment/${previousMoment.id}`
+        );
+      }
+
+      if (
+        e.key === "ArrowRight" &&
+        nextMoment
+      ) {
+        navigate(
+          `/moment/${nextMoment.id}`
+        );
+      }
+    }
+
+    window.addEventListener(
+      "keydown",
+      handleKey
     );
+
+    return () =>
+      window.removeEventListener(
+        "keydown",
+        handleKey
+      );
+  }, [
+    previousMoment,
+    nextMoment,
+    navigate,
+  ]);
+
+  //---------------------------------------
+  // Delete
+  //---------------------------------------
+
+  async function handleDelete() {
+    const confirmed =
+      window.confirm(
+        "Are you sure you want to delete this memory?"
+      );
 
     if (!confirmed) return;
 
     try {
       setDeleting(true);
 
-      await deleteMoment(moment);
-
-      alert("Moment deleted successfully!");
+      await removeMoment(
+        moment.id
+      );
 
       navigate("/home");
     } catch (error) {
       console.error(error);
+
       alert(error.message);
     } finally {
       setDeleting(false);
     }
   }
 
+  //---------------------------------------
+  // Loading
+  //---------------------------------------
+
   if (loading) {
     return (
       <PageLayout>
         <Container>
-          <h2>Loading moment...</h2>
+          <h2>
+            Loading memory...
+          </h2>
         </Container>
       </PageLayout>
     );
   }
 
+  //---------------------------------------
+  // Not Found
+  //---------------------------------------
+
   if (!moment) {
     return (
       <PageLayout>
         <Container>
-          <h2>Moment not found.</h2>
+          <h2>
+            Memory not found.
+          </h2>
 
-          <Button onClick={() => navigate("/home")}>
-            Back to Home
+          <Button
+            onClick={() =>
+              navigate("/home")
+            }
+          >
+            Back Home
           </Button>
         </Container>
       </PageLayout>
     );
   }
 
+  //---------------------------------------
+  // UI
+  //---------------------------------------
+
   return (
     <PageLayout>
       <Container>
-        <div className={styles.card}>
-          {moment.image_url && (
-            <img
-              src={moment.image_url}
-              alt={moment.title}
-              className={styles.image}
-            />
-          )}
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 25,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.45,
+          }}
+        >
+          <HeroImage
+            image={moment.image_url}
+            title={moment.title}
+          />
 
-          <div className={styles.content}>
-            <h1 className={styles.title}>
-              ❤️ {moment.title}
-            </h1>
+          <MomentMeta
+            moment={moment}
+          />
 
-            <p className={styles.date}>
-              {new Date(moment.memory_date).toLocaleDateString()}
-            </p>
+          <MemoryInfo
+            moment={moment}
+          />
 
-            <p className={styles.description}>
+          <section
+            className={styles.story}
+          >
+            <h2>Our Story</h2>
+
+            <p>
               {moment.description}
             </p>
+          </section>
 
-            <div className={styles.actions}>
-              <Button onClick={() => navigate("/home")}>
-                Back
-              </Button>
+          <ActionBar
+            moment={moment}
+            deleting={deleting}
+            onBack={() =>
+              navigate("/home")
+            }
+            onEdit={() =>
+              navigate(
+                `/edit-moment/${moment.id}`
+              )
+            }
+            onDelete={handleDelete}
+          />
 
-              <Button
-                onClick={() =>
-                  navigate(`/edit-moment/${moment.id}`)
-                }
-              >
-                Edit
-              </Button>
-
-              <Button
-                onClick={handleDelete}
-                disabled={deleting}
-              >
-                {deleting ? "Deleting..." : "Delete"}
-              </Button>
-            </div>
-          </div>
-        </div>
+          <MemoryNavigator
+            previous={previousMoment}
+            next={nextMoment}
+            onPrevious={() =>
+              previousMoment &&
+              navigate(
+                `/moment/${previousMoment.id}`
+              )
+            }
+            onNext={() =>
+              nextMoment &&
+              navigate(
+                `/moment/${nextMoment.id}`
+              )
+            }
+          />
+        </motion.div>
       </Container>
     </PageLayout>
   );

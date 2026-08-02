@@ -1,0 +1,234 @@
+/* ==========================================
+   MEMORY NAVIGATOR
+========================================== */
+
+.section{
+
+    margin:70px 0;
+
+}
+
+/* ========================================== */
+
+.header{
+
+    text-align:center;
+
+    margin-bottom:35px;
+
+}
+
+.badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:8px 16px;
+
+    border-radius:999px;
+
+    background:#ffeaf2;
+
+    color:#ff4d88;
+
+    font-size:.82rem;
+
+    font-weight:600;
+
+}
+
+.header h2{
+
+    margin:16px 0 10px;
+
+    font-size:2rem;
+
+    font-weight:700;
+
+    color:#222;
+
+}
+
+.header p{
+
+    margin:0;
+
+    color:#777;
+
+    line-height:1.7;
+
+}
+
+/* ========================================== */
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:24px;
+
+}
+
+/* ========================================== */
+
+.card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:22px;
+
+    padding:28px;
+
+    border-radius:26px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.98),
+            rgba(255,247,250,.95)
+        );
+
+    border:1px solid rgba(255,255,255,.55);
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+        0 16px 40px rgba(0,0,0,.08);
+
+    transition:
+        transform .35s,
+        box-shadow .35s,
+        border-color .35s;
+
+}
+
+.card:hover{
+
+    border-color:
+        rgba(255,92,141,.2);
+
+    box-shadow:
+        0 24px 55px rgba(255,92,141,.14);
+
+}
+
+/* ========================================== */
+
+.side{
+
+    width:68px;
+    height:68px;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff5c8d,
+            #ff91b4
+        );
+
+    color:white;
+
+    flex-shrink:0;
+
+    box-shadow:
+        0 14px 30px rgba(255,92,141,.25);
+
+}
+
+/* ========================================== */
+
+.content{
+
+    flex:1;
+
+    min-width:0;
+
+}
+
+.content span{
+
+    display:block;
+
+    font-size:.8rem;
+
+    color:#999;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    margin-bottom:6px;
+
+}
+
+.content h3{
+
+    margin:0;
+
+    font-size:1.2rem;
+
+    color:#222;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+/* ========================================== */
+
+.card button{
+
+    min-width:120px;
+
+}
+
+/* ========================================== */
+
+@media(max-width:900px){
+
+.grid{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+@media(max-width:600px){
+
+.card{
+
+flex-direction:column;
+
+text-align:center;
+
+}
+
+.content h3{
+
+white-space:normal;
+
+}
+
+.card button{
+
+width:100%;
+
+}
+
+}

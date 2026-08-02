@@ -12,6 +12,13 @@ import EditMoment from "../pages/EditMoment/EditMoment";
 import AcceptInvitation from "../pages/AcceptInvitation/AcceptInvitation";
 import Gallery from "../pages/Gallery/Gallery";
 import Profile from "../pages/Profile/Profile";
+import StoryBook from "../pages/StoryBook/StoryBook";
+import MemoryMap from "../pages/MemoryMap/MemoryMap";
+import Settings from "../pages/Settings/Settings";
+import Analytics from "../pages/Analytics/Analytics";
+import Calendar from "../pages/Calendar/Calendar";
+import Search from "../pages/Search/Search";
+import SharedStory from "../pages/SharedStory/SharedStory";
 
 function AppRouter() {
   return (
@@ -70,6 +77,35 @@ function AppRouter() {
       <Route
         path="/profile"
         element={<Profile />}
+      />
+      <Route
+        path="/storybook"
+        element={<StoryBook />}
+      />
+      <Route
+      path="/memory-map"
+      element={<MemoryMap />}
+      />
+      <Route
+          path="/search"
+          element={<Search />}
+      />
+      
+      <Route
+      path="/settings"
+      element={<Settings />}
+      />
+      <Route
+      path="/analytics"
+      element={<Analytics />}
+      />
+      <Route
+      path="/calendar"
+      element={<Calendar />}
+      />
+      <Route
+      path="/share/:shareCode"
+      element={<SharedStory />}
       />
 
     </Routes>

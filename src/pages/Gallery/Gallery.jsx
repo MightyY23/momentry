@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
 import PageLayout from "../../ui/PageLayout/PageLayout";
@@ -10,143 +9,296 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 
 import styles from "./Gallery.module.css";
 
-import { getMyStory } from "../../services/story/getStory";
-import { getMoments } from "../../services/moment/getMoments";
+import GalleryCard from "./components/GalleryCard";
+import GalleryLightbox from "./components/GalleryLightbox";
+import GalleryFilters from "./components/GalleryFilters";
+import GalleryStats from "./components/GalleryStats/GalleryStats";
+
+import useMoments from "../../hooks/useMoments";
 
 function Gallery() {
-  const navigate = useNavigate();
+  //---------------------------------------
+  // Global
+  //---------------------------------------
 
-  const [moments, setMoments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  const {
+    moments,
+    loading,
+  } = useMoments();
 
-  useEffect(() => {
-    async function loadGallery() {
-      try {
-        const story = await getMyStory();
+  //---------------------------------------
 
-        if (!story) {
-          setMoments([]);
-          return;
+  const [search, setSearch] =
+    useState("");
+
+  const [filter, setFilter] =
+    useState("all");
+
+  const [selectedIndex, setSelectedIndex] =
+    useState(null);
+
+  //---------------------------------------
+  // Filter
+  //---------------------------------------
+
+  const filteredMoments =
+    useMemo(() => {
+      const query =
+        search.toLowerCase();
+
+      return moments.filter(
+        (moment) => {
+          const matchesSearch =
+            moment.title
+              ?.toLowerCase()
+              .includes(query) ||
+            moment.description
+              ?.toLowerCase()
+              .includes(query) ||
+            moment.location
+              ?.toLowerCase()
+              .includes(query) ||
+            new Date(
+              moment.memory_date
+            )
+              .toLocaleDateString()
+              .includes(query);
+
+          let matchesFilter =
+            true;
+
+          switch (filter) {
+            case "favorites":
+              matchesFilter =
+                moment.is_favorite;
+              break;
+
+            case "year":
+              matchesFilter =
+                new Date(
+                  moment.memory_date
+                ).getFullYear() ===
+                new Date().getFullYear();
+              break;
+
+            case "location":
+              matchesFilter =
+                Boolean(
+                  moment.location
+                );
+              break;
+
+            default:
+              matchesFilter = true;
+          }
+
+          return (
+            matchesSearch &&
+            matchesFilter
+          );
         }
+      );
+    }, [
+      moments,
+      search,
+      filter,
+    ]);
 
-        const data = await getMoments(story.id);
-        setMoments(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadGallery();
-  }, []);
-
-  // Search Filter
-  const filteredMoments = moments.filter((moment) => {
-    const query = search.toLowerCase();
-
-    return (
-      moment.title?.toLowerCase().includes(query) ||
-      moment.description?.toLowerCase().includes(query) ||
-      new Date(moment.memory_date)
-        .toLocaleDateString()
-        .includes(query)
-    );
-  });
+  //---------------------------------------
 
   if (loading) {
     return (
       <PageLayout>
         <Container>
           <Navbar />
-          <h2>Loading Gallery...</h2>
+
+          <h2>
+            Loading Gallery...
+          </h2>
         </Container>
       </PageLayout>
     );
   }
+
+  //---------------------------------------
 
   return (
     <PageLayout>
       <Container>
         <Navbar />
 
-        <motion.h1
-          className={styles.heading}
-          initial={{ opacity: 0, y: -25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <motion.section
+          className={styles.hero}
+          initial={{
+            opacity: 0,
+            y: -30,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
         >
-          📸 Gallery
-        </motion.h1>
+          <div>
+            <span
+              className={
+                styles.badge
+              }
+            >
+              📸 OUR GALLERY
+            </span>
 
-        <SearchBar
-          value={search}
-          onChange={setSearch}
-          placeholder="🔍 Search your gallery..."
-        />
-
-        {filteredMoments.length === 0 ? (
-          <div
-            style={{
-              textAlign: "center",
-              marginTop: "60px",
-            }}
-          >
-            <h2>No memories found 🔍</h2>
+            <h1>
+              Every Memory,
+              Forever.
+            </h1>
 
             <p>
-              Try searching with a different title,
-              description or date.
+              Browse every
+              picture, milestone,
+              trip and special
+              moment you've shared
+              together.
             </p>
           </div>
-        ) : (
-          <div className={styles.grid}>
-            {filteredMoments.map((moment, index) => (
-              <motion.div
-                key={moment.id}
-                className={styles.card}
-                onClick={() =>
-                  navigate(`/moment/${moment.id}`)
-                }
-                initial={{
-                  opacity: 0,
-                  y: 30,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                viewport={{
-                  once: true,
-                }}
-                transition={{
-                  duration: 0.45,
-                  delay: index * 0.05,
-                }}
-                whileHover={{
-                  scale: 1.02,
-                  y: -6,
-                }}
-              >
-                <img
-                  src={moment.image_url}
-                  alt={moment.title}
-                  className={styles.image}
-                />
 
-                <div className={styles.overlay}>
-                  <h3>{moment.title}</h3>
+          <div
+            className={
+              styles.count
+            }
+          >
+            <h2>
+              {
+                filteredMoments.length
+              }
+            </h2>
 
-                  <p>
-                    {new Date(
-                      moment.memory_date
-                    ).toLocaleDateString()}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+            <span>
+              Memories
+            </span>
           </div>
+        </motion.section>
+
+        <GalleryStats
+          moments={moments}
+        />
+
+        <div
+          className={
+            styles.controls
+          }
+        >
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Search memories..."
+          />
+
+          <GalleryFilters
+            filter={filter}
+            setFilter={setFilter}
+          />
+        </div>
+
+        {filteredMoments.length ===
+        0 ? (
+          <motion.div
+            className={
+              styles.empty
+            }
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+          >
+            <div
+              className={
+                styles.emptyEmoji
+              }
+            >
+              📷
+            </div>
+
+            <h2>
+              No Memories Found
+            </h2>
+
+            <p>
+              Try another search
+              or filter.
+            </p>
+          </motion.div>
+        ) : (
+          <>
+            <motion.div
+              layout
+              className={
+                styles.grid
+              }
+            >
+              {filteredMoments.map(
+                (
+                  moment,
+                  index
+                ) => (
+                  <GalleryCard
+                    key={
+                      moment.id
+                    }
+                    moment={
+                      moment
+                    }
+                    onClick={() =>
+                      setSelectedIndex(
+                        index
+                      )
+                    }
+                  />
+                )
+              )}
+            </motion.div>
+
+            {selectedIndex !==
+              null && (
+              <GalleryLightbox
+                moments={
+                  filteredMoments
+                }
+                index={
+                  selectedIndex
+                }
+                onClose={() =>
+                  setSelectedIndex(
+                    null
+                  )
+                }
+                onPrev={() =>
+                  setSelectedIndex(
+                    (
+                      prev
+                    ) =>
+                      prev === 0
+                        ? filteredMoments.length -
+                          1
+                        : prev - 1
+                  )
+                }
+                onNext={() =>
+                  setSelectedIndex(
+                    (
+                      prev
+                    ) =>
+                      prev ===
+                      filteredMoments.length -
+                        1
+                        ? 0
+                        : prev + 1
+                  )
+                }
+              />
+            )}
+          </>
         )}
       </Container>
     </PageLayout>

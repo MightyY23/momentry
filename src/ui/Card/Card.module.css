@@ -1,0 +1,108 @@
+.card {
+  position: relative;
+
+  overflow: hidden;
+
+  border-radius: var(--radius-2xl);
+
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    border-color var(--transition);
+
+  isolation: isolate;
+}
+
+/* ---------- Variants ---------- */
+
+.glass {
+  background: var(--glass-bg);
+
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+
+  border: 1px solid var(--glass-border);
+
+  box-shadow: var(--shadow-lg);
+}
+
+.surface {
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  box-shadow: var(--shadow-md);
+}
+
+.gradient {
+  background: var(--gradient-primary);
+
+  color: white;
+
+  box-shadow: var(--shadow-lg);
+}
+
+/* ---------- Hover ---------- */
+
+.hover:hover {
+  box-shadow: var(--shadow-xl);
+
+  border-color: rgba(255, 92, 141, .18);
+}
+
+/* ---------- Glow ---------- */
+
+.card::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(255,255,255,.15),
+      transparent 45%
+    );
+
+  opacity: .8;
+
+  pointer-events: none;
+}
+
+/* ---------- Padding ---------- */
+
+.none {
+  padding: 0;
+}
+
+.sm {
+  padding: 16px;
+}
+
+.md {
+  padding: 24px;
+}
+
+.lg {
+  padding: 32px;
+}
+
+/* ---------- Height ---------- */
+
+.fullHeight {
+  height: 100%;
+}
+
+@media (max-width:768px) {
+
+.md{
+padding:20px;
+}
+
+.lg{
+padding:24px;
+}
+
+}

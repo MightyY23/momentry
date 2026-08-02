@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./Home.module.css";
 
 import Container from "../../ui/Container/Container";
 import PageLayout from "../../ui/PageLayout/PageLayout";
+import Button from "../../ui/Button/Button";
 
-import { supabase } from "../../services/supabase/supabaseClient";
-import { getMyStory } from "../../services/story/getStory";
-import { getMoments } from "../../services/moment/getMoments";
-import { toggleFavorite } from "../../services/moment/toggleFavorite";
+import useMoments from "../../hooks/useMoments";
 
 import Navbar from "../../components/Navbar/Navbar";
 import SearchBar from "../../components/SearchBar/SearchBar";
@@ -17,195 +15,293 @@ import StoryHeader from "../../components/StoryHeader/StoryHeader";
 import EmptyState from "../../components/EmptyState/EmptyState";
 import Timeline from "../../components/Timeline/Timeline";
 
+import HeroSection from "./components/HeroSection/HeroSection";
+import StatsGrid from "./components/StatsGrid/StatsGrid";
+import RecentMemories from "./components/RecentMemories/RecentMemories";
+import QuickActions from "./components/QuickActions/QuickActions";
+import AnniversaryCard from "./components/AnniversaryCard/AnniversaryCard";
+import DashboardFeed from "./components/DashboardFeed/DashboardFeed";
+
 function Home() {
   const navigate = useNavigate();
 
-  const [story, setStory] = useState(null);
-  const [moments, setMoments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [showFavorites, setShowFavorites] = useState(false);
+  const {
+    story,
+    moments,
+    loading,
+    favoriteMoment,
+  } = useMoments();
 
-  async function loadData() {
+  const [search, setSearch] =
+    useState("");
+
+  const [showFavorites, setShowFavorites] =
+    useState(false);
+
+  //----------------------------------------
+  // Toggle Favorite
+  //----------------------------------------
+
+  async function handleToggleFavorite(
+    moment
+  ) {
     try {
-      const storyData = await getMyStory();
-
-      setStory(storyData);
-
-      if (storyData) {
-        const momentData = await getMoments(storyData.id);
-        setMoments(momentData);
-      } else {
-        setMoments([]);
-      }
-    } catch (error) {
-      console.error("Error loading home:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleToggleFavorite(moment) {
-    try {
-      await toggleFavorite(
-        moment.id,
-        moment.is_favorite
-      );
-
-      setMoments((prev) =>
-        prev.map((item) =>
-          item.id === moment.id
-            ? {
-                ...item,
-                is_favorite: !item.is_favorite,
-              }
-            : item
-        )
+      await favoriteMoment(
+        moment.id
       );
     } catch (error) {
       console.error(error);
-      alert("Unable to update favorite.");
+
+      alert(
+        "Unable to update favorite."
+      );
     }
   }
 
-  useEffect(() => {
-    loadData();
+  //----------------------------------------
+  // Anniversary Date
+  //----------------------------------------
 
-    const channel = supabase
-      .channel("moments-realtime")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "moments",
-        },
-        () => {
-          loadData();
+  const anniversaryDate =
+    useMemo(() => {
+      if (!moments.length)
+        return null;
+
+      return [...moments].sort(
+        (a, b) =>
+          new Date(
+            a.memory_date
+          ) -
+          new Date(
+            b.memory_date
+          )
+      )[0].memory_date;
+    }, [moments]);
+
+  //----------------------------------------
+  // Filter Memories
+  //----------------------------------------
+
+  const filteredMoments =
+    useMemo(() => {
+      const query =
+        search.toLowerCase();
+
+      return moments.filter(
+        (moment) => {
+          const matchesSearch =
+            moment.title
+              ?.toLowerCase()
+              .includes(query) ||
+            moment.description
+              ?.toLowerCase()
+              .includes(query) ||
+            new Date(
+              moment.memory_date
+            )
+              .toLocaleDateString()
+              .includes(query);
+
+          const matchesFavorite =
+            !showFavorites ||
+            moment.is_favorite;
+
+          return (
+            matchesSearch &&
+            matchesFavorite
+          );
         }
-      )
-      .subscribe();
+      );
+    }, [
+      moments,
+      search,
+      showFavorites,
+    ]);
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  const filteredMoments = moments.filter((moment) => {
-    const query = search.toLowerCase();
-
-    const matchesSearch =
-      moment.title?.toLowerCase().includes(query) ||
-      moment.description?.toLowerCase().includes(query) ||
-      new Date(moment.memory_date)
-        .toLocaleDateString()
-        .includes(query);
-
-    const matchesFavorite =
-      !showFavorites || moment.is_favorite;
-
-    return matchesSearch && matchesFavorite;
-  });
+  //----------------------------------------
 
   if (loading) {
     return (
       <PageLayout>
         <Container>
-          <h2>Loading your story...</h2>
+          <div
+            className={styles.loading}
+          >
+            <h2>
+              Loading your story...
+            </h2>
+          </div>
         </Container>
       </PageLayout>
     );
   }
 
+  //----------------------------------------
+
   return (
     <PageLayout>
       <Container>
+
         <Navbar />
 
-        <SearchBar
-          value={search}
-          onChange={setSearch}
-          placeholder="🔍 Search your memories..."
-        />
-
         <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "12px",
-            marginBottom: "25px",
-          }}
+          className={
+            styles.pageContent
+          }
         >
-          <button
-            onClick={() => setShowFavorites(false)}
-            style={{
-              padding: "10px 18px",
-              borderRadius: "12px",
-              border: "none",
-              cursor: "pointer",
-              background: !showFavorites
-                ? "#ff5c8d"
-                : "#eee",
-              color: !showFavorites
-                ? "white"
-                : "#333",
-            }}
+
+          <HeroSection
+            story={story}
+            anniversaryDate={
+              anniversaryDate
+            }
+            memoriesCount={
+              moments.length
+            }
+          />
+
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Search memories..."
+          />
+
+          <StatsGrid
+            moments={moments}
+            anniversaryDate={
+              anniversaryDate
+            }
+          />
+
+          <div
+            className={
+              styles.dashboardGrid
+            }
           >
-            All Memories
-          </button>
 
-          <button
-            onClick={() => setShowFavorites(true)}
-            style={{
-              padding: "10px 18px",
-              borderRadius: "12px",
-              border: "none",
-              cursor: "pointer",
-              background: showFavorites
-                ? "#ff5c8d"
-                : "#eee",
-              color: showFavorites
-                ? "white"
-                : "#333",
-            }}
-          >
-            ❤️ Favorites
-          </button>
-        </div>
+            <div
+              className={
+                styles.mainColumn
+              }
+            >
 
-        <div className={styles.content}>
-          <StoryHeader story={story} />
-
-          {filteredMoments.length === 0 ? (
-            search || showFavorites ? (
-              <EmptyState
-                onAddMoment={() => {
-                  setSearch("");
-                  setShowFavorites(false);
-                }}
+              <RecentMemories
+                moments={moments}
               />
-            ) : (
-              <EmptyState
-                onAddMoment={() =>
-                  navigate("/add-moment")
+
+            </div>
+
+            <div
+              className={
+                styles.sideColumn
+              }
+            >
+
+              <QuickActions />
+
+              <AnniversaryCard
+                anniversaryDate={
+                  anniversaryDate
                 }
               />
-            )
-          ) : (
-            <Timeline
-              moments={filteredMoments}
-              onOpenMoment={(id) =>
-                navigate(`/moment/${id}`)
+
+            </div>
+
+          </div>
+
+          <div className={styles.filters}>
+
+            <button
+              className={
+                !showFavorites
+                  ? styles.filterActive
+                  : styles.filterButton
               }
-              onAddMoment={() =>
-                navigate("/add-moment")
+              onClick={() =>
+                setShowFavorites(false)
               }
-              onToggleFavorite={
-                handleToggleFavorite
+            >
+              📖 All Memories
+            </button>
+
+            <button
+              className={
+                showFavorites
+                  ? styles.filterActive
+                  : styles.filterButton
               }
+              onClick={() =>
+                setShowFavorites(true)
+              }
+            >
+              ❤️ Favorites
+            </button>
+
+          </div>
+
+          <div
+            className={
+              styles.timelineSection
+            }
+          >
+
+            <StoryHeader
+              story={story}
             />
-          )}
+
+            {filteredMoments.length ===
+            0 ? (
+              search ||
+              showFavorites ? (
+                <EmptyState
+                  onAddMoment={() => {
+                    setSearch("");
+
+                    setShowFavorites(
+                      false
+                    );
+                  }}
+                />
+              ) : (
+                <EmptyState
+                  onAddMoment={() =>
+                    navigate(
+                      "/add-moment"
+                    )
+                  }
+                />
+              )
+            ) : (
+              <Timeline
+                moments={
+                  filteredMoments
+                }
+                onOpenMoment={(
+                  id
+                ) =>
+                  navigate(
+                    `/moment/${id}`
+                  )
+                }
+                onAddMoment={() =>
+                  navigate(
+                    "/add-moment"
+                  )
+                }
+                onToggleFavorite={
+                  handleToggleFavorite
+                }
+              />
+            )}
+
+          </div>
+
+          <DashboardFeed
+            moments={moments}
+          />
+
         </div>
+
       </Container>
     </PageLayout>
   );

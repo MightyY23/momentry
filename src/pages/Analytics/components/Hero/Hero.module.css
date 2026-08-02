@@ -1,0 +1,48 @@
+.hero{
+
+padding:60px;
+
+border-radius:32px;
+
+background:
+
+linear-gradient(
+135deg,
+#ff7aa8,
+#ff4f86
+);
+
+color:white;
+
+text-align:center;
+
+box-shadow:
+0 25px 60px rgba(255,92,141,.28);
+
+}
+
+.hero h1{
+
+margin:0;
+
+font-size:52px;
+
+}
+
+.hero p{
+
+margin-top:18px;
+
+font-size:22px;
+
+line-height:1.8;
+
+opacity:.95;
+
+}
+
+.hero strong{
+
+font-size:28px;
+
+}

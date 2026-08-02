@@ -1,26 +1,239 @@
-.form {
-  max-width: 700px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.page{
+
+    max-width:1200px;
+
+    margin:60px auto;
+
 }
 
-.input,
-.textarea {
-  width: 100%;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  font-size: 1rem;
+.header{
+
+    text-align:center;
+
+    margin-bottom:50px;
+
 }
 
-.textarea {
-  min-height: 180px;
-  resize: vertical;
+.badge{
+
+    display:inline-flex;
+
+    padding:8px 18px;
+
+    border-radius:999px;
+
+    background:#ffe9f2;
+
+    color:#ff5c8d;
+
+    font-weight:600;
+
+    font-size:.85rem;
+
 }
 
-.buttons {
-  display: flex;
-  gap: 16px;
+.header h1{
+
+    margin:18px 0 12px;
+
+    font-size:clamp(2.3rem,5vw,3.5rem);
+
+    font-weight:800;
+
+}
+
+.header p{
+
+    max-width:650px;
+
+    margin:auto;
+
+    color:var(--text-secondary);
+
+    line-height:1.8;
+
+}
+
+.card{
+
+    background:rgba(255,255,255,.92);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:34px;
+
+    padding:45px;
+
+    border:1px solid rgba(255,255,255,.6);
+
+    box-shadow:
+
+        0 28px 70px rgba(0,0,0,.08);
+
+}
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:
+
+        400px
+
+        1fr;
+
+    gap:50px;
+
+}
+
+.left,
+
+.right{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.left label,
+
+.right label{
+
+    margin-bottom:10px;
+
+    margin-top:22px;
+
+    font-weight:700;
+
+}
+
+.left label:first-child,
+
+.right label:first-child{
+
+    margin-top:0;
+
+}
+
+.input{
+
+    padding:16px 18px;
+
+    border-radius:18px;
+
+    border:1px solid var(--border);
+
+    background:var(--surface);
+
+    transition:.3s;
+
+}
+
+.input:focus{
+
+    outline:none;
+
+    border-color:#ff5c8d;
+
+    box-shadow:
+
+        0 0 0 4px rgba(255,92,141,.12);
+
+}
+
+.textarea{
+
+    min-height:420px;
+
+    resize:vertical;
+
+    padding:22px;
+
+    border-radius:22px;
+
+    border:1px solid var(--border);
+
+    background:var(--surface);
+
+    line-height:1.8;
+
+}
+
+.textarea:focus{
+
+    outline:none;
+
+    border-color:#ff5c8d;
+
+    box-shadow:
+
+        0 0 0 4px rgba(255,92,141,.12);
+
+}
+
+.footer{
+
+    margin-top:auto;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:18px;
+
+    padding-top:35px;
+
+}
+
+.footer button{
+
+    min-width:180px;
+
+}
+
+@media(max-width:1100px){
+
+.grid{
+
+grid-template-columns:1fr;
+
+}
+
+.textarea{
+
+min-height:280px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.page{
+
+margin:35px auto;
+
+}
+
+.card{
+
+padding:28px;
+
+border-radius:26px;
+
+}
+
+.footer{
+
+flex-direction:column;
+
+}
+
+.footer button{
+
+width:100%;
+
+}
+
 }

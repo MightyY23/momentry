@@ -1,0 +1,314 @@
+/* =========================================================
+   ANNIVERSARY CARD
+========================================================= */
+
+.card {
+  position: relative;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 22px;
+
+  padding: 34px;
+
+  border-radius: 28px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #fff7fa
+    );
+
+  border: 1px solid rgba(255, 92, 141, .12);
+
+  box-shadow:
+    0 16px 40px rgba(0,0,0,.08);
+
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+
+  box-shadow:
+    0 22px 48px rgba(255,92,141,.18);
+}
+
+/* ========================================================= */
+
+.card::before {
+
+  content: "";
+
+  position: absolute;
+
+  top: -120px;
+  right: -120px;
+
+  width: 240px;
+  height: 240px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,92,141,.18),
+      transparent 70%
+    );
+
+}
+
+/* ========================================================= */
+
+.badge {
+
+  width: fit-content;
+
+  padding: 8px 16px;
+
+  border-radius: 999px;
+
+  background: #ffe3ee;
+
+  color: #ff4d88;
+
+  font-size: .82rem;
+
+  font-weight: 600;
+
+}
+
+/* ========================================================= */
+
+.card h2 {
+
+  margin: 0;
+
+  font-size: 1.9rem;
+
+  color: #222;
+
+}
+
+/* ========================================================= */
+
+.counter {
+
+  font-size: clamp(3.8rem, 8vw, 5rem);
+
+  font-weight: 800;
+
+  line-height: 1;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff5c8d,
+      #ff8db3
+    );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  background-clip: text;
+
+}
+
+/* ========================================================= */
+
+.days {
+
+  margin-top: -12px;
+
+  color: #777;
+
+  font-size: 1rem;
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+
+}
+
+/* ========================================================= */
+
+.divider {
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #ffd0df,
+      transparent
+    );
+
+}
+
+/* ========================================================= */
+
+.next {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+
+}
+
+.next h3 {
+
+  margin: 0;
+
+  color: #333;
+
+  font-size: 1.1rem;
+
+}
+
+.remaining {
+
+  font-size: 2.8rem;
+
+  font-weight: 700;
+
+  color: #ff5c8d;
+
+}
+
+.next span {
+
+  color: #666;
+
+  font-size: .92rem;
+
+}
+
+.next p {
+
+  margin: 6px 0 0;
+
+  color: #999;
+
+  font-size: .9rem;
+
+}
+
+/* ========================================================= */
+
+.progressSection {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+}
+
+.progressTop {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+}
+
+.progressTop span {
+
+  color: #666;
+
+  font-size: .9rem;
+
+}
+
+.progressTop strong {
+
+  color: #ff5c8d;
+
+}
+
+/* ========================================================= */
+
+.progress {
+
+  height: 12px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #f2f2f2;
+
+}
+
+/* ========================================================= */
+
+.fill {
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ff5c8d,
+      #ff84aa,
+      #ffb0c8
+    );
+
+}
+
+/* ========================================================= */
+
+@media (max-width:768px){
+
+  .card{
+
+    padding:28px;
+
+  }
+
+  .counter{
+
+    font-size:4rem;
+
+  }
+
+}
+
+@media (max-width:480px){
+
+  .card{
+
+    padding:22px;
+
+    border-radius:22px;
+
+  }
+
+  .counter{
+
+    font-size:3.4rem;
+
+  }
+
+  .remaining{
+
+    font-size:2.2rem;
+
+  }
+
+}

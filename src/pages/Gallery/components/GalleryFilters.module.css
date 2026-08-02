@@ -1,0 +1,160 @@
+/* ==========================================================
+   GALLERY FILTERS
+========================================================== */
+
+.container{
+
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:16px;
+
+    margin:30px 0 40px;
+
+}
+
+/* ========================================================== */
+
+.button,
+.active{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:14px 24px;
+
+    border-radius:999px;
+
+    border:none;
+
+    cursor:pointer;
+
+    font-size:.95rem;
+
+    font-weight:600;
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        background .3s ease,
+        color .3s ease;
+
+}
+
+/* ========================================================== */
+
+.button{
+
+    background:
+        rgba(255,255,255,.82);
+
+    color:var(--text);
+
+    border:1px solid rgba(255,255,255,.55);
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.06);
+
+}
+
+.button:hover{
+
+    background:white;
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 16px 35px rgba(0,0,0,.08);
+
+}
+
+/* ========================================================== */
+
+.active{
+
+    color:white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff5c8d,
+            #ff8fb0
+        );
+
+    box-shadow:
+        0 18px 40px rgba(255,92,141,.30);
+
+}
+
+.active:hover{
+
+    transform:translateY(-3px);
+
+}
+
+/* ========================================================== */
+
+.button svg,
+.active svg{
+
+    flex-shrink:0;
+
+}
+
+/* ========================================================== */
+
+@media(max-width:768px){
+
+.container{
+
+justify-content:flex-start;
+
+overflow-x:auto;
+
+padding-bottom:6px;
+
+flex-wrap:nowrap;
+
+scrollbar-width:none;
+
+}
+
+.container::-webkit-scrollbar{
+
+display:none;
+
+}
+
+.button,
+.active{
+
+flex-shrink:0;
+
+padding:12px 20px;
+
+font-size:.9rem;
+
+}
+
+}
+
+@media(max-width:480px){
+
+.button span,
+.active span{
+
+white-space:nowrap;
+
+}
+
+}
