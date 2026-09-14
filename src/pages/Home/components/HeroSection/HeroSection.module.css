@@ -46,7 +46,7 @@
   width: 320px;
   height: 320px;
 
-  background: white;
+  background: var(--surface);
 
   top: -120px;
   right: -80px;
@@ -445,9 +445,9 @@
 
 .secondaryButton{
 
-  background:white;
+  background: var(--surface);
 
-  color:#222;
+  color: var(--text);
 
   border:1px solid rgba(0,0,0,.08);
 
@@ -459,7 +459,7 @@
 
   transform:translateY(-3px);
 
-  background:#fafafa;
+  background: var(--background-secondary);
 }
 
 .primaryButton span,

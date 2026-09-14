@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
 import PageLayout from "../../ui/PageLayout/PageLayout";
 import Container from "../../ui/Container/Container";
+import Button from "../../ui/Button/Button";
 import Navbar from "../../components/Navbar/Navbar";
+import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
 
 import AnimatedBackground from "../../components/Background/AnimatedBackground";
+import ExportPDFButton from "../../components/ExportPDFButton/ExportPDFButton";
+
+import { getAchievements } from "../../services/achievement/achievementEngine";
 
 import BookCover from "./components/BookCover";
 import BookReader from "./components/BookReader";
@@ -13,62 +18,209 @@ import ReadingStats from "./components/ReadingStats";
 import styles from "./StoryBook.module.css";
 
 import useMoments from "../../hooks/useMoments";
+import useAIStory from "../../hooks/useAIStory";
+import useNotification from "../../hooks/useNotification";
 
-import { getAIStory } from "../../services/ai/getStory";
+import { startStoryGeneration } from "../../services/ai/getStory";
+import { deleteAIStory } from "../../services/ai/deleteAIStory";
 
 function StoryBook() {
   //---------------------------------------
   // Global Data
   //---------------------------------------
 
+  const { story, moments, loading } =
+    useMoments();
+
   const {
-    story,
-    moments,
-    loading,
-  } = useMoments();
+    aiStory,
+    loading: aiLoading,
+    generating,
+    refetch,
+  } = useAIStory(story?.id);
+
+  const notify = useNotification();
 
   //---------------------------------------
   // Local State
   //---------------------------------------
 
-  const [book, setBook] =
-    useState(null);
+  const [opened, setOpened] = useState(false);
 
-  const [opened, setOpened] =
+  const [starting, setStarting] =
     useState(false);
 
-  const [aiLoading, setAiLoading] =
-    useState(true);
+  const [exporting, setExporting] =
+    useState(false);
+
+  const [confirmRegenerate,
+    setConfirmRegenerate] =
+    useState(false);
+
+  const [confirmDeleteAI,
+    setConfirmDeleteAI] =
+    useState(false);
+
+  const [deletingAI, setDeletingAI] =
+    useState(false);
 
   //---------------------------------------
-  // Load AI Story
+  // Parse AI Story
   //---------------------------------------
 
-  useEffect(() => {
-    async function loadAI() {
-      if (!story) {
-        setAiLoading(false);
-        return;
+  const storyData = useMemo(() => {
+    if (!aiStory?.content) return null;
+
+    try {
+      const parsed =
+        typeof aiStory.content === "string"
+          ? JSON.parse(aiStory.content)
+          : aiStory.content;
+
+      if (
+        !parsed ||
+        !Array.isArray(parsed.chapters) ||
+        parsed.chapters.length === 0
+      ) {
+        return null;
       }
 
-      try {
-        const aiStory =
-          await getAIStory(
-            story.id
-          );
+      return parsed;
+    } catch (err) {
+      console.error(
+        "Failed to parse AI story:",
+        err
+      );
 
-        if (aiStory) {
-          setBook(aiStory);
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setAiLoading(false);
-      }
+      return null;
+    }
+  }, [aiStory]);
+
+  //---------------------------------------
+  // Generate handler
+  //---------------------------------------
+
+  async function handleGenerate() {
+    if (!story?.id) return;
+
+    if (moments.length === 0) {
+      notify.error(
+        "Add memories first",
+        "Your StoryBook needs at least one memory to write about."
+      );
+      return;
     }
 
-    loadAI();
-  }, [story]);
+    try {
+      setStarting(true);
+
+      await startStoryGeneration(
+        story.id
+      );
+
+      notify.success(
+        "Writing your StoryBook…",
+        "This usually takes under a minute."
+      );
+
+      refetch();
+    } catch (err) {
+      console.error(err);
+
+      notify.error(
+        "Couldn't start generation",
+        err.message ||
+          "Please try again in a moment."
+      );
+    } finally {
+      setStarting(false);
+    }
+  }
+
+  //---------------------------------------
+  // Delete AI story (keeps the sample
+  // book so the reader still works)
+  //---------------------------------------
+
+  async function handleDeleteAI() {
+    try {
+      setDeletingAI(true);
+
+      await deleteAIStory(story.id);
+
+      setConfirmDeleteAI(false);
+
+      notify.success(
+        "AI story deleted",
+        "You can generate a fresh one anytime."
+      );
+
+      refetch();
+    } catch (err) {
+      console.error(err);
+
+      notify.error(
+        "Couldn't delete AI story",
+        err.message || "Please try again."
+      );
+    } finally {
+      setDeletingAI(false);
+    }
+  }
+
+  //---------------------------------------
+  // PDF export
+  //---------------------------------------
+
+  async function handleExportPDF() {
+    if (!story) return;
+
+    if (moments.length === 0) {
+      notify.error(
+        "Nothing to export",
+        "Add some memories first."
+      );
+      return;
+    }
+
+    try {
+      setExporting(true);
+
+      const { generateMemoryBook } =
+        await import(
+          "../../services/pdf/generateMemoryBook"
+        );
+
+      const { achievements } =
+        getAchievements(moments);
+
+      await generateMemoryBook({
+        story: {
+          ...story,
+          title:
+            storyData?.title ||
+            story.title,
+        },
+        moments,
+        achievements,
+      });
+
+      notify.success(
+        "Memory book exported!",
+        "Your PDF has been downloaded."
+      );
+    } catch (err) {
+      console.error(err);
+
+      notify.error(
+        "Couldn't export PDF",
+        err.message ||
+          "Please try again in a moment."
+      );
+    } finally {
+      setExporting(false);
+    }
+  }
 
   //---------------------------------------
   // Loading
@@ -82,40 +234,51 @@ function StoryBook() {
         <Container>
           <Navbar />
 
-          <h2>Loading StoryBook...</h2>
+          <div className={styles.centerState}>
+            <div className={styles.spinner} />
+
+            <h2>Opening your StoryBook…</h2>
+          </div>
         </Container>
       </PageLayout>
     );
   }
 
   //---------------------------------------
-  // Parse AI Story
+  // No story at all
   //---------------------------------------
 
-  let storyData = null;
+  if (!story) {
+    return (
+      <PageLayout>
+        <AnimatedBackground />
 
-  if (book?.content) {
-    try {
-      storyData =
-        typeof book.content === "string"
-          ? JSON.parse(book.content)
-          : book.content;
-    } catch (err) {
-      console.error(
-        "Failed to parse AI story:",
-        err
-      );
-    }
+        <Container>
+          <Navbar />
+
+          <div className={styles.centerState}>
+            <h2>No story yet</h2>
+
+            <p>
+              Create your story to begin your
+              StoryBook.
+            </p>
+
+            <Button onClick={() => setOpened(false)}>
+              Go Home
+            </Button>
+          </div>
+        </Container>
+      </PageLayout>
+    );
   }
 
   //---------------------------------------
-  // Demo Story
+  // Final book (AI or demo fallback)
   //---------------------------------------
 
   const demoBook = {
-    title:
-      story?.title ||
-      "Our Story",
+    title: story?.title || "Our Story",
 
     summary:
       "A collection of beautiful memories written into a timeless love story.",
@@ -139,24 +302,18 @@ function StoryBook() {
     ],
   };
 
-  //---------------------------------------
-  // Final Book
-  //---------------------------------------
+  const isSample = !storyData;
 
-  const displayBook =
-    storyData || demoBook;
+  const displayBook = storyData || demoBook;
+
+  const chapters = Array.isArray(
+    displayBook?.chapters
+  )
+    ? displayBook.chapters
+    : [];
 
   //---------------------------------------
-  // Safety Check
-  //---------------------------------------
-
-  const chapters =
-    Array.isArray(
-      displayBook?.chapters
-    )
-      ? displayBook.chapters
-      : [];
-
+  // UI
   //---------------------------------------
 
   return (
@@ -172,38 +329,174 @@ function StoryBook() {
           </h1>
 
           <p className={styles.subtitle}>
-            Every memory deserves its own chapter.
+            Every memory deserves its own
+            chapter.
           </p>
 
+          {generating && (
+            <div
+              className={styles.generateBanner}
+            >
+              <div
+                className={styles.bannerSpinner}
+              />
+
+              <div>
+                <strong>
+                  ✨ Writing your StoryBook…
+                </strong>
+
+                <span>
+                  Our AI is turning your
+                  memories into chapters.
+                  This page will update
+                  automatically.
+                </span>
+              </div>
+            </div>
+          )}
+
+          {aiStory?.status === "failed" && (
+            <div
+              className={styles.failedBanner}
+            >
+              <div>
+                <strong>
+                  Generation failed.
+                </strong>
+
+                <span>
+                  {aiStory.error_message ||
+                    "Something went wrong while writing your book."}
+                </span>
+              </div>
+
+              <Button
+                size="sm"
+                onClick={handleGenerate}
+                loading={starting}
+              >
+                Retry
+              </Button>
+            </div>
+          )}
+
           {!opened ? (
-            <BookCover
-              story={story}
-              moments={moments}
-              onOpen={() => {
-                console.log(
-                  "Opening StoryBook..."
-                );
-                setOpened(true);
-              }}
-            />
+            <>
+              {isSample && !generating && (
+                <div
+                  className={
+                    styles.sampleBanner
+                  }
+                >
+                  <div>
+                    <strong>
+                      This is a sample book.
+                    </strong>
+
+                    <span>
+                      {moments.length === 0
+                        ? "Add some memories first, then generate your real StoryBook with AI."
+                        : "Generate your real StoryBook to turn your memories into chapters."}
+                    </span>
+                  </div>
+
+                  <Button
+                    size="sm"
+                    onClick={
+                      handleGenerate
+                    }
+                    loading={starting}
+                    leftIcon="✨"
+                  >
+                    {moments.length === 0
+                      ? "Add Memories First"
+                      : "Generate with AI"}
+                  </Button>
+                </div>
+              )}
+
+              <BookCover
+                story={{
+                  ...story,
+                  title:
+                    storyData?.title ||
+                    story.title,
+                }}
+                moments={moments}
+                onOpen={() =>
+                  setOpened(true)
+                }
+              />
+
+              <div
+                className={
+                  styles.exportRow
+                }
+              >
+                {!isSample && (
+                  <>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() =>
+                        setConfirmRegenerate(
+                          true
+                        )
+                      }
+                      loading={
+                        starting
+                      }
+                    >
+                      ✨ Regenerate
+                    </Button>
+
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() =>
+                        setConfirmDeleteAI(
+                          true
+                        )
+                      }
+                    >
+                      🗑 Delete AI Story
+                    </Button>
+                  </>
+                )}
+
+                <ExportPDFButton
+                  onExport={
+                    handleExportPDF
+                  }
+                />
+
+                {exporting && (
+                  <span
+                    className={
+                      styles.exportingLabel
+                    }
+                  >
+                    Preparing your PDF…
+                  </span>
+                )}
+              </div>
+            </>
           ) : chapters.length === 0 ? (
             <div
-              style={{
-                textAlign: "center",
-                padding: "80px 0",
-              }}
+              className={styles.centerState}
             >
               <h2>
                 No chapters available
               </h2>
 
-              <button
+              <Button
                 onClick={() =>
                   setOpened(false)
                 }
               >
-                Back
-              </button>
+                Back to Cover
+              </Button>
             </div>
           ) : (
             <>
@@ -223,6 +516,7 @@ function StoryBook() {
                 book={{
                   ...displayBook,
                   chapters,
+                  storyId: story.id,
                 }}
                 onClose={() =>
                   setOpened(false)
@@ -232,6 +526,39 @@ function StoryBook() {
           )}
         </div>
       </Container>
+
+      <ConfirmDialog
+        open={confirmRegenerate}
+        title="Regenerate your StoryBook?"
+        message="The current AI-written book will be replaced with a fresh one based on your memories. This cannot be undone."
+        confirmLabel="Regenerate"
+        cancelLabel="Keep Current"
+        loading={starting}
+        onConfirm={() => {
+          setConfirmRegenerate(false);
+
+          handleGenerate();
+        }}
+        onCancel={() =>
+          setConfirmRegenerate(false)
+        }
+      />
+
+      <ConfirmDialog
+        open={confirmDeleteAI}
+        title="Delete the AI story?"
+        message="Your generated chapters will be removed. Your memories are safe — you can generate a new book anytime."
+        confirmLabel="Delete AI Story"
+        cancelLabel="Keep it"
+        danger
+        loading={deletingAI}
+        onConfirm={
+          handleDeleteAI
+        }
+        onCancel={() =>
+          setConfirmDeleteAI(false)
+        }
+      />
     </PageLayout>
   );
 }

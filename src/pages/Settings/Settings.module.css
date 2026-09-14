@@ -1,9 +1,25 @@
 .heading{
 
+font-family:"Cormorant Garamond",serif;
+
 font-size:42px;
 
 margin-bottom:40px;
 
 text-align:center;
+
+color:var(--text,#1f1b2d);
+
+}
+
+.soonNote{
+
+margin:0;
+
+font-size:0.92rem;
+
+color:var(--text-muted,#9ca3af);
+
+font-style:italic;
 
 }

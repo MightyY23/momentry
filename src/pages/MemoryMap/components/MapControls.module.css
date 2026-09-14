@@ -55,7 +55,7 @@ height:52px;
 
 border-radius:16px;
 
-background:#fafafa;
+background: var(--background-secondary);
 
 border:1px solid #ececec;
 
@@ -70,7 +70,7 @@ background .25s ease;
 
 border-color:#ff5c8d;
 
-background:white;
+background: var(--surface);
 
 box-shadow:
 0 0 0 4px rgba(255,92,141,.10);
@@ -79,7 +79,7 @@ box-shadow:
 
 .searchBox svg{
 
-color:#999;
+color: var(--text-muted);
 
 flex-shrink:0;
 
@@ -97,13 +97,13 @@ outline:none;
 
 font-size:.95rem;
 
-color:#333;
+color: var(--text);
 
 }
 
 .searchBox input::placeholder{
 
-color:#999;
+color: var(--text-muted);
 
 }
 
@@ -129,9 +129,9 @@ border-radius:16px;
 
 cursor:pointer;
 
-background:white;
+background: var(--surface);
 
-color:#666;
+color: var(--text-secondary);
 
 box-shadow:
 0 8px 18px rgba(0,0,0,.06);
@@ -148,7 +148,7 @@ box-shadow .25s ease;
 
 transform:translateY(-3px);
 
-background:#fff1f6;
+background:var(--primary-50);
 
 color:#ff5c8d;
 

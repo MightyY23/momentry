@@ -1,17 +1,32 @@
-import jsPDF from "jspdf";
-
-import { addCoverPage } from "./addCoverPage";
-import { addStatsPage } from "./addStatsPage";
-import { addTimelinePages } from "./addTimelinePages";
-import { addMemoryPages } from "./addMemoryPages";
-import { addAchievementsPage } from "./addAchievementsPage";
-import { addClosingPage } from "./addClosingPage";
-
+/**
+ * PDF generation is fully dynamic:
+ * jsPDF + helper modules are only
+ * downloaded when the user actually
+ * exports a memory book.
+ */
 export async function generateMemoryBook({
   story,
   moments,
   achievements,
 }) {
+  const [
+    { jsPDF },
+    { addCoverPage },
+    { addStatsPage },
+    { addTimelinePages },
+    { addMemoryPages },
+    { addAchievementsPage },
+    { addClosingPage },
+  ] = await Promise.all([
+    import("jspdf"),
+    import("./addCoverPage"),
+    import("./addStatsPage"),
+    import("./addTimelinePages"),
+    import("./addMemoryPages"),
+    import("./addAchievementsPage"),
+    import("./addClosingPage"),
+  ]);
+
   const pdf = new jsPDF({
     orientation: "portrait",
     unit: "mm",
@@ -24,13 +39,9 @@ export async function generateMemoryBook({
 
   await addCoverPage(pdf, story);
 
-  //---------------------------------------
-
   pdf.addPage();
 
   await addStatsPage(pdf, moments);
-
-  //---------------------------------------
 
   pdf.addPage();
 
@@ -39,14 +50,10 @@ export async function generateMemoryBook({
     moments
   );
 
-  //---------------------------------------
-
   await addMemoryPages(
     pdf,
     moments
   );
-
-  //---------------------------------------
 
   pdf.addPage();
 
@@ -56,7 +63,9 @@ export async function generateMemoryBook({
   );
 
   await addClosingPage(pdf);
-  //---------------------------------------
 
-  pdf.save("Momentry.pdf");
+  pdf.save(
+    `${story?.title || "Momentry"}.pdf`
+      .replace(/[^\w\d-]+/g, "-")
+  );
 }

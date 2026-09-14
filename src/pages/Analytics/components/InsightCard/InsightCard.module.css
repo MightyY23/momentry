@@ -1,6 +1,6 @@
 .card{
 
-background:white;
+background: var(--surface);
 
 border-radius:22px;
 
@@ -33,7 +33,7 @@ margin:0;
 
 font-size:15px;
 
-color:#888;
+color: var(--text-muted);
 
 }
 

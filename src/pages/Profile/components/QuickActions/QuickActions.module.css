@@ -24,7 +24,7 @@ gap:24px;
 
 .card{
 
-background:white;
+background: var(--surface);
 
 border-radius:24px;
 
@@ -70,6 +70,6 @@ font-size:24px;
 
 margin-top:10px;
 
-color:#777;
+color: var(--text-secondary);
 
 }

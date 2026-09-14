@@ -60,7 +60,7 @@ font-size:2rem;
 
 font-weight:800;
 
-color:#222;
+color: var(--text);
 
 }
 
@@ -206,7 +206,7 @@ flex:1;
 
 border-radius:22px;
 
-background:white;
+background: var(--surface);
 
 border:1px solid #f5edf1;
 
@@ -271,7 +271,7 @@ font-size:1.08rem;
 
 font-weight:700;
 
-color:#222;
+color: var(--text);
 
 line-height:1.35;
 
@@ -283,7 +283,7 @@ margin:8px 0 6px;
 
 font-size:.88rem;
 
-color:#666;
+color: var(--text-secondary);
 
 }
 
@@ -293,7 +293,7 @@ font-size:.8rem;
 
 font-weight:600;
 
-color:#999;
+color: var(--text-muted);
 
 }
 

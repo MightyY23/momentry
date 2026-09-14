@@ -182,6 +182,78 @@
 }
 
 /* ==========================================================
+   SHARE BUTTON
+   ========================================================== */
+
+.shareWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.storyEditButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  cursor: pointer;
+
+  background: var(--surface);
+
+  color: var(--text);
+
+  transition:
+    transform var(--transition),
+    color var(--transition),
+    background var(--transition);
+}
+
+.storyEditButton:hover {
+  transform: translateY(-2px);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.shareButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 11px 18px;
+
+  border: none;
+  border-radius: var(--radius-lg);
+
+  cursor: pointer;
+
+  background: var(--gradient-primary);
+
+  color: white;
+
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+
+  box-shadow: 0 10px 25px rgba(255, 92, 141, 0.25);
+
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.shareButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(255, 92, 141, 0.35);
+}
+
+/* ==========================================================
    MOBILE BUTTON
    ========================================================== */
 
@@ -261,6 +333,14 @@
   .link {
     padding: 12px;
   }
+
+  .shareButton span {
+    display: none;
+  }
+
+  .shareButton {
+    padding: 11px;
+  }
 }
 
 /* ==========================================================
@@ -328,6 +408,18 @@
   .brandText span {
     display: none;
   }
+
+  .shareWrap {
+    margin-right: auto;
+  }
+
+  .shareButton span {
+    display: inline;
+  }
+
+  .shareButton {
+    padding: 11px 18px;
+  }
 }
 
 /* ==========================================================
@@ -376,4 +468,96 @@
 .dark .active {
   box-shadow:
     0 12px 28px rgba(255,122,168,.30);
+}
+/* ==========================================================
+   MOBILE BOTTOM TAB BAR
+   Fixed to the bottom in thumb reach on
+   phones — turns the site into an app.
+   ========================================================== */
+
+.tabbar {
+  display: none;
+}
+
+@media (max-width: 700px) {
+
+  .tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    z-index: var(--z-sticky, 100);
+
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+
+    background: var(--glass-bg);
+
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+
+    border-top: 1px solid var(--glass-border);
+
+    box-shadow: 0 -8px 30px rgba(0,0,0,.08);
+  }
+
+  .tab {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+
+    min-height: 54px;
+
+    padding: 6px 2px;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    color: var(--text-secondary);
+
+    font-size: .62rem;
+    font-weight: 600;
+
+    transition: color var(--transition);
+  }
+
+  .tab:active {
+    transform: scale(.94);
+  }
+
+  .tabActive {
+    color: var(--primary);
+  }
+
+  /* Keep the sticky header shorter on
+     phones; content needs bottom room. */
+  .wrapper {
+    margin-bottom: 22px;
+  }
+
+  /* Compensate for the fixed tab bar so
+     page content is never hidden behind
+     it. Applied via the page padding
+     rule below. */
+}
+
+.tabSpacer {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .tabSpacer {
+    display: block;
+
+    height: 76px;
+  }
 }

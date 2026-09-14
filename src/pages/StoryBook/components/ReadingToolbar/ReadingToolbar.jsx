@@ -3,8 +3,8 @@ import {
   Minimize,
   Type,
   BookOpen,
+  List,
   Moon,
-  Sun,
   Coffee,
 } from "lucide-react";
 
@@ -17,6 +17,7 @@ function ReadingToolbar({
   toggleFullscreen,
   theme,
   setTheme,
+  onToggleToc,
 }) {
 
   const themes = [
@@ -89,6 +90,15 @@ function ReadingToolbar({
           </button>
         ))}
       </div>
+
+      <div className={styles.divider} />
+
+      <button
+        onClick={onToggleToc}
+        title="Table of contents"
+      >
+        <List size={18} />
+      </button>
 
       <div className={styles.divider} />
 

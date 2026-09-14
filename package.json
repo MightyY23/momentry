@@ -12,13 +12,10 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.110.2",
     "framer-motion": "^12.42.2",
-    "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
-    "jspdf-autotable": "^5.0.8",
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
     "lucide-react": "^1.28.0",
-    "openai": "^6.46.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-leaflet": "^5.0.0",

@@ -8,16 +8,22 @@ import Container from "../../ui/Container/Container";
 import PageLayout from "../../ui/PageLayout/PageLayout";
 
 import { createStory } from "../../services/story/storyService";
+import useNotification from "../../hooks/useNotification";
 
 function CreateStory() {
   const navigate = useNavigate();
+
+  const notify = useNotification();
 
   const [storyName, setStoryName] = useState("Our Story");
   const [loading, setLoading] = useState(false);
 
   async function handleContinue() {
     if (!storyName.trim()) {
-      alert("Please enter a story title.");
+      notify.error(
+        "Missing title",
+        "Please enter a story title."
+      );
       return;
     }
 
@@ -33,7 +39,10 @@ function CreateStory() {
         });
     } catch (error) {
       console.error(error);
-      alert(error.message || "Unable to create story.");
+      notify.error(
+        "Unable to create story",
+        error.message || "Please try again."
+      );
     } finally {
       setLoading(false);
     }

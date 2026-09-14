@@ -5,13 +5,126 @@
   padding: 30px 0 80px;
 }
 
+/* ==========================================
+   SKELETON LOADING
+========================================== */
+
+.skeletonHero {
+  height: 300px;
+
+  border-radius: 28px;
+}
+
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.skeletonCard {
+  height: 130px;
+
+  border-radius: 22px;
+}
+
+.skeletonHero,
+.skeletonCard {
+  background: linear-gradient(
+    100deg,
+    var(--surface, #fff) 40%,
+    var(--primary-50, #fff6f9) 50%,
+    var(--surface, #fff) 60%
+  );
+
+  background-size: 200% 100%;
+
+  animation: profileShimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes profileShimmer {
+  0% {
+    background-position: 130% 0;
+  }
+
+  100% {
+    background-position: -30% 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .skeletonGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonHero,
+  .skeletonCard {
+    animation: none;
+  }
+}
+
+/* ==========================================
+   SIGN OUT
+========================================== */
+
+.dangerZone {
+  max-width: 700px;
+  width: 100%;
+
+  margin: 0 auto;
+}
+
+.signOutConfirm {
+  padding: 22px 26px;
+
+  border: 1px solid var(--border, #ebe7ef);
+  border-radius: 18px;
+
+  background: var(--surface, #fff);
+  text-align: center;
+}
+
+.signOutConfirm p {
+  margin: 0 0 16px;
+  color: var(--text-secondary, #6b7280);
+}
+
+.signOutActions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.logout {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 700px;
+  padding: 16px;
+  border: 1.5px solid rgba(239, 68, 68, 0.35);
+  border-radius: 14px;
+  background: transparent;
+  color: var(--danger, #ef4444);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.logout:hover {
+  background: rgba(239, 68, 68, 0.06);
+  border-color: var(--danger, #ef4444);
+}
+
 .card {
   max-width: 700px;
   margin: 0 auto;
 
   padding: 40px;
 
-  background: white;
+  background: var(--surface);
 
   border-radius: 24px;
 
@@ -31,7 +144,7 @@
 
   font-size: 2rem;
 
-  color: #222;
+  color: var(--text);
 }
 
 .info {
@@ -42,49 +155,11 @@
 
   font-size: 1.05rem;
 
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .info strong {
-  color: #222;
-}
-
-.logout {
-  margin-top: 40px;
-
-  width: 100%;
-
-  padding: 16px;
-
-  border: none;
-
-  border-radius: 14px;
-
-  background: linear-gradient(
-    135deg,
-    #ff5c8d,
-    #ff7aa8
-  );
-
-  color: white;
-
-  cursor: pointer;
-
-  font-size: 1rem;
-
-  font-weight: 600;
-
-  transition: 0.3s;
-}
-
-.logout:hover {
-  transform: translateY(-2px);
-
-  box-shadow: 0 12px 28px rgba(255, 92, 141, 0.35);
-}
-
-.logout:active {
-  transform: scale(0.98);
+  color: var(--text);
 }
 
 /* Responsive */
@@ -105,17 +180,6 @@
 
   .info {
     font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .card {
-    padding: 22px;
-    border-radius: 18px;
-  }
-
-  .card h1 {
-    font-size: 1.5rem;
   }
 
   .logout {

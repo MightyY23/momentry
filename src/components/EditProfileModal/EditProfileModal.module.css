@@ -1,0 +1,144 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ------------------------------------------
+   Avatar
+------------------------------------------ */
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatarButton {
+  position: relative;
+
+  width: 96px;
+  height: 96px;
+
+  padding: 0;
+
+  border: 3px solid var(--primary-100, #ffeef4);
+  border-radius: 50%;
+
+  background: var(--primary-50, #fff6f9);
+
+  cursor: pointer;
+
+  overflow: visible;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.avatarButton:hover {
+  border-color: var(--primary, #ff5c8d);
+  transform: scale(1.03);
+}
+
+.avatarButton img {
+  width: 100%;
+  height: 100%;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+}
+
+.avatarButton > span:not(.avatarBadge) {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary, #ff5c8d);
+}
+
+.avatarBadge {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  border-radius: 50%;
+
+  background: var(--primary, #ff5c8d);
+
+  font-size: 0.85rem;
+
+  box-shadow: 0 4px 12px rgba(255, 92, 141, 0.4);
+}
+
+.avatarHint {
+  margin: 0;
+
+  font-size: 0.82rem;
+  color: var(--text-muted, #9ca3af);
+}
+
+/* ------------------------------------------
+   Fields
+------------------------------------------ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field span {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+}
+
+.field input {
+  width: 100%;
+
+  padding: 14px 16px;
+
+  border: 1.5px solid var(--border, #ebe7ef);
+  border-radius: 13px;
+
+  background: var(--surface, #fff);
+
+  color: var(--text, #1f1b2d);
+
+  font-family: inherit;
+  font-size: 0.95rem;
+
+  outline: none;
+
+  transition: border-color 0.2s ease;
+}
+
+.field input:focus {
+  border-color: var(--primary, #ff5c8d);
+}
+
+.field input:disabled {
+  background: var(--background-secondary, #f5f4f8);
+  color: var(--text-muted, #9ca3af);
+  cursor: not-allowed;
+}
+
+/* ------------------------------------------
+   Actions
+------------------------------------------ */
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  margin-top: 6px;
+}

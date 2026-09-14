@@ -1,6 +1,6 @@
 .card{
 
-background:white;
+background: var(--surface);
 
 padding:35px;
 

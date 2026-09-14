@@ -8,11 +8,17 @@ import {
 } from "lucide-react";
 
 import styles from "./GalleryCard.module.css";
+import useNotification from "../../../hooks/useNotification";
+import useMoments from "../../../hooks/useMoments";
 
 function GalleryCard({
   moment,
   onClick,
 }) {
+  const notify = useNotification();
+
+  const { favoriteMoment } =
+    useMoments();
   //---------------------------------------
   // Download
   //---------------------------------------
@@ -38,8 +44,9 @@ function GalleryCard({
     e.stopPropagation();
 
     if (!navigator.share) {
-      alert(
-        "Sharing isn't supported."
+      notify.error(
+        "Sharing not supported",
+        "Your browser doesn't support native sharing."
       );
       return;
     }
@@ -52,6 +59,25 @@ function GalleryCard({
       });
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  //---------------------------------------
+
+  async function handleFavorite(e) {
+    e.stopPropagation();
+
+    try {
+      await favoriteMoment(
+        moment.id
+      );
+    } catch (error) {
+      console.error(error);
+
+      notify.error(
+        "Unable to update favorite",
+        "Please try again."
+      );
     }
   }
 
@@ -78,6 +104,15 @@ function GalleryCard({
         }
         alt={moment.title}
         className={styles.image}
+        onError={(e) => {
+          if (
+            e.currentTarget.src !==
+            "https://placehold.co/600x800?text=Memory"
+          ) {
+            e.currentTarget.src =
+              "https://placehold.co/600x800?text=Memory";
+          }
+        }}
       />
 
       {/* Favorite */}
@@ -133,8 +168,13 @@ function GalleryCard({
           }
         >
           <button
-            onClick={(e) =>
-              e.stopPropagation()
+            onClick={
+              handleFavorite
+            }
+            aria-label={
+              moment.is_favorite
+                ? "Remove from favorites"
+                : "Add to favorites"
             }
           >
             <Heart

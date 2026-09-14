@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 import PageLayout from "../../ui/PageLayout/PageLayout";
@@ -17,6 +18,8 @@ import GalleryStats from "./components/GalleryStats/GalleryStats";
 import useMoments from "../../hooks/useMoments";
 
 function Gallery() {
+  const navigate = useNavigate();
+
   //---------------------------------------
   // Global
   //---------------------------------------
@@ -34,8 +37,31 @@ function Gallery() {
   const [filter, setFilter] =
     useState("all");
 
+  const [year, setYear] = useState(
+    new Date().getFullYear()
+  );
+
   const [selectedIndex, setSelectedIndex] =
     useState(null);
+
+  //---------------------------------------
+  // Available years (newest first)
+  //---------------------------------------
+
+  const years = useMemo(() => {
+    const set = new Set(
+      moments.map(
+        (m) =>
+          new Date(
+            m.memory_date
+          ).getFullYear()
+      )
+    );
+
+    return [...set].sort(
+      (a, b) => b - a
+    );
+  }, [moments]);
 
   //---------------------------------------
   // Filter
@@ -64,8 +90,7 @@ function Gallery() {
               .toLocaleDateString()
               .includes(query);
 
-          let matchesFilter =
-            true;
+          let matchesFilter;
 
           switch (filter) {
             case "favorites":
@@ -77,8 +102,14 @@ function Gallery() {
               matchesFilter =
                 new Date(
                   moment.memory_date
-                ).getFullYear() ===
-                new Date().getFullYear();
+                ).getFullYear() === year;
+              break;
+
+            case "photos":
+              matchesFilter =
+                Boolean(
+                  moment.image_url
+                );
               break;
 
             case "location":
@@ -102,6 +133,7 @@ function Gallery() {
       moments,
       search,
       filter,
+      year,
     ]);
 
   //---------------------------------------
@@ -196,6 +228,9 @@ function Gallery() {
           <GalleryFilters
             filter={filter}
             setFilter={setFilter}
+            year={year}
+            setYear={setYear}
+            years={years}
           />
         </div>
 
@@ -296,6 +331,17 @@ function Gallery() {
                         : prev + 1
                   )
                 }
+                onOpenMoment={(
+                  id
+                ) => {
+                  setSelectedIndex(
+                    null
+                  );
+
+                  navigate(
+                    `/moment/${id}`
+                  );
+                }}
               />
             )}
           </>

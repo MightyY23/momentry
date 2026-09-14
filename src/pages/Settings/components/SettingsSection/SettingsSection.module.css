@@ -1,6 +1,8 @@
 .section{
 
-background:white;
+background:var(--surface,#fff);
+
+border:1px solid var(--border,#ebe7ef);
 
 border-radius:24px;
 
@@ -9,8 +11,7 @@ padding:30px;
 margin-bottom:30px;
 
 box-shadow:
-
-0 15px 35px rgba(0,0,0,.08);
+0 15px 35px rgba(0,0,0,.06);
 
 }
 
@@ -28,7 +29,21 @@ margin-bottom:25px;
 
 .icon{
 
-font-size:30px;
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+width:52px;
+
+height:52px;
+
+border-radius:16px;
+
+font-size:26px;
+
+background:var(--primary-50,#fff6f9);
 
 }
 
@@ -36,7 +51,9 @@ font-size:30px;
 
 margin:0;
 
-font-size:28px;
+font-size:1.35rem;
+
+color:var(--text,#1f1b2d);
 
 }
 

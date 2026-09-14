@@ -49,18 +49,44 @@ function MonthlyChart({ moments }) {
         <BarChart data={data}>
           <CartesianGrid
             strokeDasharray="3 3"
+            stroke="var(--border)"
           />
 
-          <XAxis dataKey="month" />
+          <XAxis
+            dataKey="month"
+            stroke="var(--text-muted)"
+            tick={{
+              fill: "var(--text-secondary)",
+              fontSize: 12,
+            }}
+          />
 
-          <YAxis />
+          <YAxis
+            allowDecimals={false}
+            tick={{
+              fill: "var(--text-secondary)",
+              fontSize: 12,
+            }}
+          />
 
-          <Tooltip />
+          <Tooltip
+            contentStyle={{
+              background:
+                "var(--surface-elevated, #fff)",
+              border:
+                "1px solid var(--border)",
+              borderRadius: 12,
+              color: "var(--text)",
+            }}
+            cursor={{
+              fill: "var(--primary-50)",
+            }}
+          />
 
           <Bar
             dataKey="memories"
             radius={[10, 10, 0, 0]}
-            fill="#ff5c8d"
+            fill="var(--primary)"
           />
         </BarChart>
       </ResponsiveContainer>

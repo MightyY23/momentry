@@ -6,7 +6,7 @@ gap:22px;
 
 padding:22px;
 
-background:white;
+background: var(--surface);
 
 border-radius:20px;
 
@@ -92,7 +92,7 @@ display:block;
 
 margin:10px 0;
 
-color:#777;
+color: var(--text-secondary);
 
 }
 
@@ -102,7 +102,7 @@ margin:15px 0;
 
 line-height:1.7;
 
-color:#555;
+color: var(--text-secondary);
 
 }
 

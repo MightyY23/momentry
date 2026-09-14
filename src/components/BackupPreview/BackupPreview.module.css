@@ -22,7 +22,7 @@ backdrop-filter:blur(6px);
 
 width:450px;
 
-background:white;
+background: var(--surface);
 
 border-radius:18px;
 
@@ -68,8 +68,8 @@ cursor:pointer;
 
 .restore{
 
-background:#ff5d8f;
+background:var(--primary);
 
-color:white;
+color:#fff;
 
 }

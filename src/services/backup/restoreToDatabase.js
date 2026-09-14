@@ -58,9 +58,13 @@ export async function restoreToDatabase({
     summary.newMemories.length > 0
   ) {
     const memoriesToInsert =
-      summary.newMemories.map(
-        ({ id, ...memory }) => memory
-      );
+      summary.newMemories.map((memory) => {
+        const { id, ...rest } = memory;
+
+        void id;
+
+        return rest;
+      });
 
     const { error } =
       await supabase

@@ -43,6 +43,19 @@ export function MomentsProvider({
       try {
         setLoading(true);
 
+        // Logged out (e.g. on the landing page):
+        // clear state quietly instead of letting
+        // getMyStory throw into the console.
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          setStory(null);
+          setMoments([]);
+          return;
+        }
+
         const storyData =
           await getMyStory();
 
@@ -100,9 +113,23 @@ export function MomentsProvider({
   //---------------------------------------
 
   async function removeMoment(
-    id
+    moment
   ) {
-    return await deleteMoment(id);
+    // deleteMoment needs the moment OBJECT
+    // (to clean up its storage file), not
+    // just the id.
+    const target =
+      typeof moment === "string"
+        ? moments.find((m) => m.id === moment)
+        : moment;
+
+    if (!target) {
+      throw new Error(
+        "Memory not found — it may already be deleted."
+      );
+    }
+
+    return await deleteMoment(target);
   }
 
   //---------------------------------------
@@ -110,9 +137,23 @@ export function MomentsProvider({
   //---------------------------------------
 
   async function favoriteMoment(
-    id
+    momentOrId
   ) {
-    return await toggleFavorite(id);
+    // Resolve the CURRENT favorite state so
+    // toggling works in both directions.
+    const target =
+      typeof momentOrId === "string"
+        ? moments.find((m) => m.id === momentOrId)
+        : momentOrId;
+
+    if (!target) {
+      throw new Error("Memory not found.");
+    }
+
+    return await toggleFavorite(
+      target.id,
+      target.is_favorite
+    );
   }
 
   //---------------------------------------
@@ -120,7 +161,16 @@ export function MomentsProvider({
   //---------------------------------------
 
   useEffect(() => {
-    refresh();
+    // The initial load runs in a microtask
+    // callback so no setState happens
+    // synchronously inside the effect body.
+    let cancelled = false;
+
+    queueMicrotask(() => {
+      if (!cancelled) {
+        refresh();
+      }
+    });
 
     const channel = supabase
       .channel("moments-realtime")
@@ -138,6 +188,8 @@ export function MomentsProvider({
       .subscribe();
 
     return () => {
+      cancelled = true;
+
       supabase.removeChannel(
         channel
       );

@@ -93,7 +93,7 @@
 
   font-size: 1.9rem;
 
-  color: #222;
+  color: var(--text);
 
 }
 
@@ -127,7 +127,7 @@
 
   margin-top: -12px;
 
-  color: #777;
+  color: var(--text-secondary);
 
   font-size: 1rem;
 
@@ -169,7 +169,7 @@
 
   margin: 0;
 
-  color: #333;
+  color: var(--text);
 
   font-size: 1.1rem;
 
@@ -187,7 +187,7 @@
 
 .next span {
 
-  color: #666;
+  color: var(--text-secondary);
 
   font-size: .92rem;
 
@@ -197,7 +197,7 @@
 
   margin: 6px 0 0;
 
-  color: #999;
+  color: var(--text-muted);
 
   font-size: .9rem;
 
@@ -227,7 +227,7 @@
 
 .progressTop span {
 
-  color: #666;
+  color: var(--text-secondary);
 
   font-size: .9rem;
 

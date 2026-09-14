@@ -46,7 +46,7 @@
 
     font-weight:700;
 
-    color:#222;
+    color: var(--text);
 
 }
 
@@ -54,7 +54,7 @@
 
     margin:0;
 
-    color:#777;
+    color: var(--text-secondary);
 
     line-height:1.7;
 
@@ -163,7 +163,7 @@
 
     font-size:.8rem;
 
-    color:#999;
+    color: var(--text-muted);
 
     text-transform:uppercase;
 
@@ -179,7 +179,7 @@
 
     font-size:1.2rem;
 
-    color:#222;
+    color: var(--text);
 
     white-space:nowrap;
 

@@ -52,11 +52,11 @@
 
   font-weight: 800;
 
-  color: #222;
+  color: var(--text);
 }
 
 .subtitle {
-  color: #777;
+  color: var(--text-secondary);
 
   line-height: 1.8;
 
@@ -280,7 +280,7 @@
 
   border-radius:50%;
 
-  background:white;
+  background: var(--surface);
 
   border:5px solid #ff5c8d;
 
@@ -387,7 +387,7 @@
 
   font-size:2rem;
 
-  color:#222;
+  color: var(--text);
 
 }
 
@@ -397,7 +397,7 @@
 
   margin:0;
 
-  color:#777;
+  color: var(--text-secondary);
 
   line-height:1.8;
 

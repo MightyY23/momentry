@@ -24,7 +24,7 @@ backdrop-filter:blur(8px);
 
 width:min(720px,92vw);
 
-background:white;
+background: var(--surface);
 
 border-radius:22px;
 
@@ -90,7 +90,7 @@ margin:0;
 
 margin-top:6px;
 
-color:#777;
+color: var(--text-secondary);
 
 }
 .group{
@@ -109,11 +109,11 @@ text-transform:uppercase;
 
 letter-spacing:1px;
 
-color:#888;
+color: var(--text-muted);
 
 padding:10px 20px;
 
-background:#fafafa;
+background: var(--background-secondary);
 
 border-bottom:1px solid #eee;
 

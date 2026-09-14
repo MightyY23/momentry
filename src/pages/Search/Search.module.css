@@ -9,6 +9,6 @@
 }
 
 .subtitle{
-    color:#777;
+    color: var(--text-secondary);
     margin-bottom:30px;
 }

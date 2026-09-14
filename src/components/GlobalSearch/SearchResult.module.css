@@ -4,7 +4,7 @@ padding:18px;
 
 border-radius:16px;
 
-background:white;
+background: var(--surface);
 
 cursor:pointer;
 
@@ -36,7 +36,7 @@ align-items:center;
 
 .description{
 
-color:#666;
+color: var(--text-secondary);
 
 margin:10px 0;
 
@@ -46,7 +46,7 @@ margin:10px 0;
 
 font-size:13px;
 
-color:#999;
+color: var(--text-muted);
 
 }
 

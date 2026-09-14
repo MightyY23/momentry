@@ -13,11 +13,14 @@ import { supabase } from "../../services/supabase/supabaseClient";
 import { uploadImage } from "../../services/storage/uploadImage";
 
 import useMoments from "../../hooks/useMoments";
+import useNotification from "../../hooks/useNotification";
 
 function AddMoment() {
   const navigate = useNavigate();
 
   const { addMoment } = useMoments();
+
+  const notify = useNotification();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] =
@@ -36,12 +39,18 @@ function AddMoment() {
 
   async function handleSave() {
     if (!title.trim()) {
-      alert("Please enter a title.");
+      notify.error(
+        "Missing title",
+        "Please give this memory a title."
+      );
       return;
     }
 
     if (!memoryDate) {
-      alert("Please choose a date.");
+      notify.error(
+        "Missing date",
+        "Please choose when this memory happened."
+      );
       return;
     }
 
@@ -76,7 +85,11 @@ function AddMoment() {
       navigate("/home");
     } catch (error) {
       console.error(error);
-      alert(error.message);
+
+      notify.error(
+        "Couldn't save memory",
+        error.message || "Please try again."
+      );
     } finally {
       setLoading(false);
     }

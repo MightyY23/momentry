@@ -7,6 +7,8 @@ import Container from "../../ui/Container/Container";
 
 import SettingsSection from "./components/SettingsSection/SettingsSection";
 import Appearance from "./components/Appearance/Appearance";
+import Account from "./components/Account/Account";
+import PreferenceToggles from "./components/PreferenceToggles/PreferenceToggles";
 
 import BackupRestore from "../../components/BackupRestore/BackupRestore";
 import BackupPreview from "../../components/BackupPreview/BackupPreview";
@@ -17,6 +19,7 @@ import { restoreToDatabase } from "../../services/backup/restoreToDatabase";
 
 import { getMyStory } from "../../services/story/getStory";
 import { getMoments } from "../../services/moment/getMoments";
+import useNotification from "../../hooks/useNotification";
 
 import styles from "./Settings.module.css";
 
@@ -24,6 +27,8 @@ function Settings() {
   //---------------------------------------
   // State
   //---------------------------------------
+
+  const notify = useNotification();
 
   const [story, setStory] = useState(null);
 
@@ -89,7 +94,12 @@ function Settings() {
         backup
       );
     } catch (err) {
-      alert(err);
+      console.error(err);
+
+      notify.error(
+        "Couldn't read backup file",
+        "Make sure it's a valid Momentry backup."
+      );
     }
   }
 
@@ -107,8 +117,9 @@ function Settings() {
           backupPreview.moments,
       });
 
-      alert(
-        "Backup restored successfully!"
+      notify.success(
+        "Backup restored!",
+        "Your memories have been imported."
       );
 
       setBackupPreview(
@@ -135,8 +146,9 @@ function Settings() {
     } catch (err) {
       console.error(err);
 
-      alert(
-        "Restore failed."
+      notify.error(
+        "Restore failed",
+        "Please check the backup file and try again."
       );
     }
   }
@@ -164,16 +176,6 @@ function Settings() {
         </SettingsSection>
 
         <SettingsSection
-          icon="🔔"
-          title="Notifications"
-        />
-
-        <SettingsSection
-          icon="🔒"
-          title="Privacy"
-        />
-
-        <SettingsSection
           icon="☁"
           title="Data & Backup"
         >
@@ -190,7 +192,58 @@ function Settings() {
         <SettingsSection
           icon="👤"
           title="Account"
-        />
+        >
+          <Account />
+        </SettingsSection>
+
+        <SettingsSection
+          icon="🔔"
+          title="Notifications"
+        >
+          <PreferenceToggles
+            section="notifications"
+            items={[
+              {
+                key: "storyInvitations",
+                label: "Story invitations",
+                hint: "When someone invites you to collaborate.",
+              },
+              {
+                key: "collaborationActivity",
+                label: "Collaboration activity",
+                hint: "When collaborators add or change memories.",
+              },
+              {
+                key: "sharedStoryActivity",
+                label: "Shared story activity",
+                hint: "When your shared links are read.",
+              },
+              {
+                key: "productUpdates",
+                label: "Product updates",
+                hint: "Occasional news about Momentry.",
+              },
+            ]}
+            note="Notification preferences are saved on this device. In-app notifications will respect them."
+          />
+        </SettingsSection>
+
+        <SettingsSection
+          icon="🔒"
+          title="Privacy"
+        >
+          <PreferenceToggles
+            section="privacy"
+            items={[
+              {
+                key: "showLocationOnSharedStories",
+                label: "Show memory locations on shared stories",
+                hint: "Turn off to hide place names when sharing publicly.",
+              },
+            ]}
+            note="Your location is only ever shown with memories you add it to — never your live position."
+          />
+        </SettingsSection>
 
         <BackupPreview
           backup={

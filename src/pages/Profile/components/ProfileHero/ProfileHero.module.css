@@ -1,11 +1,12 @@
 .hero{
 
+position:relative;
+
 padding:60px 40px;
 
 border-radius:28px;
 
 background:
-
 linear-gradient(
 135deg,
 #ff5c8d,
@@ -19,10 +20,65 @@ text-align:center;
 margin-bottom:40px;
 
 box-shadow:
-
 0 25px 60px rgba(255,92,141,.25);
 
 }
+
+/* ------------------------------------------
+   Edit button
+------------------------------------------ */
+
+.editButton{
+
+position:absolute;
+
+top:20px;
+
+right:20px;
+
+display:flex;
+
+align-items:center;
+
+gap:7px;
+
+padding:9px 16px;
+
+border:1px solid rgba(255,255,255,.35);
+
+border-radius:999px;
+
+background:rgba(255,255,255,.14);
+
+backdrop-filter:blur(10px);
+
+-webkit-backdrop-filter:blur(10px);
+
+color:white;
+
+font-family:inherit;
+
+font-size:.85rem;
+
+font-weight:600;
+
+cursor:pointer;
+
+transition:background .2s ease, transform .2s ease;
+
+}
+
+.editButton:hover{
+
+background:rgba(255,255,255,.26);
+
+transform:translateY(-1px);
+
+}
+
+/* ------------------------------------------
+   Avatar
+------------------------------------------ */
 
 .avatar{
 
@@ -32,7 +88,7 @@ height:120px;
 
 border-radius:50%;
 
-background:white;
+background: var(--surface);
 
 color:#ff5c8d;
 
@@ -50,6 +106,20 @@ font-weight:bold;
 
 margin-bottom:25px;
 
+overflow:hidden;
+
+box-shadow:0 10px 30px rgba(0,0,0,.18);
+
+}
+
+.avatar img{
+
+width:100%;
+
+height:100%;
+
+object-fit:cover;
+
 }
 
 .hero h1{
@@ -58,30 +128,74 @@ margin:0;
 
 font-size:42px;
 
+font-weight:700;
+
 }
 
 .email{
 
-opacity:.9;
+margin:10px 0 0;
 
-margin-top:10px;
+font-size:.95rem;
+
+color:rgba(255,255,255,.8);
 
 }
 
 .story{
 
-margin-top:28px;
+margin:26px 0 0;
 
-font-size:30px;
+font-size:1.3rem;
+
+font-weight:600;
 
 }
 
 .subtitle{
 
-margin-top:12px;
+margin:10px 0 0;
 
-opacity:.95;
+font-size:1rem;
 
-font-size:18px;
+color:rgba(255,255,255,.85);
+
+}
+
+/* ------------------------------------------
+   Responsive
+------------------------------------------ */
+
+@media(max-width:600px){
+
+.hero{
+
+padding:48px 22px;
+
+}
+
+.editButton{
+
+top:14px;
+
+right:14px;
+
+}
+
+.avatar{
+
+width:100px;
+
+height:100px;
+
+font-size:40px;
+
+}
+
+.hero h1{
+
+font-size:1.9rem;
+
+}
 
 }

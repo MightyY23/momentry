@@ -57,6 +57,183 @@
 }
 
 /* ==========================================
+   FILTERS (unified timeline toolbar)
+========================================== */
+
+.sectionHead {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  flex-wrap: wrap;
+}
+
+.toolbarSearch {
+  position: relative;
+
+  flex: 1 1 260px;
+  max-width: 420px;
+}
+
+.toolbarSearch input {
+  width: 100%;
+
+  padding: 12px 40px 12px 16px;
+
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+
+  background: var(--surface);
+
+  color: var(--text);
+
+  font-family: inherit;
+  font-size: 0.93rem;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.toolbarSearch input::placeholder {
+  color: var(--text-muted);
+}
+
+.toolbarSearch input:focus {
+  border-color: var(--primary);
+
+  box-shadow: 0 0 0 4px rgba(255, 92, 141, 0.1);
+}
+
+.clearButton {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 26px;
+  height: 26px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: var(--background-secondary);
+
+  color: var(--text-secondary);
+
+  font-size: 0.7rem;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.clearButton:hover {
+  background: var(--primary-100);
+}
+
+.filterPills {
+  display: flex;
+  gap: 8px;
+}
+
+/* ==========================================
+   SKELETON LOADING
+========================================== */
+
+.skeletonHero {
+  height: 220px;
+
+  border-radius: var(--radius-2xl, 24px);
+}
+
+.skeletonStats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.skeletonCard {
+  height: 110px;
+
+  border-radius: var(--radius-xl, 20px);
+}
+
+.skeletonTimeline {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.skeletonRow {
+  height: 96px;
+
+  border-radius: var(--radius-xl, 20px);
+}
+
+.skeletonHero,
+.skeletonCard,
+.skeletonRow {
+  background: linear-gradient(
+    100deg,
+    var(--surface) 40%,
+    var(--primary-50) 50%,
+    var(--surface) 60%
+  );
+
+  background-size: 200% 100%;
+
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 130% 0;
+  }
+
+  100% {
+    background-position: -30% 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .skeletonStats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbarSearch {
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonHero,
+  .skeletonCard,
+  .skeletonRow {
+    animation: none;
+  }
+}
+
+/* ==========================================
    TIMELINE
 ========================================== */
 
@@ -339,7 +516,7 @@
 
 .filterButton{
 
-    background:white;
+    background: var(--surface);
 
     color:#444;
 

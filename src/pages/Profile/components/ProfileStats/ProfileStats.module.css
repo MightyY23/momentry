@@ -12,7 +12,7 @@ margin-bottom:45px;
 
 .card{
 
-background:white;
+background: var(--surface);
 
 padding:28px;
 
@@ -50,7 +50,7 @@ color:#ff5c8d;
 
 margin-top:10px;
 
-color:#777;
+color: var(--text-secondary);
 
 font-weight:600;
 

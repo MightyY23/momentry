@@ -1,4 +1,5 @@
 import Button from "../../../ui/Button/Button";
+import useNotification from "../../../hooks/useNotification";
 
 import {
   Share2,
@@ -21,14 +22,17 @@ function ActionBar({
   onEdit,
   onDelete,
 }) {
+  const notify = useNotification();
+
   //---------------------------------------
   // Share
   //---------------------------------------
 
   async function handleShare() {
     if (!navigator.share) {
-      alert(
-        "Sharing isn't supported on this browser."
+      notify.error(
+        "Sharing not supported",
+        "Your browser doesn't support native sharing — use Copy Link instead."
       );
       return;
     }
@@ -75,9 +79,17 @@ function ActionBar({
         window.location.href
       );
 
-      alert("Link copied!");
+      notify.success(
+        "Link copied!",
+        "Share it with anyone you like."
+      );
     } catch (error) {
       console.error(error);
+
+      notify.error(
+        "Couldn't copy link",
+        "Your browser blocked clipboard access."
+      );
     }
   }
 

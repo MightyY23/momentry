@@ -30,7 +30,7 @@ align-items:center;
 
 gap:18px;
 
-background:white;
+background: var(--surface);
 
 padding:18px;
 
@@ -86,6 +86,6 @@ font-size:22px;
 
 margin-top:8px;
 
-color:#777;
+color: var(--text-secondary);
 
 }

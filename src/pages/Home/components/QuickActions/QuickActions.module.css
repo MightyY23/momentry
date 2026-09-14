@@ -17,13 +17,13 @@
 
   font-weight: 700;
 
-  color: #222;
+  color: var(--text);
 }
 
 .header p {
   margin: 0;
 
-  color: #777;
+  color: var(--text-secondary);
 
   line-height: 1.6;
 }
@@ -77,7 +77,7 @@
 
   cursor: pointer;
 
-  background: rgba(255,255,255,.85);
+  background: var(--glass-bg);
 
   backdrop-filter: blur(20px);
 
@@ -163,7 +163,7 @@
 
   font-weight: 700;
 
-  color: #222;
+  color: var(--text);
 
 }
 
@@ -171,7 +171,7 @@
 
   margin-top: 6px;
 
-  color: #777;
+  color: var(--text-secondary);
 
   font-size: .88rem;
 
@@ -185,7 +185,7 @@
 
   font-size: 1.4rem;
 
-  color: #999;
+  color: var(--text-muted);
 
   transition:
     transform .3s ease,

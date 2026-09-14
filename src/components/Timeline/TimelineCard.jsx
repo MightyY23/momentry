@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import Button from "../../ui/Button/Button";
 
 import styles from "./TimelineCard.module.css";
 

@@ -1,16 +1,39 @@
 import { supabase } from "../supabase/supabaseClient";
 
 export async function deleteMoment(moment) {
-  // Delete image from Storage
+  // Delete image from Storage.
+  // Files live under "<userId>/<timestamp>.<ext>",
+  // so the full object path (not just the file
+  // name) is required to satisfy the storage
+  // policies.
   if (moment.image_url) {
-    const imagePath = moment.image_url.split("/").pop();
+    const marker = "/moment-images/";
 
-    const { error: storageError } = await supabase.storage
-      .from("moment-images")
-      .remove([imagePath]);
+    const markerIndex =
+      moment.image_url.indexOf(marker);
 
-    if (storageError) {
-      throw storageError;
+    const objectPath =
+      markerIndex === -1
+        ? null
+        : moment.image_url.slice(
+            markerIndex + marker.length
+          );
+
+    if (objectPath) {
+      const { error: storageError } =
+        await supabase.storage
+          .from("moment-images")
+          .remove([objectPath]);
+
+      if (storageError) {
+        // A storage failure shouldn't block
+        // removing the database row — the
+        // orphaned file can be cleaned up later.
+        console.error(
+          "deleteMoment: storage cleanup failed:",
+          storageError
+        );
+      }
     }
   }
 

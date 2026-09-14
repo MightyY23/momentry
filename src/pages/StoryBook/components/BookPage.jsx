@@ -1,7 +1,11 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   BookMarked,
   Quote,
+  Calendar,
+  Clock3,
+  MapPin,
+  Heart,
 } from "lucide-react";
 
 import styles from "./BookPage.module.css";
@@ -13,175 +17,290 @@ function BookPage({
   fontSize = 24,
   theme = "paper",
 }) {
+  const content = chapter?.content?.trim() || "";
 
-  const words =
-    chapter.content
-      ?.trim()
-      .split(/\s+/).length || 0;
+  const words = content
+    ? content.split(/\s+/).length
+    : 0;
 
-  const readingTime =
-    Math.max(
-      1,
-      Math.ceil(words / 220)
-    );
+  const readingTime = Math.max(
+    1,
+    Math.ceil(words / 220)
+  );
 
-  const quote =
-    chapter.content
-      ?.split(".")[0]
-      ?.trim() + ".";
+  const quoteText = content
+    ? content
+        .split(/[.!?]/)[0]
+        .trim()
+    : "";
+
+  const quote = quoteText
+    ? `${quoteText}.`
+    : "Every memory deserves to be remembered.";
+
+  const formattedDate =
+    chapter?.memory_date
+      ? new Date(
+          chapter.memory_date
+        ).toLocaleDateString(undefined, {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : null;
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={page}
-        className={styles.wrapper}
-        initial={{
-          rotateY:
-            page % 2 === 0
-              ? -90
-              : 90,
-          opacity: 0,
-          scale: .97,
-        }}
-        animate={{
-          rotateY: 0,
-          opacity: 1,
-          scale: 1,
-        }}
-        exit={{
-          rotateY:
-            page % 2 === 0
-              ? 90
-              : -90,
-          opacity: 0,
-          scale: .97,
-        }}
-        transition={{
-          duration: .75,
-          ease: "easeInOut",
-        }}
+    <motion.div
+      key={page}
+      className={styles.pageWrapper}
+      initial={{
+        rotateY:
+          page % 2 === 0
+            ? -95
+            : 95,
+        opacity: 0,
+      }}
+      animate={{
+        rotateY: 0,
+        opacity: 1,
+      }}
+      exit={{
+        rotateY:
+          page % 2 === 0
+            ? 95
+            : -95,
+        opacity: 0,
+      }}
+      transition={{
+        duration: 0.8,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      style={{
+        transformStyle: "preserve-3d",
+        transformOrigin:
+          page % 2 === 0
+            ? "left center"
+            : "right center",
+      }}
+    >
+      <div
+        className={`${styles.book} ${styles[theme]}`}
         style={{
-          transformStyle:
-            "preserve-3d",
-          transformOrigin:
-            page % 2 === 0
-              ? "left center"
-              : "right center",
+          "--font-size": `${fontSize}px`,
         }}
       >
+        {/* ==================================================
+            BOOKMARK
+        ================================================== */}
+
         <div
-          className={`${styles.book} ${styles[theme]}`}
-          style={{
-            "--font-size": `${fontSize}px`,
-          }}
-        >
-          {/* LEFT PAGE */}
+          className={styles.bookmark}
+          aria-hidden="true"
+        />
 
-          <div
-            className={
-              styles.leftPage
-            }
-          >
-            <div
-              className={
-                styles.pageNumber
-              }
-            >
-              {page * 2 + 1}
-            </div>
+        {/* ==================================================
+            LEFT PAGE
+        ================================================== */}
 
-            <span
-              className={
-                styles.chapterLabel
-              }
-            >
+        <div className={styles.leftPage}>
+          <div className={styles.chapterHeader}>
+            <span className={styles.chapterLabel}>
               Chapter {page + 1}
             </span>
 
             <h2>
-              {chapter.title}
+              {chapter?.title ||
+                "Untitled Chapter"}
             </h2>
 
-            <div
-              className={
-                styles.divider
-              }
-            />
-
-            <p
-              className={
-                styles.story
-              }
-            >
-              {chapter.content}
-            </p>
+            {formattedDate && (
+              <div
+                className={
+                  styles.chapterDate
+                }
+              >
+                {formattedDate}
+              </div>
+            )}
 
             <div
               className={
-                styles.footer
+                styles.decorative
               }
+              aria-hidden="true"
             >
-              <BookMarked
-                size={18}
-              />
-
-              {words} words ·{" "}
-              {readingTime} min read
+              ❦
             </div>
           </div>
 
-          {/* SPINE */}
+          {/* Memory image */}
+
+          {chapter?.image_url && (
+            <img
+              src={chapter.image_url}
+              alt={
+                chapter.title ||
+                "Memory"
+              }
+              className={
+                styles.heroImage
+              }
+            />
+          )}
+
+          {/* Reading information */}
 
           <div
             className={
-              styles.spine
-            }
-          />
-
-          {/* RIGHT PAGE */}
-
-          <div
-            className={
-              styles.rightPage
+              styles.readingMeta
             }
           >
             <div
               className={
-                styles.quoteCard
+                styles.readingBadge
               }
             >
-              <Quote
-                size={30}
-              />
+              <Clock3 size={16} />
 
-              <p>
-                {quote}
-              </p>
+              <span>
+                {readingTime} min read
+              </span>
             </div>
 
             <div
               className={
-                styles.pageNumber
+                styles.readingTime
               }
             >
-              {page * 2 + 2}
-            </div>
-
-            <div
-              className={
-                styles.totalPages
-              }
-            >
-              Chapter{" "}
-              {page + 1}
-              <br />
-              of{" "}
-              {totalPages}
+              {words} words
             </div>
           </div>
+
+          {/* Story */}
+
+          <p className={styles.story}>
+            {content ||
+              "This chapter is waiting for its story to be written."}
+          </p>
+
+          {/* Footer */}
+
+          <div
+            className={styles.footer}
+          >
+            <div
+              className={
+                styles.footerLeft
+              }
+            >
+              <BookMarked size={18} />
+
+              <span>
+                Momentry StoryBook
+              </span>
+            </div>
+
+            <div
+              className={
+                styles.footerRight
+              }
+            >
+              Page {page * 2 + 1}
+            </div>
+          </div>
+
+          {/* Page number */}
+
+          <div
+            className={
+              styles.pageNumber
+            }
+          >
+            {page * 2 + 1}
+          </div>
         </div>
-      </motion.div>
-    </AnimatePresence>
+
+        {/* ==================================================
+            SPINE
+        ================================================== */}
+
+        <div
+          className={styles.spine}
+          aria-hidden="true"
+        />
+
+        {/* ==================================================
+            RIGHT PAGE
+        ================================================== */}
+
+        <div className={styles.rightPage}>
+          <div
+            className={
+              styles.quoteCard
+            }
+          >
+            <Quote size={34} />
+
+            <p>{quote}</p>
+
+            <div
+              className={
+                styles.quoteMeta
+              }
+            >
+              {formattedDate && (
+                <span>
+                  <Calendar size={16} />
+
+                  {formattedDate}
+                </span>
+              )}
+
+              {chapter?.location && (
+                <span>
+                  <MapPin size={16} />
+
+                  {chapter.location}
+                </span>
+              )}
+
+              {chapter?.is_favorite && (
+                <span>
+                  <Heart
+                    size={16}
+                    fill="currentColor"
+                  />
+
+                  Favorite Memory
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Chapter information */}
+
+          <div
+            className={
+              styles.totalPages
+            }
+          >
+            Chapter {page + 1}
+            <br />
+            of {totalPages}
+          </div>
+
+          {/* Page number */}
+
+          <div
+            className={
+              styles.pageNumber
+            }
+          >
+            {page * 2 + 2}
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 

@@ -44,7 +44,7 @@
 
     font-weight:700;
 
-    color:#222;
+    color: var(--text);
 
 }
 
@@ -52,7 +52,7 @@
 
     margin:0;
 
-    color:#777;
+    color: var(--text-secondary);
 
     line-height:1.7;
 
@@ -160,7 +160,7 @@
 
     font-weight:700;
 
-    color:#222;
+    color: var(--text);
 
 }
 
@@ -168,7 +168,7 @@
 
     margin-top:8px;
 
-    color:#777;
+    color: var(--text-secondary);
 
     font-size:.95rem;
 

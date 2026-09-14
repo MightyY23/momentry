@@ -278,7 +278,9 @@ font-size:3rem;
 
 .grid{
 
-column-count:1;
+column-count:2;
+
+column-gap:12px;
 
 }
 

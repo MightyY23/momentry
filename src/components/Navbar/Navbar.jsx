@@ -14,12 +14,23 @@ import {
   Settings,
   Menu,
   X,
+  Share2,
+  PenLine,
 } from "lucide-react";
+
+import useMoments from "../../hooks/useMoments";
+import ShareModal from "../ShareModal/ShareModal";
+import StorySettingsModal from "../StorySettingsModal/StorySettingsModal";
 
 import styles from "./Navbar.module.css";
 
 function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [storySettingsOpen, setStorySettingsOpen] =
+    useState(false);
+
+  const { story } = useMoments();
 
   const links = [
     {
@@ -115,6 +126,30 @@ function Navbar() {
           })}
         </div>
 
+        {/* Share + Story Settings */}
+
+        <div className={styles.shareWrap}>
+          <button
+            className={styles.storyEditButton}
+            onClick={() =>
+              setStorySettingsOpen(true)
+            }
+            title="Story settings"
+          >
+            <PenLine size={18} />
+          </button>
+
+          <button
+            className={styles.shareButton}
+            onClick={() => setShareOpen(true)}
+            title="Share your story"
+          >
+            <Share2 size={18} />
+
+            <span>Share</span>
+          </button>
+        </div>
+
         {/* Mobile Button */}
 
         <button
@@ -164,6 +199,65 @@ function Navbar() {
           );
         })}
       </div>
+
+      {/* Mobile bottom tab bar
+          (thumb-reach app nav) */}
+
+      <nav
+        className={styles.tabbar}
+        aria-label="Primary"
+      >
+        {links.slice(0, 5).map(
+          (link) => {
+            const Icon = link.icon;
+
+            return (
+              <NavLink
+                key={link.path}
+                to={link.path}
+                className={({
+                  isActive,
+                }) =>
+                  isActive
+                    ? `${styles.tab} ${styles.tabActive}`
+                    : styles.tab
+                }
+              >
+                <Icon
+                  size={22}
+                />
+
+                <span>
+                  {link.label}
+                </span>
+              </NavLink>
+            );
+          }
+        )}
+      </nav>
+
+      {/* Spacer so fixed tab bar
+          never hides content */}
+
+      <div className={styles.tabSpacer} />
+
+      {/* Share Modal */}
+
+      <ShareModal
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        story={story}
+      />
+
+      {/* Story Settings Modal */}
+
+      <StorySettingsModal
+        open={storySettingsOpen}
+        onClose={() =>
+          setStorySettingsOpen(false)
+        }
+        story={story}
+      />
     </header>
   );
 }

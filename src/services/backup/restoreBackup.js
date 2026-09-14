@@ -37,7 +37,7 @@ export async function restoreBackup(
           //---------------------------------------
 
           resolve(backup);
-        } catch (err) {
+        } catch {
           reject(
             "Invalid backup file."
           );

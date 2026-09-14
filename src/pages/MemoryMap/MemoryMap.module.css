@@ -78,7 +78,7 @@ overflow:hidden;
 
 border-radius:30px;
 
-background:white;
+background: var(--surface);
 
 box-shadow:
 0 30px 70px rgba(0,0,0,.12);
@@ -125,7 +125,7 @@ border:1px solid rgba(255,255,255,.5);
 
     margin:auto;
 
-    color:#777;
+    color: var(--text-secondary);
 
     font-size:1.05rem;
 

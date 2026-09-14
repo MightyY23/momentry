@@ -1,6 +1,6 @@
 .section{
 
-background:white;
+background: var(--surface);
 
 padding:40px;
 

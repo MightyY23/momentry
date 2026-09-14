@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import BookPage from "./BookPage";
 import ProgressBar from "./ProgressBar";
@@ -7,41 +7,121 @@ import ReadingToolbar from "./ReadingToolbar/ReadingToolbar";
 
 import styles from "./BookReader.module.css";
 
-const STORAGE_KEY = "momentry_storybook_page";
+const PAGE_KEY_BASE =
+  "momentry_storybook_page";
 
-function BookReader({ book, onClose }) {
+const FONT_KEY =
+  "momentry_storybook_font_size";
+
+const THEME_KEY =
+  "momentry_storybook_theme";
+
+function BookReader({
+  book,
+  onClose,
+}) {
+  const storyKey = book?.storyId
+    ? `${PAGE_KEY_BASE}_${book.storyId}`
+    : PAGE_KEY_BASE;
+
   //---------------------------------------
   // States
   //---------------------------------------
 
-  const [page, setPage] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? Number(saved) : 0;
+  const [rawPage, setRawPage] = useState(() => {
+    const saved = localStorage.getItem(
+      storyKey
+    );
+
+    const parsed = saved
+      ? Number(saved)
+      : 0;
+
+    const total =
+      book?.chapters?.length ?? 0;
+
+    return Number.isFinite(parsed) &&
+      parsed >= 0 &&
+      parsed < total
+      ? parsed
+      : 0;
   });
 
-  const [fontSize, setFontSize] = useState(24);
-  const [theme, setTheme] = useState("paper");
-  const [fullscreen, setFullscreen] = useState(false);
+  const [fontSize, setFontSizeState] =
+    useState(() => {
+      const saved = localStorage.getItem(
+        FONT_KEY
+      );
+
+      const parsed = saved
+        ? Number(saved)
+        : 24;
+
+      return parsed >= 18 && parsed <= 36
+        ? parsed
+        : 24;
+    });
+
+  const [theme, setThemeState] =
+    useState(() => {
+      const saved = localStorage.getItem(
+        THEME_KEY
+      );
+
+      return ["paper", "sepia", "dark"].includes(
+        saved
+      )
+        ? saved
+        : "paper";
+    });
+
+  const [fullscreen, setFullscreen] =
+    useState(false);
+
+  const [tocOpen, setTocOpen] =
+    useState(false);
+
+  const bookAreaRef = useRef(null);
 
   //---------------------------------------
-  // Keep page valid
+  // Keep page valid when the book changes
+  // (e.g. a new generation completes):
+  // an out-of-range saved page simply
+  // renders as page 0 — no cascading
+  // setState needed.
+  //---------------------------------------
+
+  const totalChapters =
+    book?.chapters?.length ?? 0;
+
+  const page = rawPage < totalChapters
+    ? rawPage
+    : 0;
+
+  //---------------------------------------
+  // Persist page (per story), font, theme
   //---------------------------------------
 
   useEffect(() => {
-    if (!book?.chapters?.length) return;
-
-    if (page > book.chapters.length - 1) {
-      setPage(0);
-    }
-  }, [book, page]);
-
-  //---------------------------------------
-  // Save page
-  //---------------------------------------
+    localStorage.setItem(
+      storyKey,
+      String(rawPage)
+    );
+  }, [storyKey, rawPage]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, page);
-  }, [page]);
+    localStorage.setItem(
+      FONT_KEY,
+      String(fontSize)
+    );
+  }, [fontSize]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      THEME_KEY,
+      theme
+    );
+  }, [theme]);
 
   //---------------------------------------
   // Fullscreen
@@ -61,7 +141,9 @@ function BookReader({ book, onClose }) {
 
   useEffect(() => {
     function handleFullscreenChange() {
-      setFullscreen(!!document.fullscreenElement);
+      setFullscreen(
+        !!document.fullscreenElement
+      );
     }
 
     document.addEventListener(
@@ -84,7 +166,7 @@ function BookReader({ book, onClose }) {
     function handleKeyDown(e) {
       switch (e.key) {
         case "ArrowRight":
-          setPage((prev) =>
+          setRawPage((prev) =>
             Math.min(
               prev + 1,
               book.chapters.length - 1
@@ -93,13 +175,17 @@ function BookReader({ book, onClose }) {
           break;
 
         case "ArrowLeft":
-          setPage((prev) =>
+          setRawPage((prev) =>
             Math.max(prev - 1, 0)
           );
           break;
 
         case "Escape":
-          if (document.fullscreenElement) {
+          if (tocOpen) {
+            setTocOpen(false);
+          } else if (
+            document.fullscreenElement
+          ) {
             document.exitFullscreen();
           } else {
             onClose?.();
@@ -121,59 +207,78 @@ function BookReader({ book, onClose }) {
         "keydown",
         handleKeyDown
       );
-  }, [book.chapters.length, onClose]);
+  }, [
+    book.chapters.length,
+    onClose,
+    tocOpen,
+  ]);
 
   //---------------------------------------
-  // Mouse wheel navigation
+  // Mouse wheel navigation — scoped to
+  // the book area so page scrolling and
+  // the map/toolbar still work normally.
   //---------------------------------------
+
+  const wheelLockRef = useRef(false);
+
+  const handleWheel =
+    useCallback(
+      (e) => {
+        if (wheelLockRef.current) {
+          return;
+        }
+
+        if (Math.abs(e.deltaY) < 40) {
+          return;
+        }
+
+        wheelLockRef.current = true;
+
+        setTimeout(() => {
+          wheelLockRef.current = false;
+        }, 450);
+
+        setRawPage((prev) => {
+          if (e.deltaY > 0) {
+            return Math.min(
+              prev + 1,
+              book.chapters.length - 1
+            );
+          }
+
+          return Math.max(prev - 1, 0);
+        });
+      },
+      [book.chapters.length]
+    );
 
   useEffect(() => {
-    let timeout = null;
+    const node =
+      bookAreaRef.current;
 
-    function handleWheel(e) {
-      if (timeout) return;
+    if (!node) return undefined;
 
-      timeout = setTimeout(() => {
-        timeout = null;
-      }, 450);
-
-      if (e.deltaY > 40) {
-        setPage((prev) =>
-          Math.min(
-            prev + 1,
-            book.chapters.length - 1
-          )
-        );
-      }
-
-      if (e.deltaY < -40) {
-        setPage((prev) =>
-          Math.max(prev - 1, 0)
-        );
-      }
-    }
-
-    window.addEventListener(
+    node.addEventListener(
       "wheel",
       handleWheel,
-      {
-        passive: true,
-      }
+      { passive: true }
     );
 
     return () =>
-      window.removeEventListener(
+      node.removeEventListener(
         "wheel",
         handleWheel
       );
-  }, [book.chapters.length]);
+  }, [handleWheel]);
 
   //---------------------------------------
   // Reading Progress
   //---------------------------------------
 
   const progress = Math.round(
-    ((page + 1) / book.chapters.length) * 100
+    ((page + 1) /
+      book.chapters.length) *
+      100
   );
 
   //---------------------------------------
@@ -182,79 +287,139 @@ function BookReader({ book, onClose }) {
 
   return (
     <>
-      <TableOfContents
-        chapters={book.chapters}
-        currentPage={page}
-        onSelect={setPage}
-      />
-
       <ReadingToolbar
         fontSize={fontSize}
-        setFontSize={setFontSize}
+        setFontSize={setFontSizeState}
         theme={theme}
-        setTheme={setTheme}
+        setTheme={setThemeState}
         fullscreen={fullscreen}
-        toggleFullscreen={toggleFullscreen}
+        toggleFullscreen={
+          toggleFullscreen
+        }
+        onToggleToc={() =>
+          setTocOpen((v) => !v)
+        }
       />
+
+      {tocOpen && (
+        <TableOfContents
+          chapters={book.chapters}
+          currentPage={page}
+          onSelect={(index) => {
+            setRawPage(index);
+
+            setTocOpen(false);
+          }}
+        />
+      )}
 
       <ProgressBar
         page={page + 1}
         total={book.chapters.length}
       />
 
-      <div className={styles.topBar}>
-        <button
-          className={styles.coverButton}
-          onClick={onClose}
+      <div className={styles.reader}>
+        {/* Left Stack */}
+
+        <div className={styles.leftStack} />
+
+        {/* Book */}
+
+        <div
+          ref={bookAreaRef}
+          className={styles.bookArea}
         >
-          📕 Back to Cover
-        </button>
+          <div
+            className={styles.topBar}
+          >
+            <button
+              className={
+                styles.coverButton
+              }
+              onClick={onClose}
+            >
+              📕 Back to Cover
+            </button>
 
-        <div className={styles.progress}>
-          {progress}% Read
-        </div>
-      </div>
+            <div
+              className={
+                styles.progress
+              }
+            >
+              {progress}% Read
+            </div>
+          </div>
 
-      <BookPage
-        chapter={book.chapters[page]}
-        page={page}
-        totalPages={book.chapters.length}
-        fontSize={fontSize}
-        theme={theme}
-      />
+          <BookPage
+            chapter={
+              book.chapters[page]
+            }
+            page={page}
+            totalPages={
+              book.chapters.length
+            }
+            fontSize={fontSize}
+            theme={theme}
+          />
 
-      <div className={styles.navigation}>
-        <button
-          disabled={page === 0}
-          onClick={() =>
-            setPage((prev) =>
-              Math.max(prev - 1, 0)
-            )
-          }
-        >
-          ← Previous
-        </button>
+          <div
+            className={
+              styles.navigation
+            }
+          >
+            <button
+              disabled={page === 0}
+              onClick={() =>
+                setRawPage((p) =>
+                  Math.max(p - 1, 0)
+                )
+              }
+            >
+              ← Previous
+            </button>
 
-        <div className={styles.pageInfo}>
-          Page {page + 1} of {book.chapters.length}
-        </div>
+            <div
+              className={
+                styles.pageInfo
+              }
+            >
+              <strong>
+                {page + 1}
+              </strong>
 
-        <button
-          disabled={
-            page ===
-            book.chapters.length - 1
-          }
-          onClick={() =>
-            setPage((prev) =>
-              Math.min(
-                prev + 1,
+              <span>
+                of{" "}
+                {
+                  book.chapters.length
+                }
+              </span>
+            </div>
+
+            <button
+              disabled={
+                page ===
                 book.chapters.length - 1
-              )
-            )
-          }
-        >
-          Next →
-        </button>
+              }
+              onClick={() =>
+                setRawPage((p) =>
+                  Math.min(
+                    p + 1,
+                    book.chapters.length -
+                      1
+                  )
+                )
+              }
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+
+        {/* Right Stack */}
+
+        <div
+          className={styles.rightStack}
+        />
       </div>
     </>
   );

@@ -2,7 +2,7 @@ import ThemeCard from "./ThemeCard";
 
 import styles from "./Appearance.module.css";
 
-import { useTheme } from "../../../../contexts/ThemeContext";
+import { useTheme } from "../../../../contexts/useTheme";
 function Appearance() {
   const { theme, setTheme } =
     useTheme();

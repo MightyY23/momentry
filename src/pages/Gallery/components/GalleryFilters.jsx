@@ -4,6 +4,7 @@ import {
   Heart,
   CalendarDays,
   MapPin,
+  Camera,
 } from "lucide-react";
 
 import styles from "./GalleryFilters.module.css";
@@ -11,6 +12,9 @@ import styles from "./GalleryFilters.module.css";
 function GalleryFilters({
   filter,
   setFilter,
+  year,
+  setYear,
+  years = [],
 }) {
   const filters = [
     {
@@ -25,8 +29,13 @@ function GalleryFilters({
     },
     {
       id: "year",
-      label: "This Year",
+      label: "By Year",
       icon: CalendarDays,
+    },
+    {
+      id: "photos",
+      label: "With Photos",
+      icon: Camera,
     },
     {
       id: "location",
@@ -90,6 +99,28 @@ function GalleryFilters({
           );
         }
       )}
+
+      {filter === "year" &&
+        years.length > 0 && (
+          <select
+            className={styles.yearSelect}
+            value={year}
+            onChange={(e) =>
+              setYear(
+                Number(e.target.value)
+              )
+            }
+          >
+            {years.map((y) => (
+              <option
+                key={y}
+                value={y}
+              >
+                {y}
+              </option>
+            ))}
+          </select>
+        )}
     </div>
   );
 }

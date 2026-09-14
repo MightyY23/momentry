@@ -1,5 +1,5 @@
-import { imageToBase64 }
-from "./imageUtils";
+import { imageToBase64 } from "./imageUtils";
+
 export async function addMemoryPages(
   pdf,
   moments = []
@@ -16,39 +16,25 @@ export async function addMemoryPages(
 
   //---------------------------------------
 
-  sorted.forEach((moment) => {
+  for (const moment of sorted) {
     pdf.addPage();
 
     //---------------------------------------
     // Header
     //---------------------------------------
 
-    pdf.setFillColor(
-      255,
-      240,
-      246
-    );
+    pdf.setFillColor(255, 240, 246);
 
-    pdf.rect(
-      0,
-      0,
-      210,
-      45,
-      "F"
-    );
+    pdf.rect(0, 0, 210, 45, "F");
 
     //---------------------------------------
 
-    pdf.setFont(
-      "helvetica",
-      "bold"
-    );
+    pdf.setFont("helvetica", "bold");
 
     pdf.setFontSize(24);
 
     pdf.text(
-      moment.title ||
-        "Untitled Memory",
+      moment.title || "Untitled Memory",
       20,
       25
     );
@@ -59,94 +45,31 @@ export async function addMemoryPages(
 
     pdf.setFontSize(12);
 
-    pdf.setFont(
-      "helvetica",
-      "normal"
-    );
+    pdf.setFont("helvetica", "normal");
 
-    pdf.text(
-      `📅 ${new Date(
-        moment.memory_date
-      ).toLocaleDateString()}`,
-      20,
-      38
-    );
+    if (moment.memory_date) {
+      pdf.text(
+        new Date(
+          moment.memory_date
+        ).toLocaleDateString(undefined, {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        }),
+        20,
+        35
+      );
+    }
 
     //---------------------------------------
-    // Location
+    // Description
     //---------------------------------------
 
     let y = 60;
 
-    if (moment.location) {
-      pdf.setFontSize(13);
+    pdf.setDrawColor(230);
 
-      pdf.text(
-        `📍 ${moment.location}`,
-        20,
-        y
-      );
-
-      y += 12;
-    }
-
-    //---------------------------------------
-    // Favorite Badge
-    //---------------------------------------
-
-    if (moment.is_favorite) {
-      pdf.setFillColor(
-        255,
-        92,
-        143
-      );
-
-      pdf.roundedRect(
-        140,
-        18,
-        50,
-        12,
-        3,
-        3,
-        "F"
-      );
-
-      pdf.setTextColor(
-        255
-      );
-
-      pdf.setFontSize(11);
-
-      pdf.text(
-        "⭐ Favorite",
-        165,
-        26,
-        {
-          align: "center",
-        }
-      );
-
-      pdf.setTextColor(
-        0
-      );
-    }
-
-    //---------------------------------------
-    // Description Box
-    //---------------------------------------
-
-    pdf.setDrawColor(
-      220
-    );
-
-    pdf.roundedRect(
-      20,
-      y,
-      170,
-      75,
-      4,
-      4
-    );
+    pdf.roundedRect(20, y, 170, 75, 4, 4);
 
     pdf.setFontSize(12);
 
@@ -154,109 +77,77 @@ export async function addMemoryPages(
       moment.description ||
       "No description available.";
 
-    const lines =
-      pdf.splitTextToSize(
-        description,
-        155
-      );
-
-    pdf.text(
-      lines,
-      28,
-      y + 12
+    const lines = pdf.splitTextToSize(
+      description,
+      155
     );
 
+    pdf.text(lines, 28, y + 12);
+
     //---------------------------------------
-    // Photo Placeholder
+    // Photo
     //---------------------------------------
 
     y += 95;
 
-    pdf.setFont(
-      "helvetica",
-      "bold"
-    );
+    pdf.setFont("helvetica", "bold");
 
     pdf.setFontSize(14);
 
-    pdf.text(
-      "Memory Photo",
-      20,
-      y
-    );
+    pdf.text("Memory Photo", 20, y);
 
-    pdf.setDrawColor(
-      170
-    );
+    pdf.setDrawColor(170);
 
-    pdf.rect(
-      20,
-      y + 8,
-      120,
-      80
-    );
+    pdf.rect(20, y + 8, 120, 80);
 
-    pdf.setFont(
-      "helvetica",
-      "italic"
-    );
+    pdf.setFont("helvetica", "italic");
 
     pdf.setFontSize(12);
 
     //---------------------------------------
-// Image
-//---------------------------------------
+    // Image
+    //---------------------------------------
 
-if (moment.image_url) {
-  try {
-    const image =
-      await imageToBase64(
-        moment.image_url
-      );
+    if (moment.image_url) {
+      try {
+        const image = await imageToBase64(
+          moment.image_url
+        );
 
-    if (image) {
-      pdf.addImage(
-        image,
-        "JPEG",
-        20,
-        y + 8,
-        120,
-        80
-      );
+        if (image) {
+          pdf.addImage(
+            image,
+            "JPEG",
+            20,
+            y + 8,
+            120,
+            80
+          );
+        }
+      } catch (err) {
+        console.error(err);
+
+        pdf.text(
+          "Unable to load image.",
+          55,
+          y + 45
+        );
+      }
+    } else {
+      pdf.setFontSize(11);
+
+      pdf.text("No Image", 65, y + 45);
     }
-  } catch (err) {
-    console.error(err);
-
-    pdf.text(
-      "Unable to load image.",
-      55,
-      y + 45
-    );
-  }
-} else {
-  pdf.setFontSize(11);
-
-  pdf.text(
-    "No Image",
-    65,
-    y + 45
-  );
-}
 
     //---------------------------------------
     // Footer
     //---------------------------------------
 
-    pdf.setFont(
-      "helvetica",
-      "normal"
-    );
+    pdf.setFont("helvetica", "normal");
 
     pdf.setFontSize(10);
 
-    pdf.setTextColor(
-      130
-    );
+    pdf.setTextColor(130);
 
     pdf.text(
       "Created with ❤️ using Momentry",
@@ -267,8 +158,6 @@ if (moment.image_url) {
       }
     );
 
-    pdf.setTextColor(
-      0
-    );
-  });
+    pdf.setTextColor(0);
+  }
 }

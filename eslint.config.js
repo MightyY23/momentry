@@ -17,5 +17,11 @@ export default defineConfig([
       globals: globals.browser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
+    rules: {
+      // Context modules export both a Provider
+      // component and the context object; the
+      // HOC pattern isn't worth the churn here.
+      "react-refresh/only-export-components": "off",
+    },
   },
 ])

@@ -10,19 +10,25 @@ import styles from "./AcceptInvitation.module.css";
 import { supabase } from "../../services/supabase/supabaseClient";
 import { getPendingInvitation } from "../../services/invitation/getPendingInvitation";
 import { acceptInvitation } from "../../services/invitation/acceptInvitation";
+import { declineInvitation } from "../../services/invitation/declineInvitation";
+import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
+import useNotification from "../../hooks/useNotification";
 
 function AcceptInvitation() {
   const navigate = useNavigate();
 
+  const notify = useNotification();
+
   const [invitation, setInvitation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [accepting, setAccepting] = useState(false);
+  const [confirmDecline, setConfirmDecline] = useState(false);
+  const [declining, setDeclining] = useState(false);
 
   useEffect(() => {
-    loadInvitation();
-  }, []);
+    let cancelled = false;
 
-  async function loadInvitation() {
+    async function loadInvitation() {
     try {
       const {
         data: { user },
@@ -40,14 +46,28 @@ function AcceptInvitation() {
         return;
       }
 
+      if (cancelled) return;
+
       setInvitation(data);
     } catch (error) {
       console.error(error);
-      alert("Failed to load invitation.");
+      notify.error(
+        "Couldn't load invitation",
+        "The invitation may have expired."
+      );
     } finally {
-      setLoading(false);
+      if (!cancelled) {
+        setLoading(false);
+      }
     }
   }
+
+    loadInvitation();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleAccept() {
     try {
@@ -58,7 +78,11 @@ function AcceptInvitation() {
       navigate("/home");
     } catch (error) {
       console.error(error);
-      alert(error.message);
+
+      notify.error(
+        "Couldn't accept invitation",
+        error.message
+      );
     } finally {
       setAccepting(false);
     }
@@ -66,19 +90,27 @@ function AcceptInvitation() {
 
   async function handleDecline() {
     try {
-      const { error } = await supabase
-        .from("invitations")
-        .update({
-          status: "declined",
-        })
-        .eq("id", invitation.id);
+      setDeclining(true);
 
-      if (error) throw error;
+      await declineInvitation(invitation.id);
+
+      setConfirmDecline(false);
+
+      notify.success(
+        "Invitation declined",
+        "You can create your own story anytime."
+      );
 
       navigate("/create-story");
     } catch (error) {
       console.error(error);
-      alert(error.message);
+
+      notify.error(
+        "Couldn't decline invitation",
+        error.message || "Please try again."
+      );
+
+      setDeclining(false);
     }
   }
 
@@ -122,12 +154,33 @@ function AcceptInvitation() {
                 : "Accept Invitation"}
             </Button>
 
-            <Button onClick={handleDecline}>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                setConfirmDecline(true)
+              }
+            >
               Decline
             </Button>
           </div>
         </div>
       </Container>
+
+      <ConfirmDialog
+        open={confirmDecline}
+        title="Decline this invitation?"
+        message={`You'll no longer be able to join "${invitation?.stories?.title || "this story"}" unless you're invited again.`}
+        confirmLabel="Decline"
+        cancelLabel="Keep Invitation"
+        danger
+        loading={declining}
+        onConfirm={
+          handleDecline
+        }
+        onCancel={() =>
+          setConfirmDecline(false)
+        }
+      />
     </PageLayout>
   );
 }

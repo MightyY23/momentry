@@ -204,7 +204,7 @@
 
   font-weight:800;
 
-  color:#222;
+  color: var(--text);
 
   line-height:1;
 
@@ -220,7 +220,7 @@
 
   font-weight:700;
 
-  color:#888;
+  color: var(--text-muted);
 
 }
 
@@ -262,7 +262,7 @@
 
   line-height:1.35;
 
-  color:#222;
+  color: var(--text);
 
 }
 
@@ -302,7 +302,7 @@
 
   margin:0;
 
-  color:#666;
+  color: var(--text-secondary);
 
   line-height:1.8;
 
@@ -507,7 +507,7 @@
 
 .favoriteButton{
 
-    background:#ffffff;
+    background: var(--surface);
 
     color:#444;
 

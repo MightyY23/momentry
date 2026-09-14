@@ -1,4 +1,3 @@
-import Button from "../../ui/Button/Button";
 import TimelineCard from "./TimelineCard";
 
 import styles from "./Timeline.module.css";

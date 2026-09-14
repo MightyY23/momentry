@@ -11,6 +11,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import {
   MomentsProvider,
 } from "./contexts/MomentsContext";
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import "leaflet/dist/leaflet.css";
 
 import "./styles/variables.css";
@@ -22,16 +23,18 @@ ReactDOM.createRoot(
   document.getElementById("root")
 ).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider>
-        <AuthProvider>
-          <NotificationProvider>
-            <MomentsProvider>
-              <App />
-            </MomentsProvider>
-          </NotificationProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <ThemeProvider>
+          <AuthProvider>
+            <NotificationProvider>
+              <MomentsProvider>
+                <App />
+              </MomentsProvider>
+            </NotificationProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   </React.StrictMode>
 );

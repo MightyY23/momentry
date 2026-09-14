@@ -5,15 +5,15 @@ import styles from "./Home.module.css";
 
 import Container from "../../ui/Container/Container";
 import PageLayout from "../../ui/PageLayout/PageLayout";
-import Button from "../../ui/Button/Button";
 
 import useMoments from "../../hooks/useMoments";
+import useNotification from "../../hooks/useNotification";
 
 import Navbar from "../../components/Navbar/Navbar";
-import SearchBar from "../../components/SearchBar/SearchBar";
 import StoryHeader from "../../components/StoryHeader/StoryHeader";
 import EmptyState from "../../components/EmptyState/EmptyState";
 import Timeline from "../../components/Timeline/Timeline";
+import CommandPalette from "../../components/CommandPalette/CommandPalette";
 
 import HeroSection from "./components/HeroSection/HeroSection";
 import StatsGrid from "./components/StatsGrid/StatsGrid";
@@ -31,6 +31,8 @@ function Home() {
     loading,
     favoriteMoment,
   } = useMoments();
+
+  const notify = useNotification();
 
   const [search, setSearch] =
     useState("");
@@ -52,8 +54,9 @@ function Home() {
     } catch (error) {
       console.error(error);
 
-      alert(
-        "Unable to update favorite."
+      notify.error(
+        "Unable to update favorite",
+        "Please try again."
       );
     }
   }
@@ -96,6 +99,9 @@ function Home() {
             moment.description
               ?.toLowerCase()
               .includes(query) ||
+            moment.location
+              ?.toLowerCase()
+              .includes(query) ||
             new Date(
               moment.memory_date
             )
@@ -119,17 +125,39 @@ function Home() {
     ]);
 
   //----------------------------------------
+  // Skeleton loading
+  //----------------------------------------
 
   if (loading) {
     return (
       <PageLayout>
         <Container>
-          <div
-            className={styles.loading}
-          >
-            <h2>
-              Loading your story...
-            </h2>
+          <Navbar />
+
+          <div className={styles.pageContent}>
+            <div className={styles.skeletonHero} />
+
+            <div className={styles.skeletonStats}>
+              {Array.from({ length: 4 }).map(
+                (_, index) => (
+                  <div
+                    key={index}
+                    className={styles.skeletonCard}
+                  />
+                )
+              )}
+            </div>
+
+            <div className={styles.skeletonTimeline}>
+              {Array.from({ length: 3 }).map(
+                (_, index) => (
+                  <div
+                    key={index}
+                    className={styles.skeletonRow}
+                  />
+                )
+              )}
+            </div>
           </div>
         </Container>
       </PageLayout>
@@ -143,6 +171,8 @@ function Home() {
       <Container>
 
         <Navbar />
+
+        <CommandPalette moments={moments} />
 
         <div
           className={
@@ -158,12 +188,6 @@ function Home() {
             memoriesCount={
               moments.length
             }
-          />
-
-          <SearchBar
-            value={search}
-            onChange={setSearch}
-            placeholder="Search memories..."
           />
 
           <StatsGrid
@@ -209,45 +233,86 @@ function Home() {
 
           </div>
 
-          <div className={styles.filters}>
-
-            <button
-              className={
-                !showFavorites
-                  ? styles.filterActive
-                  : styles.filterButton
-              }
-              onClick={() =>
-                setShowFavorites(false)
-              }
-            >
-              📖 All Memories
-            </button>
-
-            <button
-              className={
-                showFavorites
-                  ? styles.filterActive
-                  : styles.filterButton
-              }
-              onClick={() =>
-                setShowFavorites(true)
-              }
-            >
-              ❤️ Favorites
-            </button>
-
-          </div>
-
           <div
             className={
               styles.timelineSection
             }
           >
 
-            <StoryHeader
-              story={story}
-            />
+            <div
+              className={styles.sectionHead}
+            >
+              <StoryHeader
+                story={story}
+              />
+
+              <div
+                className={styles.filters}
+              >
+                <div
+                  className={
+                    styles.toolbarSearch
+                  }
+                >
+                  <input
+                    type="search"
+                    value={search}
+                    placeholder="Search memories…"
+                    onChange={(e) =>
+                      setSearch(
+                        e.target.value
+                      )
+                    }
+                  />
+
+                  {search && (
+                    <button
+                      className={
+                        styles.clearButton
+                      }
+                      onClick={() =>
+                        setSearch("")
+                      }
+                      aria-label="Clear search"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                <div
+                  className={
+                    styles.filterPills
+                  }
+                >
+                  <button
+                    className={
+                      !showFavorites
+                        ? styles.filterActive
+                        : styles.filterButton
+                    }
+                    onClick={() =>
+                      setShowFavorites(false)
+                    }
+                  >
+                    📖 All
+                  </button>
+
+                  <button
+                    className={
+                      showFavorites
+                        ? styles.filterActive
+                        : styles.filterButton
+                    }
+                    onClick={() =>
+                      setShowFavorites(true)
+                    }
+                  >
+                    ❤️ Favorites
+                  </button>
+                </div>
+              </div>
+            </div>
 
             {filteredMoments.length ===
             0 ? (

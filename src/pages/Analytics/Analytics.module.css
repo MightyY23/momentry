@@ -9,3 +9,182 @@ gap:35px;
 padding-bottom:100px;
 
 }
+
+/* ==========================================
+   TWO-COLUMN ROW (chart + places)
+========================================== */
+
+.twoColumn{
+
+display:grid;
+
+grid-template-columns:minmax(0,3fr) minmax(0,2fr);
+
+gap:35px;
+
+align-items:stretch;
+
+}
+
+.twoColumn > *{
+
+min-width:0;
+
+}
+
+/* ==========================================
+   SKELETON LOADING
+========================================== */
+
+.skeletonHero{
+
+height:220px;
+
+border-radius:28px;
+
+}
+
+.skeletonGrid{
+
+display:grid;
+
+grid-template-columns:repeat(4,1fr);
+
+gap:20px;
+
+}
+
+.skeletonCard{
+
+height:140px;
+
+border-radius:24px;
+
+}
+
+.skeletonHero,
+.skeletonCard{
+
+background:linear-gradient(
+100deg,
+var(--surface,#fff) 40%,
+var(--primary-50,#fff6f9) 50%,
+var(--surface,#fff) 60%
+);
+
+background-size:200% 100%;
+
+animation:analyticsShimmer 1.4s ease-in-out infinite;
+
+}
+
+@keyframes analyticsShimmer{
+
+0%{
+
+background-position:130% 0;
+
+}
+
+100%{
+
+background-position:-30% 0;
+
+}
+
+}
+
+/* ==========================================
+   EMPTY STATE
+========================================== */
+
+.emptyState{
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+text-align:center;
+
+padding:90px 30px;
+
+border:2px dashed var(--border,#ebe7ef);
+
+border-radius:28px;
+
+background:var(--surface,#fff);
+
+}
+
+.emptyEmoji{
+
+font-size:3.2rem;
+
+margin-bottom:18px;
+
+}
+
+.emptyState h2{
+
+margin:0 0 12px;
+
+font-size:1.6rem;
+
+color:var(--text,#1f1b2d);
+
+}
+
+.emptyState p{
+
+margin:0;
+
+max-width:44ch;
+
+line-height:1.7;
+
+color:var(--text-secondary,#6b7280);
+
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:1000px){
+
+.twoColumn{
+
+grid-template-columns:1fr;
+
+}
+
+.skeletonGrid{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+@media(max-width:520px){
+
+.skeletonGrid{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+@media (prefers-reduced-motion: reduce){
+
+.skeletonHero,
+.skeletonCard{
+
+animation:none;
+
+}
+
+}

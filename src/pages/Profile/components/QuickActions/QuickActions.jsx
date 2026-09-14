@@ -41,8 +41,8 @@ function QuickActions() {
     {
       icon: "⚙",
       title: "Settings",
-      subtitle: "Coming Soon",
-      path: null,
+      subtitle: "Personalize your app",
+      path: "/settings",
     },
   ];
 

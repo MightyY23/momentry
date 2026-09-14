@@ -1,12 +1,22 @@
 import { motion } from "framer-motion";
+import { Pencil } from "lucide-react";
 
 import styles from "./ProfileHero.module.css";
 
 function ProfileHero({
   user,
+  profile,
   story,
   totalMemories,
+  onEdit,
 }) {
+  const displayName =
+    profile?.full_name ||
+    user?.user_metadata?.full_name ||
+    "Momentry User";
+
+  const avatarUrl = profile?.avatar_url;
+
   return (
     <motion.div
       className={styles.hero}
@@ -22,13 +32,30 @@ function ProfileHero({
         duration: 0.5,
       }}
     >
+      <button
+        type="button"
+        className={styles.editButton}
+        onClick={onEdit}
+        aria-label="Edit profile"
+      >
+        <Pencil size={16} />
+
+        Edit
+      </button>
+
       <div className={styles.avatar}>
-        {user?.email?.charAt(0).toUpperCase()}
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt={displayName}
+          />
+        ) : (
+          displayName.charAt(0).toUpperCase()
+        )}
       </div>
 
       <h1>
-        {user?.user_metadata?.full_name ||
-          "Momentry User"}
+        {displayName}
       </h1>
 
       <p className={styles.email}>

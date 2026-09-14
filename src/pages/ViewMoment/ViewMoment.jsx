@@ -8,6 +8,7 @@ import {
 import PageLayout from "../../ui/PageLayout/PageLayout";
 import Container from "../../ui/Container/Container";
 import Button from "../../ui/Button/Button";
+import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
 
 import styles from "./ViewMoment.module.css";
 
@@ -21,6 +22,7 @@ import { getMoment } from "../../services/moment/getMoment";
 import { getAdjacentMoments } from "../../services/moment/getAdjacentMoments";
 
 import useMoments from "../../hooks/useMoments";
+import useNotification from "../../hooks/useNotification";
 
 function ViewMoment() {
   const { id } = useParams();
@@ -33,6 +35,8 @@ function ViewMoment() {
   const { removeMoment } =
     useMoments();
 
+  const notify = useNotification();
+
   //---------------------------------------
 
   const [moment, setMoment] =
@@ -42,6 +46,9 @@ function ViewMoment() {
     useState(true);
 
   const [deleting, setDeleting] =
+    useState(false);
+
+  const [confirmDelete, setConfirmDelete] =
     useState(false);
 
   const [previousMoment, setPreviousMoment] =
@@ -131,25 +138,23 @@ function ViewMoment() {
   //---------------------------------------
 
   async function handleDelete() {
-    const confirmed =
-      window.confirm(
-        "Are you sure you want to delete this memory?"
-      );
-
-    if (!confirmed) return;
-
     try {
       setDeleting(true);
 
       await removeMoment(
-        moment.id
+        moment
       );
+
+      setConfirmDelete(false);
 
       navigate("/home");
     } catch (error) {
       console.error(error);
 
-      alert(error.message);
+      notify.error(
+        "Couldn't delete memory",
+        error.message || "Please try again."
+      );
     } finally {
       setDeleting(false);
     }
@@ -249,7 +254,9 @@ function ViewMoment() {
                 `/edit-moment/${moment.id}`
               )
             }
-            onDelete={handleDelete}
+            onDelete={() =>
+              setConfirmDelete(true)
+            }
           />
 
           <MemoryNavigator
@@ -270,6 +277,23 @@ function ViewMoment() {
           />
         </motion.div>
       </Container>
+
+      <ConfirmDialog
+        open={confirmDelete}
+        title="Delete this memory?"
+        message={`"${
+          moment?.title ||
+          "This memory"
+        }" will be permanently removed, including its photo. This cannot be undone.`}
+        confirmLabel="Delete Forever"
+        cancelLabel="Keep it"
+        danger
+        loading={deleting}
+        onConfirm={handleDelete}
+        onCancel={() =>
+          setConfirmDelete(false)
+        }
+      />
     </PageLayout>
   );
 }

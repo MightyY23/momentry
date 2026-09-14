@@ -14,9 +14,16 @@ export async function getMyStory() {
     .from("story_members")
     .select("story_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
-  if (membershipError) throw membershipError;
+  // No membership yet (or query error) means the
+  // user simply has no story — never crash on it.
+  if (membershipError) {
+    console.error("getMyStory:", membershipError);
+    return null;
+  }
+
+  if (!membership) return null;
 
   // Load the story
   const { data: story, error: storyError } = await supabase

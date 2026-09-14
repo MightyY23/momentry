@@ -202,16 +202,7 @@ function MemoryMap() {
       filteredMarkers,
     ]);
 
-  const journeyPath =
-    useMemo(() => {
-      return filteredMarkers.map(
-        (m) => [
-          m.lat,
-          m.lng,
-        ]
-      );
-    }, [filteredMarkers]);
-      //---------------------------------------
+  //---------------------------------------
 
   const locateMe = () => {
     if (!navigator.geolocation || !mapRef.current)

@@ -18,7 +18,7 @@ gap:20px;
 
 padding:24px;
 
-background:#fafafa;
+background:var(--background-secondary,#fafafa);
 
 border-radius:18px;
 
@@ -34,7 +34,7 @@ transition:.3s;
 
 .card:hover{
 
-background:#fff;
+background:var(--surface,#fff);
 
 box-shadow:
 
@@ -44,9 +44,9 @@ box-shadow:
 
 .active{
 
-border-color:#ff5c8d;
+border-color:var(--primary,#ff5c8d);
 
-background:#fff0f5;
+background:var(--primary-50,#fff0f5);
 
 }
 

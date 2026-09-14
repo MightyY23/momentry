@@ -44,7 +44,7 @@
 
     font-weight:700;
 
-    color:#222;
+    color: var(--text);
 
 }
 
@@ -154,7 +154,7 @@
 
 .label{
 
-    color:#888;
+    color: var(--text-muted);
 
     font-size:.8rem;
 
@@ -168,7 +168,7 @@
 
 .content strong{
 
-    color:#222;
+    color: var(--text);
 
     font-size:1rem;
 

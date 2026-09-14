@@ -7,11 +7,14 @@ import Button from "../../ui/Button/Button";
 import Container from "../../ui/Container/Container";
 import PageLayout from "../../ui/PageLayout/PageLayout";
 
-import { createInvitation } from "../../services/invitation/invitationService";
+import { createInvitation } from "../../services/invitation/createInvitation";
+import useNotification from "../../hooks/useNotification";
 
 function InvitePartner() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const notify = useNotification();
 
   const storyId = location.state?.storyId;
 
@@ -20,7 +23,10 @@ function InvitePartner() {
 
   async function handleInvite() {
     if (!email.trim()) {
-      alert("Please enter your partner's email.");
+      notify.error(
+        "Missing email",
+        "Please enter your partner's email."
+      );
       return;
     }
 
@@ -29,10 +35,18 @@ function InvitePartner() {
 
       await createInvitation(storyId, email.trim());
 
+      notify.success(
+        "Invitation sent!",
+        `${email.trim()} can now accept and join your story.`
+      );
+
       navigate("/home");
     } catch (error) {
       console.error(error);
-      alert(error.message);
+      notify.error(
+        "Couldn't send invitation",
+        error.message || "Please try again."
+      );
     } finally {
       setLoading(false);
     }

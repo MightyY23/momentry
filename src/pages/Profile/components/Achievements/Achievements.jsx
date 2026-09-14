@@ -18,7 +18,7 @@ function Achievements({ moments }) {
     moments || []
   );
 
-  const { notify } =
+  const notify =
     useNotification();
 
   //---------------------------------------

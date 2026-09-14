@@ -28,7 +28,7 @@ padding:28px;
 
 border-radius:22px;
 
-background:white;
+background: var(--surface);
 
 box-shadow:
 
@@ -74,7 +74,7 @@ margin:10px 0;
 
 font-size:14px;
 
-color:#666;
+color: var(--text-secondary);
 
 min-height:42px;
 
@@ -90,6 +90,6 @@ font-weight:bold;
 
 .locked span{
 
-color:#999;
+color: var(--text-muted);
 
 }
