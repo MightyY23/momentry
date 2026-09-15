@@ -65,7 +65,12 @@ align-items:stretch;
 
 .stats{
 
-grid-template-columns:1fr;
+/* Three compact chips across */
+grid-template-columns:repeat(3,minmax(0,1fr));
+
+gap:10px;
+
+margin-bottom:18px;
 
 }
 
@@ -83,7 +88,7 @@ background: var(--surface);
 box-shadow:
 0 30px 70px rgba(0,0,0,.12);
 
-border:1px solid rgba(255,255,255,.5);
+border:1px solid var(--border-light);
 
 }
 .heroHeader{
@@ -101,9 +106,9 @@ border:1px solid rgba(255,255,255,.5);
 
     border-radius:999px;
 
-    background:#ffe8f1;
+    background:var(--primary-50);
 
-    color:#ff5c8d;
+    color:var(--primary);
 
     font-weight:700;
 
@@ -130,4 +135,37 @@ border:1px solid rgba(255,255,255,.5);
     font-size:1.05rem;
 
     line-height:1.8;
+}
+/* Dark mode: tint standard OSM tiles so
+   the map blends with the app theme.
+   Leaflet's class names are runtime-added,
+   so they must stay :global. */
+:global(.dark) .mapContainer :global(.leaflet-tile-pane) {
+  filter:
+    invert(1) hue-rotate(185deg)
+    brightness(.95) contrast(.92)
+    saturate(.75);
+}
+
+:global(.dark) .mapContainer :global(.leaflet-container) {
+  background: #15181c;
+}
+
+/* ==========================================================
+   LAYERING — Leaflet's internal panes use
+   z-index up to 700. isolation:contain keeps
+   them inside this card so the tab bar
+   (z-index 900) always stays on top.
+   ========================================================== */
+
+.mapContainer {
+
+  isolation: isolate;
+
+  z-index: 0;
+}
+
+.mapContainer :global(.leaflet-container) {
+
+  z-index: 1;
 }

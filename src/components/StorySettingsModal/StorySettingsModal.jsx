@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../../ui/Modal/Modal";
 import Button from "../../ui/Button/Button";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
+import ShareModal from "../ShareModal/ShareModal";
 
 import { updateStory } from "../../services/story/updateStory";
 import { deleteStory } from "../../services/story/deleteStory";
@@ -53,6 +54,9 @@ function StorySettingsModal({
     useState(false);
 
   const [deleting, setDeleting] =
+    useState(false);
+
+  const [sharingOpen, setSharingOpen] =
     useState(false);
 
   // Reset the editable fields whenever a
@@ -542,6 +546,31 @@ function StorySettingsModal({
           )}
         </div>
 
+        {/* ------- Sharing (owner only) ------- */}
+
+        {isOwner && (
+          <div className={styles.shareSection}>
+            <div>
+              <strong>Sharing</strong>
+
+              <span>
+                Create a read-only link anyone can open —
+                revoke it any time.
+              </span>
+            </div>
+
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() =>
+                setSharingOpen(true)
+              }
+            >
+              Manage Links
+            </Button>
+          </div>
+        )}
+
         {/* ------- Danger zone ------- */}
 
         <div className={styles.dangerZone}>
@@ -565,6 +594,16 @@ function StorySettingsModal({
           </Button>
         </div>
       </Modal>
+
+      {/* ------- Sharing (layers above the sheet) ------- */}
+
+      <ShareModal
+        open={sharingOpen}
+        onClose={() =>
+          setSharingOpen(false)
+        }
+        story={story}
+      />
 
       {/* ------- Confirmations ------- */}
 

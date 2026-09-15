@@ -334,7 +334,7 @@ function GalleryLightbox({
 
         <motion.img
           key={moment.id}
-          src={moment.image_url}
+          src={moment.image_url || "https://placehold.co/900x600?text=Memory"}
           alt={moment.title}
           className={styles.image}
           draggable={false}

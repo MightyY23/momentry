@@ -24,6 +24,10 @@ export const DEFAULT_PREFERENCES = {
   reading: {
     reduceMotion: false,
   },
+  storybook: {
+    autoPlayPages: false,
+    showPageNumbers: true,
+  },
 };
 
 export function getPreferences() {

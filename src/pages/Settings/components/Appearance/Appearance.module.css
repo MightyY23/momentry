@@ -44,7 +44,7 @@ box-shadow:
 
 .active{
 
-border-color:var(--primary,#ff5c8d);
+border-color:var(--primary,var(--primary));
 
 background:var(--primary-50,#fff0f5);
 
@@ -63,6 +63,33 @@ margin-bottom:15px;
 .grid{
 
 grid-template-columns:1fr;
+
+}
+
+}
+@media(max-width:700px){
+
+.grid{
+
+grid-template-columns:repeat(3,minmax(0,1fr));
+
+gap:10px;
+
+}
+
+.card{
+
+padding:14px 6px;
+
+border-radius:14px;
+
+}
+
+.icon{
+
+font-size:26px;
+
+margin-bottom:8px;
 
 }
 

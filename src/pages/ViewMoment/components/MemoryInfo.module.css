@@ -26,9 +26,9 @@
 
     border-radius:999px;
 
-    background:#fff3e7;
+    background:var(--surface);
 
-    color:#f39c12;
+    color:var(--warning);
 
     font-size:.82rem;
 
@@ -92,11 +92,11 @@
     background:
         linear-gradient(
             145deg,
-            rgba(255,255,255,.98),
-            rgba(255,247,250,.95)
+            var(--surface),
+            var(--background-secondary)
         );
 
-    border:1px solid rgba(255,255,255,.55);
+    border:1px solid var(--border-light);
 
     backdrop-filter:blur(18px);
 
@@ -137,11 +137,11 @@
     background:
         linear-gradient(
             135deg,
-            #ff5c8d,
-            #ff91b4
+            var(--primary),
+            var(--primary-hover)
         );
 
-    color:white;
+    color:var(--text-inverse);
 
     font-size:32px;
 

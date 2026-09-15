@@ -10,13 +10,14 @@ function Modal({
   children,
   footer,
   size = "md",
+  elevated = false,
 }) {
   return (
     <AnimatePresence>
       {open && (
         <>
           <motion.div
-            className={styles.backdrop}
+            className={`${styles.backdrop}${elevated ? ` ${styles.backdropElevated}` : ""}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -24,7 +25,7 @@ function Modal({
           />
 
           <motion.div
-            className={`${styles.modal} ${styles[size]}`}
+            className={`${styles.modal} ${styles[size]}${elevated ? ` ${styles.elevated}` : ""}`}
             initial={{
               opacity: 0,
               scale: .94,

@@ -1,18 +1,40 @@
 import { supabase } from "../supabase/supabaseClient";
 
 /**
- * Upsert the signed-in user's profile row.
- * (The profile row is usually created by the
- * handle_new_user trigger — this keeps it fresh.)
+ * Update the signed-in user's profile row.
+ *
+ * The row is created automatically at signup by
+ * the handle_new_user trigger, so this is a plain
+ * UPDATE — an upsert would require INSERT rights
+ * and fail RLS ("new row violates row-level
+ * security policy") even though the row exists.
  */
-export async function updateProfile(userId, { fullName, avatarUrl }) {
+export async function updateProfile(
+  userId,
+  { fullName, avatarUrl, birthDate, onboardingCompleted }
+) {
+  const updates = {};
+
+  if (fullName !== undefined) {
+    updates.full_name = fullName;
+  }
+
+  if (avatarUrl !== undefined) {
+    updates.avatar_url = avatarUrl;
+  }
+
+  if (birthDate !== undefined) {
+    updates.birth_date = birthDate;
+  }
+
+  if (onboardingCompleted !== undefined) {
+    updates.onboarding_completed = onboardingCompleted;
+  }
+
   const { data, error } = await supabase
     .from("profiles")
-    .upsert({
-      id: userId,
-      full_name: fullName ?? null,
-      avatar_url: avatarUrl ?? null,
-    })
+    .update(updates)
+    .eq("id", userId)
     .select()
     .single();
 

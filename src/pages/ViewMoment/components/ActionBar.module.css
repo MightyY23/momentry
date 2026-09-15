@@ -28,9 +28,9 @@
 
     border-radius:999px;
 
-    background:#fff0e4;
+    background:var(--surface);
 
-    color:#f39c12;
+    color:var(--warning);
 
     font-size:.82rem;
 

@@ -56,7 +56,7 @@
 }
 
 .switch.on {
-  background: var(--primary, #ff5c8d);
+  background: var(--primary, var(--primary));
 }
 
 .knob {
@@ -70,7 +70,7 @@
 
   border-radius: 50%;
 
-  background: #fff;
+  background: var(--surface);
 
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 
@@ -82,7 +82,7 @@
 }
 
 .switch:focus-visible {
-  outline: 2px solid var(--primary, #ff5c8d);
+  outline: 2px solid var(--primary, var(--primary));
   outline-offset: 2px;
 }
 
@@ -99,5 +99,24 @@
   .switch,
   .knob {
     transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+
+  /* Long toggle labels wrap instead
+     of pushing rows out of bounds */
+  .row,
+  .item,
+  .toggleRow {
+
+    flex-wrap: wrap;
+
+    min-width: 0;
+  }
+
+  * {
+
+    max-width: 100%;
   }
 }

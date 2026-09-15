@@ -32,7 +32,7 @@
 
   background: var(--primary-50);
 
-  color: #7a173b;
+  color: var(--primary);
 
   transition:
     transform 0.2s ease,
@@ -41,7 +41,7 @@
 
 .close:hover {
   transform: translateY(-1px);
-  background: #ffe3ec;
+  background: var(--primary-100);
 }
 
 .item,
@@ -67,18 +67,15 @@ border-radius:10px;
 
 transition:.3s;
 
-}
+}.item:hover{
 
-.item:hover{
-
-background:#f7f7f7;
+background:var(--surface-hover);
 
 }
 
 .active{
 
-background:#7a173b;
-
+background:var(--primary);
 color:white;
 
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import BookPage from "./BookPage";
 import ProgressBar from "./ProgressBar";
@@ -68,15 +68,71 @@ function BookReader({
         THEME_KEY
       );
 
-      return ["paper", "sepia", "dark"].includes(
-        saved
-      )
-        ? saved
-        : "paper";
+      if (
+        ["paper", "sepia", "dark"].includes(
+          saved
+        )
+      ) {
+        return saved;
+      }
+
+      // First visit: follow the app theme.
+      // (Explicit choices are kept.)
+      const appIsDark =
+        document.documentElement.classList.contains(
+          "dark"
+        );
+
+      return appIsDark ? "dark" : "paper";
     });
+
+  // Follow live app-theme switches while
+  // the reader is open (only until the
+  // user picks a book theme manually —
+  // after that their choice persists).
+  const themeChosenRef = useRef(
+    Boolean(
+      localStorage.getItem(THEME_KEY)
+    )
+  );
+
+  useEffect(() => {
+    if (themeChosenRef.current) {
+      return undefined;
+    }
+
+    const observer =
+      new MutationObserver(() => {
+        const isDark =
+          document.documentElement.classList.contains(
+            "dark"
+          );
+
+        setThemeState(isDark ? "dark" : "paper");
+      });
+
+    observer.observe(
+      document.documentElement,
+      {
+        attributes: true,
+        attributeFilter: ["class"],
+      }
+    );
+
+    return () => observer.disconnect();
+  }, []);
 
   const [fullscreen, setFullscreen] =
     useState(false);
+
+  // Immersive overlay: covers the whole app
+  // even where the native Fullscreen API is
+  // unavailable (e.g. iPhone Safari).
+  const [immersive, setImmersive] =
+    useState(false);
+
+  // Touch swipe page-turning.
+  const touchStartX = useRef(null);
 
   const [tocOpen, setTocOpen] =
     useState(false);
@@ -117,33 +173,62 @@ function BookReader({
   }, [fontSize]);
 
   useEffect(() => {
-    localStorage.setItem(
-      THEME_KEY,
-      theme
-    );
+    /* Persist only explicit choices —
+       synced themes keep following the
+       app until the user picks one. */
+    if (themeChosenRef.current) {
+      localStorage.setItem(
+        THEME_KEY,
+        theme
+      );
+    }
   }, [theme]);
+
+  function chooseTheme(next) {
+    themeChosenRef.current = true;
+
+    setThemeState(next);
+  }
 
   //---------------------------------------
   // Fullscreen
   //---------------------------------------
 
   function toggleFullscreen() {
-    if (!document.fullscreenElement) {
+    const entering = !fullscreen;
+
+    // Always enter the immersive overlay —
+    // native fullscreen is a bonus where
+    // the browser supports it.
+    setImmersive(entering);
+
+    document.body.style.overflow =
+      entering ? "hidden" : "";
+
+    if (entering) {
       document.documentElement
-        .requestFullscreen()
-        .catch(console.error);
-    } else {
+        .requestFullscreen?.()
+        .catch(() => {});
+    } else if (document.fullscreenElement) {
       document
         .exitFullscreen()
-        .catch(console.error);
+        .catch(() => {});
     }
+
+    setFullscreen(entering);
   }
 
+  // Native exit (Esc / browser UI) must
+  // also leave the immersive overlay.
   useEffect(() => {
     function handleFullscreenChange() {
-      setFullscreen(
-        !!document.fullscreenElement
-      );
+      if (!document.fullscreenElement) {
+        setImmersive(false);
+
+        setFullscreen(false);
+
+        document.body.style.overflow = "";
+      }
     }
 
     document.addEventListener(
@@ -156,6 +241,14 @@ function BookReader({
         "fullscreenchange",
         handleFullscreenChange
       );
+  }, []);
+
+  // Safety: release the scroll lock if the
+  // reader unmounts while immersive.
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
 
   //---------------------------------------
@@ -214,62 +307,44 @@ function BookReader({
   ]);
 
   //---------------------------------------
-  // Mouse wheel navigation — scoped to
-  // the book area so page scrolling and
-  // the map/toolbar still work normally.
+  // Touch swipe page-turning (buttons,
+  // taps, keyboard all still work).
   //---------------------------------------
 
-  const wheelLockRef = useRef(false);
+  function handleTouchStart(e) {
+    touchStartX.current =
+      e.touches?.[0]?.clientX ?? null;
+  }
 
-  const handleWheel =
-    useCallback(
-      (e) => {
-        if (wheelLockRef.current) {
-          return;
-        }
+  function handleTouchEnd(e) {
+    if (touchStartX.current == null) {
+      return;
+    }
 
-        if (Math.abs(e.deltaY) < 40) {
-          return;
-        }
+    const endX =
+      e.changedTouches?.[0]?.clientX;
 
-        wheelLockRef.current = true;
+    if (endX == null) {
+      return;
+    }
 
-        setTimeout(() => {
-          wheelLockRef.current = false;
-        }, 450);
+    const dx = endX - touchStartX.current;
 
-        setRawPage((prev) => {
-          if (e.deltaY > 0) {
-            return Math.min(
-              prev + 1,
-              book.chapters.length - 1
-            );
-          }
+    touchStartX.current = null;
 
-          return Math.max(prev - 1, 0);
-        });
-      },
-      [book.chapters.length]
-    );
+    if (Math.abs(dx) < 60) return;
 
-  useEffect(() => {
-    const node =
-      bookAreaRef.current;
-
-    if (!node) return undefined;
-
-    node.addEventListener(
-      "wheel",
-      handleWheel,
-      { passive: true }
-    );
-
-    return () =>
-      node.removeEventListener(
-        "wheel",
-        handleWheel
+    if (dx < 0) {
+      setRawPage((p) =>
+        Math.min(
+          p + 1,
+          book.chapters.length - 1
+        )
       );
-  }, [handleWheel]);
+    } else {
+      setRawPage((p) => Math.max(p - 1, 0));
+    }
+  }
 
   //---------------------------------------
   // Reading Progress
@@ -281,44 +356,17 @@ function BookReader({
       100
   );
 
-  //---------------------------------------
-  // UI
-  //---------------------------------------
-
-  return (
-    <>
-      <ReadingToolbar
-        fontSize={fontSize}
-        setFontSize={setFontSizeState}
-        theme={theme}
-        setTheme={setThemeState}
-        fullscreen={fullscreen}
-        toggleFullscreen={
-          toggleFullscreen
+  const bookNode = (
+    <div className={styles.readerWrap}>
+      <div
+        className={
+          fullscreen || immersive
+            ? `${styles.reader} ${styles.readerImmersive}`
+            : styles.reader
         }
-        onToggleToc={() =>
-          setTocOpen((v) => !v)
-        }
-      />
-
-      {tocOpen && (
-        <TableOfContents
-          chapters={book.chapters}
-          currentPage={page}
-          onSelect={(index) => {
-            setRawPage(index);
-
-            setTocOpen(false);
-          }}
-        />
-      )}
-
-      <ProgressBar
-        page={page + 1}
-        total={book.chapters.length}
-      />
-
-      <div className={styles.reader}>
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {/* Left Stack */}
 
         <div className={styles.leftStack} />
@@ -360,6 +408,9 @@ function BookReader({
             }
             fontSize={fontSize}
             theme={theme}
+            immersive={
+              fullscreen || immersive
+            }
           />
 
           <div
@@ -421,6 +472,100 @@ function BookReader({
           className={styles.rightStack}
         />
       </div>
+    </div>
+  );
+
+  //---------------------------------------
+  // UI: immersive overlay wraps the whole
+  // book when fullscreen is active; on
+  // iOS (no Fullscreen API) this still
+  // delivers a distraction-free reader.
+  //---------------------------------------
+
+  if (immersive) {
+    return (
+      // immersiveOverlayHost (literal class)
+      // lets ReadingToolbar.module.css switch
+      // its sticky toolbar to normal flow inside
+      // this non-scrolling overlay.
+      <div
+        className={[
+          styles.immersiveOverlay,
+          styles[`immersiveOverlay${theme.charAt(0).toUpperCase()}${theme.slice(1)}`],
+          "immersiveOverlayHost",
+        ].join(" ")}
+      >
+        <ReadingToolbar
+          fontSize={fontSize}
+          setFontSize={setFontSizeState}
+          theme={theme}
+          setTheme={chooseTheme}
+          fullscreen={fullscreen}
+          toggleFullscreen={
+            toggleFullscreen
+          }
+          onToggleToc={() =>
+            setTocOpen((v) => !v)
+          }
+        />
+
+        {tocOpen && (
+          <TableOfContents
+            chapters={book.chapters}
+            currentPage={page}
+            onSelect={(index) => {
+              setRawPage(index);
+
+              setTocOpen(false);
+            }}
+          />
+        )}
+
+        <ProgressBar
+          page={page + 1}
+          total={book.chapters.length}
+          compact={true}
+        />
+
+        {bookNode}
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <ReadingToolbar
+        fontSize={fontSize}
+        setFontSize={setFontSizeState}
+        theme={theme}
+        setTheme={chooseTheme}
+        fullscreen={fullscreen}
+        toggleFullscreen={
+          toggleFullscreen
+        }
+        onToggleToc={() =>
+          setTocOpen((v) => !v)
+        }
+      />
+
+      {tocOpen && (
+        <TableOfContents
+          chapters={book.chapters}
+          currentPage={page}
+          onSelect={(index) => {
+            setRawPage(index);
+
+            setTocOpen(false);
+          }}
+        />
+      )}
+
+      <ProgressBar
+        page={page + 1}
+        total={book.chapters.length}
+      />
+
+      {bookNode}
     </>
   );
 }

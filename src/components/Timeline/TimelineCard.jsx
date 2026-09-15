@@ -48,14 +48,21 @@ function TimelineCard({
       =========================== */}
 
       <div className={styles.imageWrapper}>
-        <img
-          src={
-            moment.image_url ||
-            "https://placehold.co/900x600?text=Memory"
-          }
-          alt={moment.title}
-          className={styles.image}
-        />
+        {moment.image_url ? (
+          <img
+            src={moment.image_url}
+            alt={moment.title}
+            className={styles.image}
+          />
+        ) : (
+          <div
+            className={styles.placeholder}
+            role="img"
+            aria-label={moment.title}
+          >
+            <span>📷</span>
+          </div>
+        )}
 
         <div className={styles.overlay} />
 

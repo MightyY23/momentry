@@ -46,7 +46,7 @@ padding:28px;
 
 border-radius:22px;
 
-background:#f5f5f5;
+background:var(--background-secondary);
 
 opacity:.55;
 
@@ -82,7 +82,7 @@ min-height:42px;
 
 .card span{
 
-color:#ff5c8d;
+color:var(--primary);
 
 font-weight:bold;
 

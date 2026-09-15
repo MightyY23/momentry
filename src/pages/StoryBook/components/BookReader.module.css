@@ -248,7 +248,14 @@
     border-radius:999px;
 
     background:
-        rgba(255,255,255,.8);
+        var(--surface);
+
+    background:
+        color-mix(
+            in srgb,
+            var(--surface) 80%,
+            transparent
+        );
 
     backdrop-filter:blur(16px);
 
@@ -256,7 +263,7 @@
 
     border:
         1px solid
-        rgba(255,255,255,.45);
+        var(--border-light);
 
     font-weight:700;
 
@@ -397,7 +404,7 @@
 
     font-size:1.2rem;
 
-    color:#7a173b;
+    color:var(--primary);
 
 }
 
@@ -537,6 +544,240 @@
 
         padding:
             12px 20px;
+
+    }
+
+}
+
+/* ==========================================================
+   FITTED READER + IMMERSIVE FULLSCREEN
+========================================================== */
+
+.readerWrap {
+
+    width: 100%;
+
+}
+
+
+/* readerWrap sits between the overlay and the
+   reader — it must be the flex child that
+   constrains the reader's height. */
+.immersiveOverlay .readerWrap {
+
+    flex: 1;
+
+    min-height: 0;
+
+    display: flex;
+
+}
+
+
+.readerImmersive {
+
+    /* Take exactly the overlay space left over
+       after toolbar + progress — a fixed 100dvh
+       here overflowed and pushed the book off-
+       screen. flex:1 + min-height:0 is the fix.
+       NOTE: .reader stays a ROW (stacks flank
+       the book); only bookArea is a column. */
+    flex: 1;
+
+    min-height: 0;
+
+    align-items: stretch;
+
+    gap: 14px;
+
+    padding: 0 10px 8px;
+
+    margin: 0;
+
+    overflow: hidden;
+
+}
+
+
+/* THE BOOK IS THE SHOW in fullscreen —
+   hide the secondary top chrome (Back to
+   Cover / % Read); exit + TOC live in the
+   toolbar, page position in the nav row. */
+.readerImmersive .topBar {
+
+    display: none;
+
+}
+
+
+.readerImmersive .navigation {
+
+    margin-top: 8px;
+
+    width: 100%;
+
+}
+
+.readerImmersive .navigation button {
+
+    min-width: 0;
+
+    min-height: 44px;
+
+    padding: 10px 18px;
+
+}
+
+.readerImmersive .pageInfo {
+
+    min-width: 0;
+
+    padding: 8px 14px;
+
+}
+
+
+/* Side stacks must follow the reader height
+   instead of their fixed 720px. */
+.readerImmersive .leftStack,
+
+.readerImmersive .rightStack {
+
+    height: auto;
+
+    align-self: stretch;
+
+}
+
+
+.readerImmersive .bookArea {
+
+    flex: 1;
+
+    min-height: 0;
+
+    justify-content: space-between;
+
+}
+
+
+/* BookPage sizes itself against the viewport
+   (86vh max) — inside immersive it must size
+   against the leftover space instead. */
+.readerImmersive .bookArea > :nth-child(2) {
+
+    flex: 1;
+
+    min-height: 0 !important;
+
+    max-height: 100% !important;
+
+    height: auto !important;
+
+}
+
+
+.immersiveOverlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1200;
+
+    display: flex;
+
+    flex-direction: column;
+
+    background: #14100f;
+
+    overflow: hidden;
+
+    padding-top: env(safe-area-inset-top);
+
+}
+
+/* Backdrop follows the READING theme
+   (paper/sepia/dark), not the app theme —
+   the book itself drives the reading mood. */
+
+.immersiveOverlayDark {
+
+    background: #14100f;
+
+}
+
+.immersiveOverlaySepia {
+
+    background: #f0e4d0;
+
+}
+
+.immersiveOverlayPaper {
+
+    background: #efe6da;
+
+}
+
+@media(max-width:900px) {
+
+    .readerImmersive {
+
+        gap: 8px;
+
+    }
+
+    .readerImmersive .topBar {
+
+        flex-direction: row;
+
+        width: 100%;
+
+        gap: 10px;
+
+    }
+
+    .readerImmersive .coverButton,
+
+    .readerImmersive .progress {
+
+        width: auto;
+
+        min-height: 40px;
+
+        padding: 8px 14px;
+
+        font-size: .85rem;
+
+    }
+
+    .readerImmersive .navigation {
+
+        flex-direction: row;
+
+        width: 100%;
+
+        margin-top: 0;
+
+        gap: 10px;
+
+    }
+
+    .readerImmersive .navigation button {
+
+        width: auto;
+
+        flex: 1;
+
+        min-height: 44px;
+
+    }
+
+    .readerImmersive .pageInfo {
+
+        width: auto;
+
+        padding: 0 6px;
 
     }
 

@@ -64,7 +64,7 @@
 
   background: var(--primary);
 
-  color: white;
+  color: var(--text-inverse);
 
   cursor: pointer;
 
@@ -172,7 +172,7 @@
 
   background: var(--primary);
 
-  color: white;
+  color: var(--text-inverse);
 
   cursor: pointer;
 
@@ -222,12 +222,11 @@
 
 @media (max-width: 900px) {
 
-  .top {
-    flex-direction: column;
-  }
+  /* Arrows stay beside the title —
+     stacking them looks broken. */
 
-  .title {
-    order: -1;
+  .top {
+    flex-direction: row;
   }
 
   .bottom {
@@ -250,7 +249,11 @@
 @media (max-width: 600px) {
 
   .header {
-    padding: 22px;
+    padding: 18px 16px;
+  }
+
+  .top {
+    gap: 10px;
   }
 
   .stats {
@@ -258,30 +261,63 @@
 
     grid-template-columns: repeat(3, 1fr);
 
+    gap: 10px;
+
     width: 100%;
   }
 
   .stat {
     min-width: auto;
 
-    padding: 14px;
+    padding: 10px 8px;
+  }
+
+  .stat span {
+    font-size: 1.1rem;
+  }
+
+  .stat strong {
+    margin-top: 4px;
+
+    font-size: 1.1rem;
+  }
+
+  .stat small {
+    font-size: .68rem;
   }
 
   .title h1 {
-    font-size: 2rem;
+    font-size: 1.45rem;
+  }
+
+  .title p {
+    margin-top: 4px;
+
+    font-size: .8rem;
   }
 
   .arrow {
-    width: 48px;
-    height: 48px;
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
   }
 
   .actions {
-    flex-direction: column;
+    flex-direction: row;
+
+    gap: 10px;
   }
 
-  .today,
+  .today {
+    flex: 1;
+
+    padding: 11px 14px;
+  }
+
   .actions select {
-    width: 100%;
+    width: auto;
+
+    padding: 11px 12px;
   }
 }

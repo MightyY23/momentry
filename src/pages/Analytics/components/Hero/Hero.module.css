@@ -9,10 +9,10 @@ background:
 linear-gradient(
 135deg,
 #ff7aa8,
-#ff4f86
+var(--primary)
 );
 
-color:white;
+color:var(--text-inverse);
 
 text-align:center;
 

@@ -1347,3 +1347,27 @@
     }
 
 }
+/* ==========================================================
+   IMMERSIVE (FULLSCREEN) MODE
+   Inside the fullscreen overlay the book must fit
+   the leftover viewport space instead of enforcing
+   its own min(760px,82vh) height — otherwise it
+   overflows below the fold and collapses visually.
+   Appended last so it wins the cascade, including
+   over the mobile media query above.
+========================================================== */
+
+.bookImmersive{
+
+    min-height:0 !important;
+
+    max-height:100% !important;
+
+    height:100% !important;
+
+    /* Edge to edge — the book is the hero. */
+    width:min(1240px,100%);
+
+    border-radius:24px;
+
+}

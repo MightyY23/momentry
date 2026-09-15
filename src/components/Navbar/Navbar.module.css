@@ -1,499 +1,177 @@
 /* ==========================================================
-   NAVBAR WRAPPER
+   TOP BAR + BOTTOM TAB BAR
+   Minimal chrome: brand | search · story-settings · settings
    ========================================================== */
 
 .wrapper {
   position: sticky;
-  top: 20px;
+  top: 0;
 
-  z-index: var(--z-sticky);
+  z-index: var(--z-sticky, 200);
 
-  margin-bottom: 40px;
+  margin-bottom: 28px;
+
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 /* ==========================================================
-   NAVBAR
+   TOP BAR
    ========================================================== */
 
 .navbar {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
 
-  gap: 32px;
+  gap: 16px;
 
-  padding: 18px 24px;
+  padding: 12px 18px;
 
   background: var(--glass-bg);
 
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
 
-  border: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
 
-  border-radius: var(--radius-2xl);
-
-  box-shadow: var(--shadow-lg);
-
-  transition: all var(--transition);
+  transition: background var(--transition);
 }
 
-.navbar:hover {
-  box-shadow: var(--shadow-xl);
-}
-
-/* ==========================================================
-   BRAND
-   ========================================================== */
+/* ----------------------------------------------------------
+   Brand
+---------------------------------------------------------- */
 
 .brand {
   display: flex;
+
   align-items: center;
 
-  gap: 16px;
+  gap: 12px;
+
+  text-decoration: none;
 
   flex-shrink: 0;
 }
 
 .logoCircle {
-  width: 52px;
-  height: 52px;
-
-  border-radius: 50%;
-
   display: flex;
+
   align-items: center;
   justify-content: center;
 
-  color: white;
+  width: 40px;
+  height: 40px;
+
+  border-radius: 50%;
+
+  color: #fff;
+
+  font-size: 19px;
 
   background: var(--gradient-primary);
 
   box-shadow: var(--shadow);
-
-  animation: pulse 4s ease-in-out infinite;
 }
 
 .brandText {
-  display: flex;
-  flex-direction: column;
-}
+  font-size: 1.2rem;
 
-.brandText h1 {
-  margin: 0;
+  font-weight: 700;
 
-  font-size: 1.35rem;
-
-  line-height: 1.1;
+  letter-spacing: -.01em;
 
   color: var(--text);
 }
 
-.brandText span {
-  margin-top: 3px;
+/* ----------------------------------------------------------
+   Action icons
+---------------------------------------------------------- */
 
-  color: var(--text-secondary);
-
-  font-size: .82rem;
-}
-
-/* ==========================================================
-   DESKTOP LINKS
-   ========================================================== */
-
-.desktopLinks {
+.actions {
   display: flex;
+
   align-items: center;
 
-  gap: 10px;
-
-  flex-wrap: nowrap;
-
-  overflow-x: auto;
-
-  scrollbar-width: none;
+  gap: 6px;
 }
 
-.desktopLinks::-webkit-scrollbar {
-  display: none;
-}
-
-/* ==========================================================
-   LINK
-   ========================================================== */
-
-.link {
+.iconButton {
   display: flex;
-  align-items: center;
-  gap: 10px;
 
-  padding: 11px 16px;
-
-  border-radius: var(--radius-lg);
-
-  text-decoration: none;
-
-  color: var(--text-secondary);
-
-  font-weight: 600;
-
-  white-space: nowrap;
-
-  transition:
-    background var(--transition),
-    color var(--transition),
-    transform var(--transition),
-    box-shadow var(--transition);
-}
-
-.link svg {
-  transition:
-    transform var(--transition),
-    color var(--transition);
-}
-
-.link:hover {
-  background: rgba(255,92,141,.10);
-
-  color: var(--primary);
-
-  transform: translateY(-2px);
-}
-
-.link:hover svg {
-  transform: scale(1.15);
-}
-
-/* ==========================================================
-   ACTIVE
-   ========================================================== */
-
-.active {
-  background: var(--gradient-primary);
-
-  color: white;
-
-  box-shadow:
-    0 10px 25px rgba(255,92,141,.25);
-}
-
-.active svg {
-  transform: scale(1.08);
-}
-
-/* ==========================================================
-   SHARE BUTTON
-   ========================================================== */
-
-.shareWrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.storyEditButton {
-  display: flex;
   align-items: center;
   justify-content: center;
 
   width: 42px;
   height: 42px;
 
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
 
-  cursor: pointer;
-
-  background: var(--surface);
-
-  color: var(--text);
+  color: var(--text-secondary);
 
   transition:
-    transform var(--transition),
-    color var(--transition),
-    background var(--transition);
+    color var(--transition-fast),
+    background var(--transition-fast);
 }
 
-.storyEditButton:hover {
-  transform: translateY(-2px);
+.iconButton:hover {
   color: var(--primary);
-  background: var(--primary-light);
+
+  background: var(--primary-50);
 }
 
-.shareButton {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  padding: 11px 18px;
-
-  border: none;
-  border-radius: var(--radius-lg);
-
-  cursor: pointer;
-
-  background: var(--gradient-primary);
-
-  color: white;
-
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 700;
-  white-space: nowrap;
-
-  box-shadow: 0 10px 25px rgba(255, 92, 141, 0.25);
-
-  transition:
-    transform var(--transition),
-    box-shadow var(--transition);
-}
-
-.shareButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 32px rgba(255, 92, 141, 0.35);
+.iconButton:active {
+  transform: scale(.94);
 }
 
 /* ==========================================================
-   MOBILE BUTTON
-   ========================================================== */
-
-.menuButton {
-  display: none;
-
-  width: 48px;
-  height: 48px;
-
-  border-radius: 14px;
-
-  background: var(--surface);
-
-  border: 1px solid var(--border);
-
-  color: var(--text);
-
-  align-items: center;
-  justify-content: center;
-
-  transition: all var(--transition);
-}
-
-.menuButton:hover {
-  background: var(--primary-light);
-
-  color: var(--primary);
-}
-
-/* ==========================================================
-   MOBILE MENU
-   ========================================================== */
-
-.mobileMenu {
-  display: none;
-}
-
-.mobileLink {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  padding: 15px 18px;
-
-  color: var(--text);
-
-  text-decoration: none;
-
-  font-weight: 600;
-
-  border-radius: var(--radius-lg);
-
-  transition: all var(--transition);
-}
-
-.mobileLink:hover {
-  background: rgba(255,92,141,.10);
-
-  color: var(--primary);
-}
-
-/* ==========================================================
-   TABLET
-   ========================================================== */
-
-@media (max-width: 1200px) {
-
-  .navbar {
-    gap: 20px;
-  }
-
-  .link span {
-    display: none;
-  }
-
-  .link {
-    padding: 12px;
-  }
-
-  .shareButton span {
-    display: none;
-  }
-
-  .shareButton {
-    padding: 11px;
-  }
-}
-
-/* ==========================================================
-   MOBILE
-   ========================================================== */
-
-@media (max-width: 900px) {
-
-  .navbar {
-    padding: 16px 18px;
-  }
-
-  .desktopLinks {
-    display: none;
-  }
-
-  .menuButton {
-    display: flex;
-  }
-
-  .mobileMenu {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 10px;
-
-    margin-top: 16px;
-
-    padding: 16px;
-
-    border-radius: var(--radius-xl);
-
-    background: var(--glass-bg);
-
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-
-    border: 1px solid var(--glass-border);
-
-    box-shadow: var(--shadow);
-
-    overflow: hidden;
-
-    max-height: 0;
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    transition:
-      max-height .35s ease,
-      opacity .35s ease,
-      padding .35s ease;
-  }
-
-  .mobileOpen {
-    max-height: 700px;
-
-    opacity: 1;
-
-    pointer-events: auto;
-  }
-
-  .brandText span {
-    display: none;
-  }
-
-  .shareWrap {
-    margin-right: auto;
-  }
-
-  .shareButton span {
-    display: inline;
-  }
-
-  .shareButton {
-    padding: 11px 18px;
-  }
-}
-
-/* ==========================================================
-   SMALL MOBILE
-   ========================================================== */
-
-@media (max-width: 600px) {
-
-  .wrapper {
-    top: 10px;
-  }
-
-  .navbar {
-    padding: 14px 16px;
-
-    border-radius: var(--radius-xl);
-  }
-
-  .brand {
-    gap: 12px;
-  }
-
-  .logoCircle {
-    width: 46px;
-    height: 46px;
-  }
-
-  .brandText h1 {
-    font-size: 1.15rem;
-  }
-
-  .mobileLink {
-    padding: 14px;
-  }
-}
-
-/* ==========================================================
-   DARK MODE POLISH
-   ========================================================== */
-
-.dark .navbar,
-.dark .mobileMenu {
-  border-color: rgba(255,255,255,.06);
-}
-
-.dark .active {
-  box-shadow:
-    0 12px 28px rgba(255,122,168,.30);
-}
-/* ==========================================================
-   MOBILE BOTTOM TAB BAR
-   Fixed to the bottom in thumb reach on
-   phones — turns the site into an app.
+   BOTTOM TAB BAR
    ========================================================== */
 
 .tabbar {
   display: none;
 }
 
+.tabSpacer {
+  display: none;
+}
+
 @media (max-width: 700px) {
+
+  .wrapper {
+    position: static;
+
+    margin-bottom: 0;
+  }
+
+  .navbar {
+    position: sticky;
+
+    top: 0;
+
+    z-index: var(--z-sticky, 200);
+
+    padding: 10px 14px;
+  }
 
   .tabbar {
     position: fixed;
+
     left: 0;
     right: 0;
     bottom: 0;
 
-    z-index: var(--z-sticky, 100);
+    /* Above Leaflet panes and page
+       content (Leaflet uses 400-700). */
+    z-index: 900;
 
     display: flex;
+
     justify-content: space-around;
     align-items: stretch;
 
-    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+    padding: 6px 4px
+      calc(6px + env(safe-area-inset-bottom, 0px));
 
     background: var(--glass-bg);
 
@@ -502,16 +180,19 @@
 
     border-top: 1px solid var(--glass-border);
 
-    box-shadow: 0 -8px 30px rgba(0,0,0,.08);
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, .08);
   }
 
   .tab {
     flex: 1;
 
     display: flex;
+
     flex-direction: column;
+
     align-items: center;
     justify-content: center;
+
     gap: 3px;
 
     min-height: 54px;
@@ -524,7 +205,7 @@
 
     color: var(--text-secondary);
 
-    font-size: .62rem;
+    font-size: .6rem;
     font-weight: 600;
 
     transition: color var(--transition);
@@ -538,26 +219,18 @@
     color: var(--primary);
   }
 
-  /* Keep the sticky header shorter on
-     phones; content needs bottom room. */
-  .wrapper {
-    margin-bottom: 22px;
-  }
-
-  /* Compensate for the fixed tab bar so
-     page content is never hidden behind
-     it. Applied via the page padding
-     rule below. */
-}
-
-.tabSpacer {
-  display: none;
-}
-
-@media (max-width: 700px) {
   .tabSpacer {
     display: block;
 
-    height: 76px;
+    height: 78px;
   }
+}
+
+/* ==========================================================
+   DARK MODE POLISH
+   ========================================================== */
+
+:global(.dark) .navbar,
+:global(.dark) .tabbar {
+  border-color: rgba(255, 255, 255, .06);
 }

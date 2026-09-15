@@ -37,7 +37,7 @@
 .gradient {
   background: var(--gradient-primary);
 
-  color: white;
+  color: var(--text-inverse);
 
   box-shadow: var(--shadow-lg);
 }

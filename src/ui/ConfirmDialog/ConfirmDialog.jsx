@@ -29,6 +29,7 @@ function ConfirmDialog({
   cancelLabel = "Cancel",
   danger = false,
   loading = false,
+  elevated = false,
   onConfirm,
   onCancel,
   children,
@@ -43,6 +44,7 @@ function ConfirmDialog({
       }
       title={title}
       size="sm"
+      elevated={elevated}
     >
       {message && (
         <p className={styles.message}>

@@ -67,7 +67,9 @@ function ProfileHero({
       </h2>
 
       <p className={styles.subtitle}>
-        {totalMemories} memories preserved forever.
+        {totalMemories}{' '}
+        {totalMemories === 1 ? "memory" : "memories"}{' '}
+        preserved forever.
       </p>
     </motion.div>
   );

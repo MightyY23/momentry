@@ -52,7 +52,7 @@ align-items:center;
 
 justify-content:center;
 
-background:#f6f6f6;
+background:var(--background-secondary);
 
 border-radius:16px;
 
@@ -106,7 +106,11 @@ color: var(--text-secondary);
 
 }
 
-button{
+/* Scoped class — a bare `button {}` in a CSS
+   module stays GLOBAL and restyles every
+   button on any page that loads this file. */
+
+.cardButton{
 
 align-self:flex-start;
 
@@ -118,9 +122,9 @@ border:none;
 
 border-radius:12px;
 
-background:#ff5c8d;
+background:var(--primary);
 
-color:white;
+color:var(--text-inverse);
 
 cursor:pointer;
 
@@ -130,7 +134,7 @@ transition:.25s;
 
 }
 
-button:hover{
+.cardButton:hover{
 
 transform:translateY(-2px);
 

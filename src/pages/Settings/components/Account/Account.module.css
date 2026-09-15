@@ -16,7 +16,7 @@
   border: 1px solid var(--border, #ebe7ef);
   border-radius: 14px;
 
-  background: var(--surface-2, #faf8fb);
+  background: var(--background-secondary);
 }
 
 .infoRow {
@@ -96,7 +96,7 @@
 }
 
 .field input:focus {
-  border-color: var(--primary, #ff5c8d);
+  border-color: var(--primary, var(--primary));
 }
 
 .actions {
@@ -128,7 +128,7 @@
   font-size: 1rem;
   font-weight: 700;
 
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .dangerText {
@@ -150,7 +150,7 @@
   border: none;
   border-radius: 12px;
 
-  background: #dc2626;
+  background: var(--danger);
 
   color: #fff;
 
@@ -192,7 +192,7 @@
 }
 
 .confirmInput:focus {
-  border-color: #dc2626;
+  border-color: var(--danger);
 }
 
 @media (max-width: 600px) {

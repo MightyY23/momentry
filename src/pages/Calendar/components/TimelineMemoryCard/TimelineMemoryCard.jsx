@@ -64,6 +64,7 @@ function TimelineMemoryCard({
         )}
 
         <button
+          className={styles.cardButton}
           onClick={() =>
             navigate(`/moment/${moment.id}`)
           }

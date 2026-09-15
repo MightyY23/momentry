@@ -21,11 +21,11 @@
     background:
         linear-gradient(
             135deg,
-            #fff8fb,
-            #ffffff
+            var(--primary-50),
+            var(--surface)
         );
 
-    border:1px solid rgba(255,255,255,.6);
+    border:1px solid var(--border-light);
 
     backdrop-filter:blur(20px);
 
@@ -46,9 +46,9 @@
 
     border-radius:999px;
 
-    background:#ffe9f2;
+    background:var(--primary-50);
 
-    color:#ff5c8d;
+    color:var(--primary);
 
     font-size:.85rem;
 
@@ -99,11 +99,11 @@
     background:
         linear-gradient(
             135deg,
-            #ff5c8d,
-            #ff8fb0
+            var(--primary),
+            var(--primary-hover)
         );
 
-    color:white;
+    color:var(--text-inverse);
 
     display:flex;
 
@@ -183,11 +183,11 @@
     background:
         linear-gradient(
             145deg,
-            rgba(255,255,255,.96),
-            rgba(255,247,250,.96)
+            var(--surface),
+            var(--background-secondary)
         );
 
-    border:2px dashed #ffd7e3;
+    border:2px dashed var(--primary-200);
 
     box-shadow:
         0 18px 50px rgba(0,0,0,.05);
@@ -250,38 +250,51 @@ column-count:2;
 
 @media(max-width:768px){
 
+/* Compact chrome — the photos
+   are the hero on phones. */
 .hero{
 
-padding:28px;
+padding:16px 16px 14px;
 
-border-radius:24px;
+margin:10px 0 16px;
+
+border-radius:18px;
+
+gap:12px;
+
+}
+
+.badge{
+
+padding:5px 12px;
+
+font-size:.68rem;
 
 }
 
 .hero h1{
 
-font-size:2.3rem;
+margin:10px 0 6px;
+
+font-size:1.5rem;
+
+}
+
+.hero p{
+
+display:none;
 
 }
 
 .count{
 
-width:150px;
-
-}
-
-.count h2{
-
-font-size:3rem;
+display:none;
 
 }
 
 .grid{
-
-column-count:2;
-
+column-count:1;
 column-gap:12px;
-
 }
 
 }
@@ -292,7 +305,7 @@ column-gap:12px;
 
 .hero{
 
-padding:22px;
+padding:14px;
 
 }
 

@@ -42,12 +42,14 @@ function ReadingToolbar({
     <div className={styles.toolbar}>
       <div className={styles.group}>
         <button
+          className={styles.button}
           onClick={() =>
             setFontSize((s) =>
               Math.max(18, s - 2)
             )
           }
           title="Decrease font"
+          aria-label="Decrease font size"
         >
           A−
         </button>
@@ -59,12 +61,14 @@ function ReadingToolbar({
         </div>
 
         <button
+          className={styles.button}
           onClick={() =>
             setFontSize((s) =>
               Math.min(36, s + 2)
             )
           }
           title="Increase font"
+          aria-label="Increase font size"
         >
           A+
         </button>
@@ -81,10 +85,11 @@ function ReadingToolbar({
             }
             className={
               theme === item.id
-                ? styles.active
-                : ""
+                ? `${styles.button} ${styles.active}`
+                : styles.button
             }
             title={item.label}
+            aria-label={`${item.label} reading theme`}
           >
             {item.icon}
           </button>
@@ -94,8 +99,10 @@ function ReadingToolbar({
       <div className={styles.divider} />
 
       <button
+        className={styles.button}
         onClick={onToggleToc}
         title="Table of contents"
+        aria-label="Table of contents"
       >
         <List size={18} />
       </button>
@@ -103,8 +110,14 @@ function ReadingToolbar({
       <div className={styles.divider} />
 
       <button
+        className={styles.button}
         onClick={toggleFullscreen}
         title="Fullscreen"
+        aria-label={
+          fullscreen
+            ? "Exit fullscreen"
+            : "Enter fullscreen"
+        }
       >
         {fullscreen ? (
           <Minimize size={18} />

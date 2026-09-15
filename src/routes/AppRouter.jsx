@@ -19,6 +19,7 @@ import AddMoment from "../pages/AddMoment/AddMoment";
 import ViewMoment from "../pages/ViewMoment/ViewMoment";
 import EditMoment from "../pages/EditMoment/EditMoment";
 import AcceptInvitation from "../pages/AcceptInvitation/AcceptInvitation";
+import Onboarding from "../pages/Onboarding/Onboarding";
 import Profile from "../pages/Profile/Profile";
 
 //----------------------------------------
@@ -163,6 +164,15 @@ function AppRouter() {
           element={
             <ProtectedRoute>
               <AcceptInvitation />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute>
+              <Onboarding />
             </ProtectedRoute>
           }
         />

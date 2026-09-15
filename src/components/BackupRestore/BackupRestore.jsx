@@ -53,29 +53,38 @@ function BackupRestore({
         📦 Backup & Restore
       </h2>
 
-      <button
-        onClick={onExport}
-      >
-        📤 Export Backup
-      </button>
+      <p>
+        Download a JSON backup of your
+        story, or restore one on a new
+        device.
+      </p>
 
-      <label
-        className={
-          styles.restore
-        }
-      >
+      <div className={styles.actions}>
+        <button
+          className={styles.export}
+          onClick={onExport}
+        >
+          📤 Export Backup
+        </button>
+
+        <label
+          className={
+            styles.restore
+          }
+        >
         📥 Restore Backup
 
-        <input
-          type="file"
-          accept=".json"
-          hidden
-          ref={fileInputRef}
-          onChange={
-            handleFile
-          }
-        />
-      </label>
+          <input
+            type="file"
+            accept=".json"
+            hidden
+            ref={fileInputRef}
+            onChange={
+              handleFile
+            }
+          />
+        </label>
+      </div>
 
       <ConfirmDialog
         open={!!pendingFile}

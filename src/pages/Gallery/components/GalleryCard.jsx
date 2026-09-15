@@ -4,7 +4,6 @@ import {
   Download,
   Share2,
   MapPin,
-  CalendarDays,
 } from "lucide-react";
 
 import styles from "./GalleryCard.module.css";
@@ -115,62 +114,45 @@ function GalleryCard({
         }}
       />
 
-      {/* Favorite */}
+      {/* Favorite ribbon (always visible) */}
 
       {moment.is_favorite && (
         <div
           className={styles.favorite}
+          aria-label="Favorite memory"
         >
           ❤️
         </div>
       )}
 
-      {/* Date */}
+      {/* Caption bar — photo stays the
+          hero; info lives in a slim strip. */}
 
-      <div className={styles.date}>
-        <CalendarDays
-          size={14}
-        />
-
-        {new Date(
-          moment.memory_date
-        ).toLocaleDateString()}
-      </div>
-
-      {/* Overlay */}
-
-      <div className={styles.overlay}>
-        <div
-          className={
-            styles.content
-          }
-        >
+      <div className={styles.caption}>
+        <div className={styles.captionText}>
           <h3>{moment.title}</h3>
 
-          {moment.location && (
-            <div
-              className={
-                styles.location
-              }
-            >
-              <MapPin
-                size={15}
-              />
+          <div className={styles.location}>
+            {moment.location && (
+              <>
+                <MapPin size={12} />
 
-              {moment.location}
-            </div>
-          )}
+                {moment.location}
+              </>
+            )}
+
+            <span>
+              {new Date(
+                moment.memory_date
+              ).toLocaleDateString()}
+            </span>
+          </div>
         </div>
 
-        <div
-          className={
-            styles.actions
-          }
-        >
+        <div className={styles.actions}>
           <button
-            onClick={
-              handleFavorite
-            }
+            className={styles.actionBtn}
+            onClick={handleFavorite}
             aria-label={
               moment.is_favorite
                 ? "Remove from favorites"
@@ -178,7 +160,7 @@ function GalleryCard({
             }
           >
             <Heart
-              size={18}
+              size={17}
               fill={
                 moment.is_favorite
                   ? "#ff5c8d"
@@ -188,23 +170,19 @@ function GalleryCard({
           </button>
 
           <button
-            onClick={
-              handleDownload
-            }
+            className={styles.actionBtn}
+            onClick={handleDownload}
+            aria-label="Download photo"
           >
-            <Download
-              size={18}
-            />
+            <Download size={17} />
           </button>
 
           <button
-            onClick={
-              handleShare
-            }
+            className={styles.actionBtn}
+            onClick={handleShare}
+            aria-label="Share memory"
           >
-            <Share2
-              size={18}
-            />
+            <Share2 size={17} />
           </button>
         </div>
       </div>

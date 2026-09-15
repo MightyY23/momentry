@@ -184,7 +184,7 @@
 
   background: var(--primary);
 
-  color: white;
+  color: var(--text-inverse);
 
   font-size: .92rem;
   font-weight: 600;

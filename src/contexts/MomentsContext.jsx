@@ -89,9 +89,23 @@ export function MomentsProvider({
   async function addMoment(
     moment
   ) {
-    return await createMoment(
+    const created = await createMoment(
       moment
     );
+
+    if (created) {
+      // Optimistic-confirmation: realtime may
+      // also refetch, but never rely on it.
+      setMoments((prev) =>
+        [...prev, created].sort(
+          (a, b) =>
+            new Date(a.memory_date) -
+            new Date(b.memory_date)
+        )
+      );
+    }
+
+    return created;
   }
 
   //---------------------------------------
@@ -102,10 +116,20 @@ export function MomentsProvider({
     id,
     updates
   ) {
-    return await updateMoment(
+    const updated = await updateMoment(
       id,
       updates
     );
+
+    if (updated) {
+      setMoments((prev) =>
+        prev.map((m) =>
+          m.id === id ? { ...m, ...updated } : m
+        )
+      );
+    }
+
+    return updated;
   }
 
   //---------------------------------------
@@ -129,7 +153,14 @@ export function MomentsProvider({
       );
     }
 
-    return await deleteMoment(target);
+    const result = await deleteMoment(target);
+
+    // Remove from local state immediately.
+    setMoments((prev) =>
+      prev.filter((m) => m.id !== target.id)
+    );
+
+    return result;
   }
 
   //---------------------------------------
@@ -150,10 +181,25 @@ export function MomentsProvider({
       throw new Error("Memory not found.");
     }
 
-    return await toggleFavorite(
+    const updated = await toggleFavorite(
       target.id,
       target.is_favorite
     );
+
+    if (updated) {
+      // Reflect instantly — the UI must never
+      // wait on the realtime channel (or a
+      // manual reload) to show the new state.
+      setMoments((prev) =>
+        prev.map((m) =>
+          m.id === target.id
+            ? { ...m, is_favorite: updated.is_favorite }
+            : m
+        )
+      );
+    }
+
+    return updated;
   }
 
   //---------------------------------------
@@ -180,6 +226,30 @@ export function MomentsProvider({
           event: "*",
           schema: "public",
           table: "moments",
+        },
+        () => {
+          refresh();
+        }
+      )
+      // Story edits (title/cover) and new
+      // memberships propagate instantly too.
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "stories",
+        },
+        () => {
+          refresh();
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "story_members",
         },
         () => {
           refresh();

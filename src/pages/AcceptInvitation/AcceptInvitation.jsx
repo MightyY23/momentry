@@ -13,11 +13,18 @@ import { acceptInvitation } from "../../services/invitation/acceptInvitation";
 import { declineInvitation } from "../../services/invitation/declineInvitation";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
 import useNotification from "../../hooks/useNotification";
+import useMoments from "../../hooks/useMoments";
 
 function AcceptInvitation() {
   const navigate = useNavigate();
 
   const notify = useNotification();
+
+  // Acceptance changes which story the user
+  // belongs to — the SPA must refetch story
+  // + moments, or the dashboard shows stale
+  // empty data until a manual reload.
+  const { refresh: refreshMoments } = useMoments();
 
   const [invitation, setInvitation] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -74,6 +81,10 @@ function AcceptInvitation() {
       setAccepting(true);
 
       await acceptInvitation(invitation);
+
+      // Refresh global story/moments state BEFORE
+      // navigating so /home renders real data.
+      await refreshMoments();
 
       navigate("/home");
     } catch (error) {
@@ -137,7 +148,11 @@ function AcceptInvitation() {
           </p>
 
           <div className={styles.storyBox}>
-            <h2>{invitation.stories.title}</h2>
+            {/* invitation.stories is null under RLS when
+                the invitee can't see the story yet. */}
+            <h2>
+              {invitation.stories?.title ?? "A Shared Story"}
+            </h2>
 
             <p>
               Someone invited you to collaborate on this story.

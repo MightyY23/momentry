@@ -448,22 +448,17 @@ function SharedStory() {
                       opacity: 0,
                       y: 30,
                     }}
-                    whileInView={{
+                    animate={{
                       opacity: 1,
                       y: 0,
-                    }}
-                    viewport={{
-                      once: true,
-                      margin:
-                        "-60px",
                     }}
                     transition={{
                       duration: 0.5,
                       delay:
                         Math.min(
                           index *
-                            0.04,
-                          0.3
+                            0.08,
+                          0.4
                         ),
                     }}
                   >

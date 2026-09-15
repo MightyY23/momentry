@@ -17,10 +17,8 @@ import { getProfile } from "../../services/profile/updateProfile";
 
 import ProfileHero from "./components/ProfileHero/ProfileHero";
 import ProfileStats from "./components/ProfileStats/ProfileStats";
-import Achievements from "./components/Achievements/Achievements";
-import ReadingProgress from "./components/ReadingProgress/ReadingProgress";
+import ProfileAnalytics from "./components/ProfileAnalytics/ProfileAnalytics";
 import RecentActivity from "./components/RecentActivity/RecentActivity";
-import QuickActions from "./components/QuickActions/QuickActions";
 import AccountInfo from "./components/AccountInfo/AccountInfo";
 
 function Profile() {
@@ -102,10 +100,31 @@ function Profile() {
 
     loadProfile();
 
+    // Profile edits (name/avatar/birthday) show
+    // up instantly across sessions via realtime.
+    const channel = supabase
+      .channel("profile-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "profiles",
+          filter: `id=eq.${user?.id ?? "unknown"}`,
+        },
+        () => {
+          refreshProfile();
+        }
+      )
+      .subscribe();
+
     return () => {
       cancelled = true;
+
+      supabase.removeChannel(channel);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   //---------------------------------------
   // Refresh profile after edit
@@ -205,13 +224,7 @@ function Profile() {
             moments={moments}
           />
 
-          <Achievements
-            moments={moments}
-          />
-
-          <ReadingProgress
-            moments={moments}
-          />
+          <ProfileAnalytics />
 
           <RecentActivity
             moments={moments}
@@ -224,8 +237,6 @@ function Profile() {
             user={user}
             profile={profile}
           />
-
-          <QuickActions />
 
           <div
             className={styles.dangerZone}

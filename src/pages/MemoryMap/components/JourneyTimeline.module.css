@@ -19,13 +19,13 @@ border-radius:30px;
 background:
 linear-gradient(
 180deg,
-rgba(255,255,255,.92),
-rgba(255,248,251,.96)
+var(--surface),
+var(--background-secondary)
 );
 
 backdrop-filter:blur(22px);
 
-border:1px solid rgba(255,255,255,.45);
+border:1px solid var(--border-light);
 
 box-shadow:
 0 24px 60px rgba(0,0,0,.08);
@@ -48,7 +48,7 @@ margin-bottom:26px;
 
 padding-bottom:20px;
 
-border-bottom:1px solid #f1e9ee;
+border-bottom:1px solid var(--border-light);
 
 }
 
@@ -70,9 +70,9 @@ padding:8px 16px;
 
 border-radius:999px;
 
-background:#ffeaf2;
+background:var(--primary-50);
 
-color:#ff4d88;
+color:var(--primary);
 
 font-size:.82rem;
 
@@ -106,7 +106,7 @@ width:7px;
 
 .list::-webkit-scrollbar-thumb{
 
-background:#ffc5d8;
+background:var(--primary-200);
 
 border-radius:999px;
 
@@ -208,7 +208,7 @@ border-radius:22px;
 
 background: var(--surface);
 
-border:1px solid #f5edf1;
+border:1px solid var(--border-light);
 
 box-shadow:
 0 12px 28px rgba(0,0,0,.06);
@@ -233,9 +233,9 @@ box-shadow:
 
 .active .content{
 
-border:2px solid #ff5c8d;
+border:2px solid var(--primary);
 
-background:#fff8fb;
+background:var(--surface);
 
 box-shadow:
 0 20px 42px rgba(255,92,141,.18);
@@ -317,7 +317,7 @@ height:34px;
 
 border-radius:50%;
 
-background:#fff0f6;
+background:var(--surface);
 
 font-size:1rem;
 

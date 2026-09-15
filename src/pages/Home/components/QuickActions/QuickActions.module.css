@@ -38,9 +38,9 @@
 
   border-radius: 999px;
 
-  background: #fff2d8;
+  background: var(--surface);
 
-  color: #c77d00;
+  color: var(--warning);
 
   font-size: .82rem;
 
@@ -81,7 +81,7 @@
 
   backdrop-filter: blur(20px);
 
-  border: 1px solid rgba(255,255,255,.35);
+  border: 1px solid var(--border-light);
 
   box-shadow:
     0 12px 30px rgba(0,0,0,.07);
@@ -122,7 +122,7 @@
     linear-gradient(
       180deg,
       #ff6b9a,
-      #ff94b7
+      var(--primary-hover)
     );
 
 }
@@ -199,7 +199,7 @@
     translateX(6px);
 
   color:
-    #ff5c8d;
+    var(--primary);
 
 }
 

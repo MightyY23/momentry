@@ -406,6 +406,18 @@ hr {
   }
 }
 
+/* User-toggled reduce motion (Settings →
+   Reading & Motion). Same effect as the
+   media query, applied via a class. */
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation-duration: .01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .01ms !important;
+  scroll-behavior: auto !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
 
   *,

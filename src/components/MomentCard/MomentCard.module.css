@@ -37,7 +37,7 @@
 
   border-radius: 50%;
 
-  background: #ff5c8d;
+  background: var(--primary);
 
   border: 5px solid white;
 

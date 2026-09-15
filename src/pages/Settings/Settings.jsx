@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import Navbar from "../../components/Navbar/Navbar";
 
+import { getPreferences } from "../../services/preferences/preferences";
+
 import PageLayout from "../../ui/PageLayout/PageLayout";
 import Container from "../../ui/Container/Container";
 
@@ -23,10 +25,34 @@ import useNotification from "../../hooks/useNotification";
 
 import styles from "./Settings.module.css";
 
+/**
+ * Keeps <html class="reduce-motion"> in sync
+ * with the stored preference, app-wide.
+ */
+function useReduceMotionClass() {
+  // Read on mount; the toggle UI writes the
+  // preference and the class applies on the
+  // next Settings visit (a reload-level event).
+  const [reduced] = useState(
+    () => getPreferences().reading.reduceMotion
+  );
+
+  useEffect(() => {
+    document.documentElement.classList.toggle(
+      "reduce-motion",
+      reduced
+    );
+  }, [reduced]);
+
+  return reduced;
+}
+
 function Settings() {
   //---------------------------------------
   // State
   //---------------------------------------
+
+  useReduceMotionClass();
 
   const notify = useNotification();
 
@@ -194,6 +220,45 @@ function Settings() {
           title="Account"
         >
           <Account />
+        </SettingsSection>
+
+        <SettingsSection
+          icon="📖"
+          title="Reading & Motion"
+        >
+          <PreferenceToggles
+            section="reading"
+            items={[
+              {
+                key: "reduceMotion",
+                label: "Reduce motion",
+                hint: "Calms animations and page transitions across the whole app.",
+              },
+            ]}
+            note="Applied instantly, everywhere."
+          />
+        </SettingsSection>
+
+        <SettingsSection
+          icon="📚"
+          title="StoryBook"
+        >
+          <PreferenceToggles
+            section="storybook"
+            items={[
+              {
+                key: "autoPlayPages",
+                label: "Auto-advance pages",
+                hint: "Turn pages automatically while reading.",
+              },
+              {
+                key: "showPageNumbers",
+                label: "Show page numbers",
+                hint: "Display page position inside the book.",
+              },
+            ]}
+            note="StoryBook reading preferences — saved on this device."
+          />
         </SettingsSection>
 
         <SettingsSection

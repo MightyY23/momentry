@@ -24,7 +24,7 @@ height:56px;
 
 border-radius:50%;
 
-background:#ff5c8d;
+background:var(--primary);
 
 display:flex;
 
@@ -34,7 +34,7 @@ align-items:center;
 
 font-size:24px;
 
-color:white;
+color:var(--text-inverse);
 
 }
 
@@ -44,7 +44,7 @@ flex:1;
 
 width:4px;
 
-background:#ffd5e3;
+background:var(--primary-200);
 
 margin-top:8px;
 
@@ -88,7 +88,7 @@ gap:10px;
 
 .memory{
 
-background:#fff4f8;
+background:var(--surface);
 
 padding:12px 18px;
 

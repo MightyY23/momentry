@@ -70,7 +70,7 @@
 
     cursor:pointer;
 
-    color:white;
+    color:var(--text-inverse);
 
     background:
         rgba(255,255,255,.12);
@@ -171,7 +171,7 @@
 
     -webkit-backdrop-filter:blur(22px);
 
-    border:1px solid rgba(255,255,255,.15);
+    border:1px solid var(--border-light);
 
     box-shadow:
         0 20px 60px rgba(0,0,0,.3);
@@ -192,7 +192,7 @@
 
     margin:0;
 
-    color:white;
+    color:var(--text-inverse);
 
     font-size:2rem;
 
@@ -241,7 +241,7 @@
     background:
         rgba(255,255,255,.14);
 
-    color:white;
+    color:var(--text-inverse);
 
     font-size:.85rem;
 
@@ -272,11 +272,11 @@
     background:
         linear-gradient(
             135deg,
-            #ff5c8d,
-            #ff8fb0
+            var(--primary),
+            var(--primary-hover)
         );
 
-    color:white;
+    color:var(--text-inverse);
 
     font-weight:700;
 
@@ -362,7 +362,7 @@
 
     padding:11px 16px;
 
-    border:1px solid rgba(255,255,255,.14);
+    border:1px solid var(--border-light);
 
     border-radius:12px;
 
@@ -400,7 +400,7 @@
 
 .primaryAction{
 
-    background:linear-gradient(135deg,#ff7ca7,#ff5c8d);
+    background:linear-gradient(135deg,var(--primary),var(--primary));
 
     border-color:transparent;
 
@@ -410,7 +410,7 @@
 
 .primaryAction:hover{
 
-    background:linear-gradient(135deg,#ff8fb5,#ff6d9c);
+    background:linear-gradient(135deg,var(--primary-hover),var(--primary-active));
 
 }
 
@@ -604,4 +604,65 @@ font-size:.85rem;
 
     }
 
+}
+
+/* ==========================================================
+   COMPACT PHONE ACTIONS — the photo is the
+   hero; chrome shrinks around it.
+   ========================================================== */
+
+@media (max-width: 700px) {
+
+    .actions {
+
+        gap: 6px;
+
+        flex-wrap: wrap;
+    }
+
+    .actionButton {
+
+        padding: 8px 12px;
+
+        font-size: .74rem;
+
+        border-radius: 10px;
+
+        gap: 5px;
+    }
+
+    .actionButton svg {
+
+        width: 14px;
+        height: 14px;
+    }
+
+    .play {
+
+        padding: 10px 14px;
+
+        font-size: .78rem;
+    }
+
+    .info {
+
+        padding: 14px;
+    }
+
+    .left h2 {
+
+        font-size: 1.15rem;
+    }
+
+    .left p {
+
+        font-size: .8rem;
+    }
+
+    .meta span {
+
+        font-size: .68rem;
+
+        padding: 6px 9px;
+    }
 }

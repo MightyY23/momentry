@@ -13,9 +13,9 @@ import Navbar from "../../components/Navbar/Navbar";
 import StoryHeader from "../../components/StoryHeader/StoryHeader";
 import EmptyState from "../../components/EmptyState/EmptyState";
 import Timeline from "../../components/Timeline/Timeline";
-import CommandPalette from "../../components/CommandPalette/CommandPalette";
 
 import HeroSection from "./components/HeroSection/HeroSection";
+import OccasionGifts from "./components/OccasionGifts/OccasionGifts";
 import StatsGrid from "./components/StatsGrid/StatsGrid";
 import RecentMemories from "./components/RecentMemories/RecentMemories";
 import QuickActions from "./components/QuickActions/QuickActions";
@@ -172,13 +172,14 @@ function Home() {
 
         <Navbar />
 
-        <CommandPalette moments={moments} />
 
         <div
           className={
             styles.pageContent
           }
         >
+
+          <OccasionGifts />
 
           <HeroSection
             story={story}

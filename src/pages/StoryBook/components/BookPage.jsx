@@ -16,6 +16,7 @@ function BookPage({
   totalPages,
   fontSize = 24,
   theme = "paper",
+  immersive = false,
 }) {
   const content = chapter?.content?.trim() || "";
 
@@ -84,7 +85,11 @@ function BookPage({
       }}
     >
       <div
-        className={`${styles.book} ${styles[theme]}`}
+        className={
+          immersive
+            ? `${styles.book} ${styles[theme]} ${styles.bookImmersive}`
+            : `${styles.book} ${styles[theme]}`
+        }
         style={{
           "--font-size": `${fontSize}px`,
         }}

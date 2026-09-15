@@ -75,7 +75,7 @@
 
     z-index:3;
 
-    color:white;
+    color:var(--text-inverse);
 
     max-width:700px;
 
@@ -148,7 +148,7 @@
 
     backdrop-filter:blur(18px);
 
-    color:white;
+    color:var(--text-inverse);
 
     font-size:24px;
 
@@ -221,7 +221,7 @@
 
     font-size:22px;
 
-    color:white;
+    color:var(--text-inverse);
 
     background:
         rgba(255,255,255,.18);

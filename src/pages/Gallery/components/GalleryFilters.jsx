@@ -4,7 +4,6 @@ import {
   Heart,
   CalendarDays,
   MapPin,
-  Camera,
 } from "lucide-react";
 
 import styles from "./GalleryFilters.module.css";
@@ -16,10 +15,12 @@ function GalleryFilters({
   setYear,
   years = [],
 }) {
+  /* "With Photos" removed: every
+     gallery item has a photo now. */
   const filters = [
     {
       id: "all",
-      label: "All Memories",
+      label: "All Photos",
       icon: Images,
     },
     {
@@ -31,11 +32,6 @@ function GalleryFilters({
       id: "year",
       label: "By Year",
       icon: CalendarDays,
-    },
-    {
-      id: "photos",
-      label: "With Photos",
-      icon: Camera,
     },
     {
       id: "location",

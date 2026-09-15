@@ -44,9 +44,9 @@
 
   border-radius: 999px;
 
-  background: #ffe5ef;
+  background: var(--primary-50);
 
-  color: #ff4f86;
+  color: var(--primary);
 
   font-weight: 600;
 
@@ -77,7 +77,7 @@
 
   height: 320px;
 
-  background: #f6f6f6;
+  background: var(--background-secondary);
 
   box-shadow:
     0 12px 30px rgba(0,0,0,.08);
@@ -179,7 +179,7 @@
   background:
     rgba(255,255,255,.18);
 
-  color: white;
+  color: var(--text-inverse);
 
   font-size: .82rem;
 
@@ -194,7 +194,7 @@
 
   margin: 0;
 
-  color: white;
+  color: var(--text-inverse);
 
   font-size: 1.25rem;
 

@@ -88,7 +88,7 @@
 
   background: var(--gradient-primary);
 
-  color: white;
+  color: var(--text-inverse);
 
   box-shadow:
     0 14px 32px rgba(255, 92, 141, .28);
@@ -134,17 +134,41 @@
 
 @media (max-width: 768px) {
 
+  /* Compact stat chips: 3 across,
+     sized to fit a phone row. */
   .card {
-    padding: 20px;
+    padding: 12px 10px;
+
+    border-radius: 16px;
+
+    gap: 8px;
+  }
+
+  .card::before {
+
+    height: 3px;
+  }
+
+  .card::after {
+
+    display: none;
   }
 
   .icon {
-    width: 60px;
-    height: 60px;
+
+    display: none;
   }
 
   .card h2 {
-    font-size: 1.6rem;
+
+    font-size: 1.2rem;
+  }
+
+  .card p {
+
+    margin-top: 2px;
+
+    font-size: .68rem;
   }
 }
 .content {

@@ -32,9 +32,9 @@
 
     border-radius:999px;
 
-    background:#ffe9f2;
+    background:var(--primary-50);
 
-    color:#ff5c8d;
+    color:var(--primary);
 
     font-size:.85rem;
 
@@ -78,7 +78,7 @@
 
     -webkit-backdrop-filter:blur(18px);
 
-    border:1px solid rgba(255,255,255,.6);
+    border:1px solid var(--border-light);
 
     border-radius:36px;
 
@@ -182,7 +182,7 @@
 
 .input:focus{
 
-    border-color:#ff5c8d;
+    border-color:var(--primary);
 
     box-shadow:
 
@@ -226,7 +226,7 @@
 
 .textarea:focus{
 
-    border-color:#ff5c8d;
+    border-color:var(--primary);
 
     box-shadow:
 
@@ -242,7 +242,7 @@
 
     min-height:270px;
 
-    border:2px dashed #ffd3df;
+    border:2px dashed var(--primary-200);
 
     border-radius:24px;
 
@@ -264,9 +264,9 @@
 
             135deg,
 
-            #fff8fb,
+            var(--primary-50),
 
-            #fff
+            var(--surface)
 
         );
 
@@ -284,7 +284,7 @@
 
     transform:translateY(-4px);
 
-    border-color:#ff5c8d;
+    border-color:var(--primary);
 
 }
 

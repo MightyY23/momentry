@@ -45,7 +45,7 @@ margin:14px 0 8px;
 
 font-size:28px;
 
-color:#ff5c8d;
+color:var(--primary);
 
 }
 

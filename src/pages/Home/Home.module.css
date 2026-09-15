@@ -518,9 +518,9 @@
 
     background: var(--surface);
 
-    color:#444;
+    color:var(--text-secondary);
 
-    border:1px solid #ececec;
+    border:1px solid var(--border);
 
     box-shadow:
         0 8px 20px rgba(0,0,0,.06);
@@ -530,19 +530,19 @@
 
     transform:translateY(-3px);
 
-    background:#fff8fb;
+    background:var(--surface);
 
-    border-color:#ffb4cb;
+    border-color:var(--primary-200);
 }
 
 .filterActive{
 
-    color:white;
+    color:var(--text-inverse);
 
     background:
         linear-gradient(
             135deg,
-            #ff5c8d,
+            var(--primary),
             #ff7ca6
         );
 

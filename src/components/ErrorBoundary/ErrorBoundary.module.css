@@ -37,7 +37,7 @@
     margin: 0 0 14px;
     font-size: 2rem;
     font-weight: 600;
-    color: #433b34;
+    color: var(--text);
     line-height: 1.25;
 }
 
@@ -76,14 +76,14 @@
             #7a173b,
             #c74272
         );
-    color: white;
+    color: var(--text-inverse);
     box-shadow:
         0 12px 28px rgba(199, 66, 114, 0.3);
 }
 
 .secondary {
     background: var(--primary-50);
-    color: #7a173b;
+    color: var(--primary);
 }
 
 .actions button:hover {

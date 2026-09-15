@@ -1,0 +1,155 @@
+/* =========================================================
+   OCCASION BANNER — Rose Noir glass celebration card
+========================================================= */
+
+.banner{
+  position:relative;
+  overflow:hidden;
+
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+
+  padding:20px 22px;
+
+  border-radius:24px;
+
+  background:
+    radial-gradient(
+      120% 140% at 90% -10%,
+      rgba(255, 92, 141, .22),
+      transparent 55%
+    ),
+    var(--surface);
+
+  border:1px solid var(--border-light);
+
+  box-shadow:0 12px 32px rgba(0, 0, 0, .10);
+
+  margin-bottom:26px;
+}
+
+.banner.today{
+  border-color:var(--primary);
+}
+
+.banner.today::after{
+  content:"";
+
+  position:absolute;
+  inset:-40%;
+
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgba(255, 92, 141, .12) 40deg,
+      transparent 80deg
+    );
+
+  animation:spin 6s linear infinite;
+
+  pointer-events:none;
+}
+
+@keyframes spin{
+  to{ transform:rotate(360deg); }
+}
+
+/* ------------------------------------------
+   Text row
+------------------------------------------ */
+
+.text{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+
+  position:relative;
+  z-index:1;
+}
+
+.emoji{
+  font-size:30px;
+  line-height:1;
+}
+
+.text strong{
+  display:block;
+
+  font-size:1.02rem;
+  font-weight:700;
+
+  color:var(--text);
+}
+
+.sub{
+  display:block;
+
+  margin-top:4px;
+
+  font-size:.85rem;
+  line-height:1.45;
+
+  color:var(--text-muted);
+}
+
+/* ------------------------------------------
+   Actions
+------------------------------------------ */
+
+.actions{
+  display:flex;
+  gap:10px;
+
+  position:relative;
+  z-index:1;
+}
+
+.primaryBtn,
+.ghostBtn{
+  flex:1;
+
+  padding:11px 14px;
+
+  border-radius:999px;
+
+  font-family:inherit;
+  font-size:.86rem;
+  font-weight:600;
+
+  cursor:pointer;
+
+  transition:transform .15s ease, background .2s ease;
+}
+
+.primaryBtn{
+  border:none;
+
+  background:var(--primary);
+
+  color:#fff;
+}
+
+.primaryBtn:hover{
+  background:var(--primary-hover);
+  transform:translateY(-1px);
+}
+
+.ghostBtn{
+  border:1px solid var(--border-light);
+
+  background:transparent;
+
+  color:var(--text);
+}
+
+.ghostBtn:hover{
+  background:var(--surface-hover);
+}
+
+@media(max-width:420px){
+  .actions{
+    flex-direction:column;
+  }
+}

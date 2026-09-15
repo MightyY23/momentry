@@ -1,20 +1,57 @@
 import { supabase } from "../supabase/supabaseClient";
 
 export async function getPendingInvitation(email) {
-  const { data, error } = await supabase
+  // A stale pending row can linger if a previous
+  // acceptance failed halfway (the old RLS
+  // chicken-and-egg bug). Only invitations whose
+  // story the user has NOT already joined count —
+  // otherwise login would loop users back to
+  // /accept-invitation and risk duplicate rows.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // 1. All pending invitations for this email.
+  const { data: invitations, error } = await supabase
     .from("invitations")
-    .select(`
-      *,
+    .select(
+      `*,
       stories (
         id,
         title
-      )
-    `)
+      )`
+    )
     .eq("email", email)
     .eq("status", "pending")
-    .maybeSingle();
+    .order("created_at", { ascending: false });
 
   if (error) throw error;
 
-  return data;
+  if (!invitations || invitations.length === 0) {
+    return null;
+  }
+
+  // 2. Stories this user already belongs to.
+  const { data: memberships, error: memberError } =
+    await supabase
+      .from("story_members")
+      .select("story_id")
+      .eq(
+        "user_id",
+        user?.id ??
+          "00000000-0000-0000-0000-000000000000"
+      );
+
+  if (memberError) throw memberError;
+
+  const joinedStoryIds = new Set(
+    (memberships ?? []).map((m) => m.story_id)
+  );
+
+  // 3. First pending invitation not yet joined.
+  return (
+    invitations.find(
+      (inv) => !joinedStoryIds.has(inv.story_id)
+    ) ?? null
+  );
 }

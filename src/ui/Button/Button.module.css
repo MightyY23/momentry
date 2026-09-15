@@ -67,7 +67,7 @@
 
     background:var(--gradient-primary);
 
-    color:white;
+    color:var(--text-inverse);
 
     box-shadow:
         0 10px 24px rgba(255,92,141,.28);
@@ -144,7 +144,7 @@
 
     background:#ef4444;
 
-    color:white;
+    color:var(--text-inverse);
 
 }
 
@@ -161,7 +161,7 @@
 
     background:#10b981;
 
-    color:white;
+    color:var(--text-inverse);
 
 }
 
@@ -228,9 +228,11 @@
 
     border-radius:50%;
 
+    /* Sits on colored button fills in both
+       themes, so use translucent white. */
     border:2px solid rgba(255,255,255,.35);
 
-    border-top-color:white;
+    border-top-color:#fff;
 
     animation:spin .8s linear infinite;
 

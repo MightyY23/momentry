@@ -122,7 +122,7 @@
 
   background: rgba(255, 255, 255, 0.1);
 
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--border-light);
 
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -214,7 +214,7 @@
   font-size: 1.4rem;
   font-weight: 700;
 
-  color: var(--primary, #ff5c8d);
+  color: var(--primary, var(--primary));
 }
 
 .formTitle {
@@ -289,7 +289,7 @@
 }
 
 .field input:focus {
-  border-color: var(--primary, #ff5c8d);
+  border-color: var(--primary, var(--primary));
 
   box-shadow: 0 0 0 4px rgba(255, 92, 141, 0.12);
 }
@@ -318,7 +318,7 @@
 }
 
 .eye:hover {
-  color: var(--primary, #ff5c8d);
+  color: var(--primary, var(--primary));
 }
 
 /* ------------------------------------------
@@ -335,8 +335,8 @@
 
   background: linear-gradient(
     135deg,
-    #ff7ca7,
-    #ff5c8d
+    var(--primary),
+    var(--primary)
   );
 
   color: #fff;
@@ -400,7 +400,7 @@
 }
 
 .linkButton:hover {
-  color: var(--primary, #ff5c8d);
+  color: var(--primary, var(--primary));
 }
 
 .dividerDot {

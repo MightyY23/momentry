@@ -24,13 +24,13 @@ padding:16px 18px;
 border-radius:24px;
 
 background:
-rgba(255,255,255,.88);
+var(--glass-bg);
 
 backdrop-filter:blur(22px);
 
 -webkit-backdrop-filter:blur(22px);
 
-border:1px solid rgba(255,255,255,.45);
+border:1px solid var(--border-light);
 
 box-shadow:
 0 18px 45px rgba(0,0,0,.12);
@@ -57,7 +57,7 @@ border-radius:16px;
 
 background: var(--background-secondary);
 
-border:1px solid #ececec;
+border:1px solid var(--border);
 
 transition:
 border-color .25s ease,
@@ -68,7 +68,7 @@ background .25s ease;
 
 .searchBox:focus-within{
 
-border-color:#ff5c8d;
+border-color:var(--primary);
 
 background: var(--surface);
 
@@ -150,7 +150,7 @@ transform:translateY(-3px);
 
 background:var(--primary-50);
 
-color:#ff5c8d;
+color:var(--primary);
 
 box-shadow:
 0 14px 28px rgba(255,92,141,.15);
@@ -168,7 +168,7 @@ linear-gradient(
 #ff4d88
 )!important;
 
-color:white!important;
+color:var(--text-inverse)!important;
 
 box-shadow:
 0 14px 30px rgba(255,92,141,.30)!important;

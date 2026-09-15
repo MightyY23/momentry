@@ -186,3 +186,14 @@
     padding: 14px;
   }
 }
+/* Mobile: skeleton grid follows the
+   stats grid's 2-col collapse */
+@media (max-width: 600px) {
+  .skeletonGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .skeletonHero {
+    height: 220px;
+  }
+}

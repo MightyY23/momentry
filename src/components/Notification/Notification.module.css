@@ -95,31 +95,31 @@ bottom:0;
 
 height:4px;
 
-background:#ff5c8d;
+background:var(--primary);
 
 }
 
 .success{
 
-border-left:6px solid #4caf50;
+border-left:6px solid var(--success);
 
 }
 
 .error{
 
-border-left:6px solid #f44336;
+border-left:6px solid var(--danger);
 
 }
 
 .warning{
 
-border-left:6px solid #ff9800;
+border-left:6px solid var(--warning);
 
 }
 
 .info{
 
-border-left:6px solid #2196f3;
+border-left:6px solid var(--info);
 
 }
 

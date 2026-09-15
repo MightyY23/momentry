@@ -2,7 +2,8 @@ import styles from "./ProgressBar.module.css";
 
 function ProgressBar({
     page,
-    total
+    total,
+    compact = false
 }){
 
 const progress=
@@ -11,7 +12,9 @@ const progress=
 
 return(
 
-<div className={styles.wrapper}>
+<div className={
+compact ? `${styles.wrapper} ${styles.compact}` : styles.wrapper
+}>
 
 <div
 className={styles.bar}

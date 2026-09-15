@@ -11,20 +11,47 @@
 
   padding: 56px;
 
+  /* Rose Noir: deep glass surface with
+     a rose glow — never a flat pink slab. */
   background:
-    linear-gradient(
-      135deg,
-      #ff6b9a 0%,
-      #ff8db3 35%,
-      #ffd6e6 100%
-    );
+    radial-gradient(
+      120% 140% at 85% -10%,
+      rgba(255, 92, 141, .18),
+      transparent 55%
+    ),
+    radial-gradient(
+      100% 120% at 0% 110%,
+      rgba(255, 92, 141, .10),
+      transparent 50%
+    ),
+    var(--surface);
 
-  color: white;
+  color: var(--text);
+
+  border: 1px solid var(--border-light);
 
   box-shadow:
-    0 20px 50px rgba(255, 92, 141, .25);
+    0 20px 50px rgba(0, 0, 0, .10);
 
   isolation: isolate;
+}
+
+:global(.dark) .hero {
+  background:
+    radial-gradient(
+      120% 140% at 85% -10%,
+      rgba(255, 92, 141, .22),
+      transparent 55%
+    ),
+    radial-gradient(
+      100% 120% at 0% 110%,
+      rgba(120, 60, 90, .25),
+      transparent 50%
+    ),
+    var(--surface);
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, .45);
 }
 
 /* ========================================================= */
@@ -46,17 +73,21 @@
   width: 320px;
   height: 320px;
 
-  background: var(--surface);
+  background: rgba(255, 122, 168, .45);
 
   top: -120px;
   right: -80px;
+}
+
+:global(.dark) .blurOne {
+  background: rgba(255, 92, 141, .25);
 }
 
 .blurTwo {
   width: 260px;
   height: 260px;
 
-  background: #ff3f81;
+  background: var(--primary);
 
   bottom: -100px;
   left: -80px;
@@ -105,12 +136,14 @@
 
   backdrop-filter: blur(18px);
 
+  color: var(--primary);
+
   background:
-    rgba(255,255,255,.18);
+    var(--primary-50);
 
   border:
     1px solid
-    rgba(255,255,255,.25);
+    rgba(255, 92, 141, .25);
 }
 
 /* ========================================================= */
@@ -183,13 +216,13 @@
   border-radius: 18px;
 
   background:
-    rgba(255,255,255,.15);
+    var(--glass-bg);
 
   backdrop-filter: blur(20px);
 
   border:
     1px solid
-    rgba(255,255,255,.18);
+    var(--glass-border);
 
   transition:
     transform .3s ease,
@@ -254,13 +287,13 @@
   border-radius: 24px;
 
   background:
-    rgba(255,255,255,.18);
+    var(--glass-bg);
 
   backdrop-filter: blur(25px);
 
   border:
     1px solid
-    rgba(255,255,255,.20);
+    var(--glass-border);
 
   transition:
     transform .35s ease,
@@ -306,7 +339,7 @@
   font-size: 1.6rem;
 
   background:
-    rgba(255,255,255,.22);
+    var(--primary-50);
 }
 
 /* ========================================================= */
@@ -425,11 +458,11 @@
 
   background:linear-gradient(
       135deg,
-      #ff5c8d,
+      var(--primary),
       #ff7aa5
   );
 
-  color:white;
+  color:var(--text-inverse);
 
   box-shadow:
       0 12px 30px rgba(255,92,141,.35);

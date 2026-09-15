@@ -19,8 +19,8 @@
   background:
     linear-gradient(
       145deg,
-      #ffffff,
-      #fff7fa
+      var(--surface),
+      var(--primary-50)
     );
 
   border: 1px solid rgba(255, 92, 141, .12);
@@ -75,9 +75,9 @@
 
   border-radius: 999px;
 
-  background: #ffe3ee;
+  background: var(--primary-50);
 
-  color: #ff4d88;
+  color: var(--primary);
 
   font-size: .82rem;
 
@@ -110,8 +110,8 @@
   background:
     linear-gradient(
       135deg,
-      #ff5c8d,
-      #ff8db3
+      var(--primary),
+      var(--primary-hover)
     );
 
   -webkit-background-clip: text;
@@ -147,7 +147,7 @@
     linear-gradient(
       90deg,
       transparent,
-      #ffd0df,
+      var(--primary-200),
       transparent
     );
 
@@ -181,7 +181,7 @@
 
   font-weight: 700;
 
-  color: #ff5c8d;
+  color: var(--primary);
 
 }
 
@@ -235,7 +235,7 @@
 
 .progressTop strong {
 
-  color: #ff5c8d;
+  color: var(--primary);
 
 }
 
@@ -249,7 +249,7 @@
 
   border-radius: 999px;
 
-  background: #f2f2f2;
+  background: var(--background-secondary);
 
 }
 
@@ -264,7 +264,7 @@
   background:
     linear-gradient(
       90deg,
-      #ff5c8d,
+      var(--primary),
       #ff84aa,
       #ffb0c8
     );

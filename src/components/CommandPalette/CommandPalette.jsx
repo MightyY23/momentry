@@ -99,6 +99,18 @@ function CommandPalette({
       }
 
       //---------------------------------------
+      // Top-bar search icon dispatches a
+      // global event so search works
+      // from any page.
+      //---------------------------------------
+
+      if (e.type === "momentry:open-search") {
+        setOpen(true);
+
+        return;
+      }
+
+      //---------------------------------------
 
       if (!open) return;
 
@@ -168,11 +180,22 @@ function CommandPalette({
       handleKey
     );
 
-    return () =>
+    window.addEventListener(
+      "momentry:open-search",
+      handleKey
+    );
+
+    return () => {
       window.removeEventListener(
         "keydown",
         handleKey
       );
+
+      window.removeEventListener(
+        "momentry:open-search",
+        handleKey
+      );
+    };
   }, [
     open,
     query,

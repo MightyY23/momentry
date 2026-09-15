@@ -12,9 +12,9 @@ font-size:16px;
 
 font-weight:600;
 
-background:#ff5d8f;
+background:var(--primary);
 
-color:white;
+color:var(--text-inverse);
 
 transition:.25s;
 

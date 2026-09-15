@@ -57,7 +57,7 @@
 .optionToggle input {
     width: 18px;
     height: 18px;
-    accent-color: var(--primary, #ff5d8f);
+    accent-color: var(--primary, var(--primary));
     cursor: pointer;
 }
 
@@ -72,7 +72,7 @@
 }
 
 .passwordInput:focus {
-    outline: 2px solid var(--primary, #ff5d8f);
+    outline: 2px solid var(--primary, var(--primary));
     outline-offset: 1px;
     border-color: transparent;
 }
@@ -98,8 +98,8 @@
     justify-content: space-between;
     gap: 12px;
     padding: 12px 16px;
-    background: var(--surface-2, #fffdf7);
-    border: 1px solid var(--border, #f3e2e9);
+    background: var(--background-secondary);
+    border: 1px solid var(--border, var(--border));
     border-radius: 12px;
 }
 
@@ -156,7 +156,7 @@
 
 .badgeExpired {
     background: rgba(220, 38, 38, 0.12);
-    color: #dc2626;
+    color: var(--danger);
 }
 
 .actions {
@@ -196,7 +196,7 @@
 
 .revoke {
     background: var(--primary-50);
-    color: #a12a52;
+    color: var(--primary);
 }
 
 .revoke:disabled {

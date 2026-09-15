@@ -159,7 +159,7 @@
 
 .photo {
   background: rgba(59,130,246,.10);
-  color: #2563eb;
+  color: var(--info);
 }
 
 .favorite {
@@ -217,19 +217,79 @@
 
 @media (max-width: 480px) {
   .day {
-    padding: 8px;
+    padding: 6px 4px;
     border-radius: 14px;
   }
 
-  .memoryCount {
+  /* The square cell is only ~44px tall —
+     text labels cannot fit. The marker
+     dots below carry the info instead. */
+  .memoryCount,
+  .badges,
+  .emptyState,
+  .favoriteBadge {
     display: none;
   }
 
-  .badges {
+  .number {
+    font-size: .95rem;
+  }
+
+  .header {
+    align-items: center;
     justify-content: center;
   }
 
-  .emptyState {
-    display: none;
+  .dots {
+    gap: 3px;
   }
+
+  .dotMemory,
+  .dotPhoto,
+  .dotFav {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+/* ------------------------------- */
+/* Memory marker dots — visible at
+   every size (labels clip on phones) */
+/* ------------------------------- */
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.dotMemory,
+.dotPhoto,
+.dotFav {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dotMemory {
+  background: var(--primary);
+}
+
+.dotPhoto {
+  background: var(--info, #3b82f6);
+}
+
+.dotFav {
+  background: #f59e0b;
+}
+
+/* Days that hold memories get a tinted
+   wash + border so they pop in dark. */
+.day:has(.dots) {
+  border-color: rgba(255, 92, 141, .45);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 92, 141, .10),
+    var(--surface) 70%
+  );
 }

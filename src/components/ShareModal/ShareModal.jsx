@@ -293,6 +293,7 @@ function ShareModal({
         onClose={onClose}
         title="Share your Story"
         subtitle="Create a read-only link anyone can open — no account needed."
+        elevated
       >
         <div className={styles.createForm}>
           <Button
@@ -552,6 +553,7 @@ function ShareModal({
         message={`Anyone with the link "${confirmRevoke?.share_code || ""}" will immediately lose access. This can't be undone.`}
         confirmLabel="Revoke Link"
         danger
+        elevated
         loading={revokingId !== null}
         onConfirm={() =>
           handleRevoke(confirmRevoke.id)

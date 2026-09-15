@@ -38,7 +38,7 @@
 }
 
 .avatarButton:hover {
-  border-color: var(--primary, #ff5c8d);
+  border-color: var(--primary, var(--primary));
   transform: scale(1.03);
 }
 
@@ -54,7 +54,7 @@
 .avatarButton > span:not(.avatarBadge) {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--primary, #ff5c8d);
+  color: var(--primary, var(--primary));
 }
 
 .avatarBadge {
@@ -71,7 +71,7 @@
 
   border-radius: 50%;
 
-  background: var(--primary, #ff5c8d);
+  background: var(--primary, var(--primary));
 
   font-size: 0.85rem;
 
@@ -122,7 +122,7 @@
 }
 
 .field input:focus {
-  border-color: var(--primary, #ff5c8d);
+  border-color: var(--primary, var(--primary));
 }
 
 .field input:disabled {
@@ -141,4 +141,11 @@
   gap: 12px;
 
   margin-top: 6px;
+}
+
+.fieldHint{
+  display:block;
+  margin-top:6px;
+  font-size:.78rem;
+  color:var(--text-muted);
 }

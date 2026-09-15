@@ -171,6 +171,23 @@ function CalendarDay({
             No memories
           </div>
         )}
+
+        {memoryCount > 0 && (
+          <div
+            className={styles.dots}
+            aria-hidden="true"
+          >
+            <span className={styles.dotMemory} />
+
+            {photoCount > 0 && (
+              <span className={styles.dotPhoto} />
+            )}
+
+            {favoriteCount > 0 && (
+              <span className={styles.dotFav} />
+            )}
+          </div>
+        )}
       </div>
     </button>
   );

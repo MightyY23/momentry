@@ -44,7 +44,7 @@ font-weight:600;
 
 height:14px;
 
-background:#eee;
+background:var(--border-light);
 
 border-radius:999px;
 
@@ -60,7 +60,7 @@ background:
 
 linear-gradient(
 90deg,
-#ff5c8d,
+var(--primary),
 #ff8fab
 );
 
@@ -111,7 +111,7 @@ margin:0;
 
 font-size:34px;
 
-color:#ff5c8d;
+color:var(--primary);
 
 }
 

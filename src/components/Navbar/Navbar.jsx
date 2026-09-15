@@ -1,38 +1,37 @@
-import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import {
-  Heart,
+  BookHeart,
+  CalendarDays,
   Home,
   Images,
-  BookHeart,
   MapPinned,
-  CalendarDays,
-  ChartColumn,
-  Search,
-  UserRound,
-  Settings,
-  Menu,
-  X,
-  Share2,
   PenLine,
+  Search,
+  Settings,
+  UserRound,
 } from "lucide-react";
 
 import useMoments from "../../hooks/useMoments";
-import ShareModal from "../ShareModal/ShareModal";
+
 import StorySettingsModal from "../StorySettingsModal/StorySettingsModal";
 
 import styles from "./Navbar.module.css";
 
-function Navbar() {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [shareOpen, setShareOpen] = useState(false);
-  const [storySettingsOpen, setStorySettingsOpen] =
-    useState(false);
+/**
+ * Emits the global event the CommandPalette
+ * listens for, so search works from any page.
+ */
+function openSearch() {
+  window.dispatchEvent(
+    new CustomEvent("momentry:open-search")
+  );
+}
 
+function Navbar() {
   const { story } = useMoments();
 
-  const links = [
+  const tabs = [
     {
       path: "/home",
       icon: Home,
@@ -59,146 +58,76 @@ function Navbar() {
       label: "Calendar",
     },
     {
-      path: "/analytics",
-      icon: ChartColumn,
-      label: "Analytics",
-    },
-    {
-      path: "/search",
-      icon: Search,
-      label: "Search",
-    },
-    {
       path: "/profile",
       icon: UserRound,
       label: "Profile",
-    },
-    {
-      path: "/settings",
-      icon: Settings,
-      label: "Settings",
     },
   ];
 
   return (
     <header className={styles.wrapper}>
-      <nav className={styles.navbar}>
+      <nav
+        className={styles.navbar}
+        aria-label="Top bar"
+      >
         {/* Brand */}
 
-        <div className={styles.brand}>
-          <div className={styles.logoCircle}>
-            <Heart
-              size={22}
-              fill="currentColor"
-            />
-          </div>
+        <NavLink
+          to="/home"
+          className={styles.brand}
+          aria-label="Momentry home"
+        >
+          <span className={styles.logoCircle}>
+            ♥
+          </span>
 
-          <div className={styles.brandText}>
-            <h1>Momentry</h1>
+          <span className={styles.brandText}>
+            Momentry
+          </span>
+        </NavLink>
 
-            <span>
-              Every Moment Matters
-            </span>
-          </div>
-        </div>
+        {/* Actions: story settings,
+            search, settings */}
 
-        {/* Desktop Navigation */}
-
-        <div className={styles.desktopLinks}>
-          {links.map((link) => {
-            const Icon = link.icon;
-
-            return (
-              <NavLink
-                key={link.path}
-                to={link.path}
-                className={({ isActive }) =>
-                  isActive
-                    ? `${styles.link} ${styles.active}`
-                    : styles.link
-                }
-              >
-                <Icon size={18} />
-
-                <span>{link.label}</span>
-              </NavLink>
-            );
-          })}
-        </div>
-
-        {/* Share + Story Settings */}
-
-        <div className={styles.shareWrap}>
+        <div className={styles.actions}>
           <button
-            className={styles.storyEditButton}
+            type="button"
+            className={styles.iconButton}
+            onClick={openSearch}
+            aria-label="Search memories"
+            title="Search memories (Ctrl+K)"
+          >
+            <Search size={20} />
+          </button>
+
+          <button
+            type="button"
+            className={styles.iconButton}
             onClick={() =>
-              setStorySettingsOpen(true)
+              window.dispatchEvent(
+                new CustomEvent(
+                  "momentry:open-story-settings"
+                )
+              )
             }
+            aria-label="Story settings"
             title="Story settings"
           >
-            <PenLine size={18} />
+            <PenLine size={20} />
           </button>
 
-          <button
-            className={styles.shareButton}
-            onClick={() => setShareOpen(true)}
-            title="Share your story"
+          <NavLink
+            to="/settings"
+            className={
+              styles.iconButton
+            }
+            aria-label="Settings"
+            title="Settings"
           >
-            <Share2 size={18} />
-
-            <span>Share</span>
-          </button>
+            <Settings size={20} />
+          </NavLink>
         </div>
-
-        {/* Mobile Button */}
-
-        <button
-          className={styles.menuButton}
-          onClick={() =>
-            setMobileOpen(!mobileOpen)
-          }
-          aria-label="Toggle navigation"
-        >
-          {mobileOpen ? (
-            <X size={22} />
-          ) : (
-            <Menu size={22} />
-          )}
-        </button>
       </nav>
-
-      {/* Mobile Navigation */}
-
-      <div
-        className={`${styles.mobileMenu} ${
-          mobileOpen
-            ? styles.mobileOpen
-            : ""
-        }`}
-      >
-        {links.map((link) => {
-          const Icon = link.icon;
-
-          return (
-            <NavLink
-              key={link.path}
-              to={link.path}
-              onClick={() =>
-                setMobileOpen(false)
-              }
-              className={({ isActive }) =>
-                isActive
-                  ? `${styles.mobileLink} ${styles.active}`
-                  : styles.mobileLink
-              }
-            >
-              <Icon size={18} />
-
-              <span>{link.label}</span>
-            </NavLink>
-          );
-        })}
-      </div>
 
       {/* Mobile bottom tab bar
           (thumb-reach app nav) */}
@@ -207,58 +136,74 @@ function Navbar() {
         className={styles.tabbar}
         aria-label="Primary"
       >
-        {links.slice(0, 5).map(
-          (link) => {
-            const Icon = link.icon;
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
 
-            return (
-              <NavLink
-                key={link.path}
-                to={link.path}
-                className={({
-                  isActive,
-                }) =>
-                  isActive
-                    ? `${styles.tab} ${styles.tabActive}`
-                    : styles.tab
-                }
-              >
-                <Icon
-                  size={22}
-                />
+          return (
+            <NavLink
+              key={tab.path}
+              to={tab.path}
+              className={({ isActive }) =>
+                isActive
+                  ? `${styles.tab} ${styles.tabActive}`
+                  : styles.tab
+              }
+            >
+              <Icon size={22} />
 
-                <span>
-                  {link.label}
-                </span>
-              </NavLink>
-            );
-          }
-        )}
+              <span>{tab.label}</span>
+            </NavLink>
+          );
+        })}
       </nav>
 
-      {/* Spacer so fixed tab bar
-          never hides content */}
+      {/* Spacer so the fixed tab bar
+          never hides page content */}
 
       <div className={styles.tabSpacer} />
 
-      {/* Share Modal */}
+      {/* Story Settings — opened from the
+          top bar (event) or directly here
+          via ref-style fallback */}
 
-      <ShareModal
-        open={shareOpen}
-        onClose={() => setShareOpen(false)}
-        story={story}
-      />
-
-      {/* Story Settings Modal */}
-
-      <StorySettingsModal
-        open={storySettingsOpen}
-        onClose={() =>
-          setStorySettingsOpen(false)
-        }
-        story={story}
-      />
+      <StorySettingsHost story={story} />
     </header>
+  );
+}
+
+/**
+ * Listens for the global story-settings
+ * event so the modal opens from the
+ * top-bar icon on any page.
+ */
+import { useEffect, useState } from "react";
+
+function StorySettingsHost({ story }) {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    function handleOpen() {
+      setOpen(true);
+    }
+
+    window.addEventListener(
+      "momentry:open-story-settings",
+      handleOpen
+    );
+
+    return () =>
+      window.removeEventListener(
+        "momentry:open-story-settings",
+        handleOpen
+      );
+  }, []);
+
+  return (
+    <StorySettingsModal
+      open={open}
+      onClose={() => setOpen(false)}
+      story={story}
+    />
   );
 }
 

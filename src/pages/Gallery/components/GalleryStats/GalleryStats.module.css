@@ -36,11 +36,11 @@
     border-radius:28px;
 
     background:
-        rgba(255,255,255,.92);
+        var(--surface);
 
     backdrop-filter:blur(18px);
 
-    border:1px solid rgba(255,255,255,.5);
+    border:1px solid var(--border-light);
 
     box-shadow:
         0 18px 45px rgba(0,0,0,.08);
@@ -74,7 +74,7 @@
 
     align-items:center;
 
-    color:white;
+    color:var(--text-inverse);
 
     flex-shrink:0;
 
@@ -90,8 +90,8 @@
     background:
         linear-gradient(
             135deg,
-            #ff5c8d,
-            #ff8fb0
+            var(--primary),
+            var(--primary-hover)
         );
 
 }
@@ -112,7 +112,7 @@
     background:
         linear-gradient(
             135deg,
-            #ff9f43,
+            var(--warning),
             #ffc75f
         );
 
@@ -178,28 +178,55 @@ repeat(2,1fr);
 
 @media(max-width:700px){
 
+/* Compact stat chips — 3 across,
+   no jumbo cards on phones. */
 .grid{
 
-grid-template-columns:1fr;
+grid-template-columns:repeat(3,minmax(0,1fr));
+
+gap:8px;
+
+margin-bottom:14px;
 
 }
 
 .card{
 
-padding:22px;
+padding:10px 8px;
+
+border-radius:14px;
+
+gap:8px;
+
+box-shadow:var(--shadow-xs);
 
 }
 
 .icon{
 
-width:62px;
-height:62px;
+display:none;
+
+}
+
+.content{
+
+align-items:center;
+
+text-align:center;
 
 }
 
 .content h2{
 
-font-size:1.8rem;
+font-size:1.15rem;
+
+}
+
+.content p{
+
+margin-top:2px;
+
+font-size:.66rem;
 
 }
 

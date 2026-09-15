@@ -8,8 +8,8 @@
 
   background: linear-gradient(
       135deg,
-      rgba(255,255,255,.9),
-      rgba(255,240,245,.95)
+      var(--surface),
+      var(--background-secondary)
   );
 
   box-shadow:

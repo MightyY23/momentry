@@ -43,6 +43,6 @@ margin-top:12px;
 
 font-size:24px;
 
-color:#ff5c8d;
+color:var(--primary);
 
 }

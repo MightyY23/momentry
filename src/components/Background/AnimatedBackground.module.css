@@ -7,9 +7,9 @@
     background:
         linear-gradient(
             135deg,
-            #fff8f8,
-            #fffdfb,
-            #fff4f5
+            var(--background),
+            var(--background-secondary),
+            var(--background)
         );
 }
 
@@ -26,7 +26,8 @@
 .blur1{
     width:320px;
     height:320px;
-    background:#ff9aa2;
+    background:var(--primary);
+    opacity:.18;
     top:-80px;
     left:-80px;
 }
@@ -34,7 +35,8 @@
 .blur2{
     width:280px;
     height:280px;
-    background:#ffd6a5;
+    background:var(--warning);
+    opacity:.14;
     top:180px;
     right:-60px;
     animation-delay:3s;
@@ -43,10 +45,30 @@
 .blur3{
     width:250px;
     height:250px;
-    background:#ffc6ff;
+    background:var(--primary);
+    opacity:.12;
     bottom:-60px;
     left:35%;
     animation-delay:6s;
+}
+
+/* Light theme keeps the soft pastel wash */
+:global(.light) .blur1,
+:global(.light) .blur2,
+:global(.light) .blur3{
+    opacity:.35;
+}
+
+:global(.light) .blur1{
+    background:#ff9aa2;
+}
+
+:global(.light) .blur2{
+    background:#ffd6a5;
+}
+
+:global(.light) .blur3{
+    background:#ffc6ff;
 }
 
 @keyframes float{

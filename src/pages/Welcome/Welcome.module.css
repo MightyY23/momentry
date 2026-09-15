@@ -1,58 +1,403 @@
-.container {
-  min-height: 100vh;
+/* ==========================================================
+   WELCOME — Chapter one
+   Full-viewport cinematic intro. Theme-aware via tokens;
+   serif display face; staggered entrance.
+   ========================================================== */
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.scene {
+  position: relative;
 
-  padding: 32px;
-}
-
-.content {
-  width: 100%;
-  max-width: 420px;
+  min-height: 100svh;
 
   display: flex;
   flex-direction: column;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% -20%,
+      var(--primary-50),
+      transparent 60%
+    ),
+    var(--background);
+
+  color: var(--text);
+}
+
+/* ------------------------------------------
+   Ambient glow orbs
+------------------------------------------ */
+
+.orbA,
+.orbB,
+.orbC {
+  position: absolute;
+
+  border-radius: 50%;
+
+  filter: blur(80px);
+
+  pointer-events: none;
+
+  animation: drift 16s ease-in-out infinite;
+}
+
+.orbA {
+  width: 420px;
+  height: 420px;
+
+  top: -160px;
+  left: -120px;
+
+  background: var(--primary);
+
+  opacity: .16;
+
+  animation-delay: 0s;
+}
+
+.orbB {
+  width: 320px;
+  height: 320px;
+
+  top: 30%;
+  right: -140px;
+
+  background: var(--warning);
+
+  opacity: .10;
+
+  animation-delay: -5s;
+}
+
+.orbC {
+  width: 360px;
+  height: 360px;
+
+  bottom: -160px;
+  left: 30%;
+
+  background: var(--primary);
+
+  opacity: .12;
+
+  animation-delay: -10s;
+}
+
+/* Dark mode: brighter orbs so they read on deep bg */
+:global(.dark) .orbA { opacity: .22; }
+:global(.dark) .orbB { opacity: .12; }
+:global(.dark) .orbC { opacity: .16; }
+
+@keyframes drift {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(24px, -30px, 0) scale(1.06);
+  }
+}
+
+/* ------------------------------------------
+   Vignette
+------------------------------------------ */
+
+.vignette {
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse 90% 70% at 50% 40%,
+      transparent 55%,
+      rgba(0, 0, 0, .05) 100%
+    );
+}
+
+:global(.dark) .vignette {
+  background:
+    radial-gradient(
+      ellipse 90% 70% at 50% 40%,
+      transparent 55%,
+      rgba(0, 0, 0, .35) 100%
+    );
+}
+
+/* ------------------------------------------
+   Stage
+------------------------------------------ */
+
+.stage {
+  position: relative;
+
+  z-index: 1;
+
+  flex: 1;
+
+  width: 100%;
+
+  max-width: 640px;
+
+  margin: 0 auto;
+
+  padding:
+    calc(64px + env(safe-area-inset-top, 0px))
+    28px
+    40px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
 
   text-align: center;
 }
 
-.logo {
-  font-size: 3rem;
-  font-weight: 700;
-  letter-spacing: -1px;
+/* ------------------------------------------
+   Kicker
+------------------------------------------ */
 
-  margin-bottom: 32px;
-}
+.kicker {
+  font-size: var(--text-xs);
 
-.tagline {
-  font-size: 1.15rem;
-  line-height: 1.8;
-  color: var(--text-secondary);
-
-  margin-bottom: 64px;
-}
-
-.button {
-  width: 100%;
-
-  border: none;
-
-  background: var(--primary);
-  color: white;
-
-  padding: 18px;
-
-  border-radius: var(--radius-md);
-
-  font-size: 1rem;
   font-weight: 600;
 
-  transition: 0.25s ease;
+  letter-spacing: .32em;
+
+  text-transform: uppercase;
+
+  color: var(--primary);
+
+  margin-bottom: 28px;
+
+  animation: rise .8s cubic-bezier(.2, .8, .2, 1) both;
 }
 
-.button:hover {
-  background: var(--primary-hover);
+/* ------------------------------------------
+   Title
+------------------------------------------ */
+
+.title {
+  font-family:
+    "Cormorant Garamond",
+    Georgia,
+    serif;
+
+  font-size: clamp(2.6rem, 9vw, 4.2rem);
+
+  font-weight: 600;
+
+  line-height: 1.08;
+
+  letter-spacing: -.015em;
+
+  margin-bottom: 24px;
+
+  text-wrap: balance;
+
+  animation: rise .8s cubic-bezier(.2, .8, .2, 1) .12s both;
+}
+
+.title em {
+  font-style: italic;
+
+  background:
+    linear-gradient(
+      120deg,
+      var(--primary),
+      var(--primary-hover)
+    );
+
+  -webkit-background-clip: text;
+
+  background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+
+  color: var(--primary);
+}
+
+/* ------------------------------------------
+   Tagline
+------------------------------------------ */
+
+.tagline {
+  max-width: 42ch;
+
+  font-size: var(--text-lg);
+
+  line-height: 1.75;
+
+  color: var(--text-secondary);
+
+  margin-bottom: 44px;
+
+  animation: rise .8s cubic-bezier(.2, .8, .2, 1) .24s both;
+}
+
+/* ------------------------------------------
+   CTA
+------------------------------------------ */
+
+.cta {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 17px 38px;
+
+  border-radius: var(--radius-full);
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary),
+      var(--primary-hover)
+    );
+
+  color: #fff;
+
+  font-size: var(--text-lg);
+
+  font-weight: 600;
+
+  letter-spacing: .01em;
+
+  box-shadow:
+    0 12px 32px rgba(255, 92, 141, .35),
+    0 2px 6px rgba(255, 92, 141, .25);
+
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    filter var(--transition-fast);
+
+  animation: rise .8s cubic-bezier(.2, .8, .2, 1) .36s both;
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+
+  filter: brightness(1.05);
+
+  box-shadow:
+    0 18px 44px rgba(255, 92, 141, .42),
+    0 4px 10px rgba(255, 92, 141, .3);
+}
+
+.cta:active {
+  transform: translateY(0) scale(.98);
+}
+
+.ctaArrow {
+  font-size: 1.15em;
+
+  line-height: 1;
+
+  transition: transform var(--transition-fast);
+}
+
+.cta:hover .ctaArrow {
+  transform: translateX(4px);
+}
+
+/* ------------------------------------------
+   Chapter dots
+------------------------------------------ */
+
+.chapterNav {
+  position: relative;
+
+  z-index: 1;
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  padding: 0 0
+    calc(28px + env(safe-area-inset-bottom, 0px));
+
+  animation: rise .8s ease .6s both;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: var(--border-strong);
+
+  transition: background var(--transition-fast);
+}
+
+.dotActive {
+  width: 22px;
+
+  border-radius: var(--radius-full);
+
+  background: var(--primary);
+}
+
+/* ------------------------------------------
+   Entrance
+------------------------------------------ */
+
+@keyframes rise {
+
+  from {
+    opacity: 0;
+
+    transform: translateY(22px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .orbA,
+  .orbB,
+  .orbC {
+    animation: none;
+  }
+
+  .kicker,
+  .title,
+  .tagline,
+  .cta,
+  .chapterNav {
+    animation: none;
+  }
+}
+
+/* Small phones: tighten vertical rhythm */
+@media (max-height: 640px) {
+
+  .stage {
+    padding-top: 40px;
+  }
+
+  .title {
+    margin-bottom: 18px;
+  }
+
+  .tagline {
+    margin-bottom: 30px;
+  }
 }

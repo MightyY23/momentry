@@ -59,6 +59,30 @@ function Auth({ resetMode = false }) {
         return;
       }
 
+      // 1.5. First login: finish onboarding
+      // (name + birthday) before anything else.
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const { getProfile } = await import(
+          "../../services/profile/updateProfile"
+        );
+
+        const profile = await getProfile(
+          user.id
+        );
+
+        if (
+          profile &&
+          profile.onboarding_completed === false
+        ) {
+          navigate("/onboarding");
+          return;
+        }
+      }
+
       // 2. Check if the user already belongs to a story
       const hasStory =
         await userHasStory();

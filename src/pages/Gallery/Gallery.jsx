@@ -72,7 +72,17 @@ function Gallery() {
       const query =
         search.toLowerCase();
 
-      return moments.filter(
+      /* The gallery is a photo album:
+         memories without a photo never
+         appear here (they live on the
+         timeline instead). */
+      const photoMoments =
+        moments.filter(
+          (moment) =>
+            Boolean(moment.image_url)
+        );
+
+      return photoMoments.filter(
         (moment) => {
           const matchesSearch =
             moment.title
@@ -103,13 +113,6 @@ function Gallery() {
                 new Date(
                   moment.memory_date
                 ).getFullYear() === year;
-              break;
-
-            case "photos":
-              matchesFilter =
-                Boolean(
-                  moment.image_url
-                );
               break;
 
             case "location":

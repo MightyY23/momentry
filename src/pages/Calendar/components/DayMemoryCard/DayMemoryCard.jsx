@@ -13,7 +13,7 @@ function DayMemoryCard({ moment }) {
       {moment.image_url && (
         <div className={styles.imageWrapper}>
           <img
-            src={moment.image_url}
+            src={moment.image_url || "https://placehold.co/700x700?text=Memory"}
             alt={moment.title}
             className={styles.image}
           />

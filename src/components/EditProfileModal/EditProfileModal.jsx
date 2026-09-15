@@ -32,6 +32,11 @@ function EditProfileModal({
       ""
   );
 
+  // Birthday (powers the partner reminder).
+  const [birthDate, setBirthDate] = useState(
+    profile?.birth_date || ""
+  );
+
   // Avatar URL currently saved on the profile
   // (or freshly uploaded in this session).
   const [avatarUrl, setAvatarUrl] = useState(
@@ -144,12 +149,24 @@ function EditProfileModal({
       return;
     }
 
+    if (
+      birthDate &&
+      new Date(birthDate) > new Date()
+    ) {
+      notify.error(
+        "Invalid birthday",
+        "Birthdays can't be in the future."
+      );
+      return;
+    }
+
     try {
       setSaving(true);
 
       await updateProfile(user.id, {
         fullName: trimmedName,
         avatarUrl,
+        birthDate: birthDate || null,
       });
 
       // Keep auth metadata in sync so the
@@ -266,6 +283,24 @@ function EditProfileModal({
               setFullName(e.target.value)
             }
           />
+        </label>
+
+        <label className={styles.field}>
+          <span>Birthday</span>
+
+          <input
+            type="date"
+            value={birthDate || ""}
+            max={new Date().toISOString().slice(0, 10)}
+            onChange={(e) =>
+              setBirthDate(e.target.value)
+            }
+          />
+
+          <small className={styles.fieldHint}>
+            Used to remind your partner to
+            celebrate you 🎂
+          </small>
         </label>
 
         <label className={styles.field}>
