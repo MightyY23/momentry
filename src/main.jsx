@@ -19,6 +19,22 @@ import "./styles/global.css";
 import "./styles/animations.css";
 import "./styles/utilities.css";
 
+// PWA: offline shell + installability.
+// Registered only in production builds and
+// when the browser supports service workers.
+if (
+  import.meta.env.PROD &&
+  "serviceWorker" in navigator
+) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .catch(() => {
+        /* SW is a progressive enhancement. */
+      });
+  });
+}
+
 ReactDOM.createRoot(
   document.getElementById("root")
 ).render(
