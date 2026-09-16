@@ -15,6 +15,9 @@ import { uploadImage } from "../../services/storage/uploadImage";
 import useMoments from "../../hooks/useMoments";
 import useNotification from "../../hooks/useNotification";
 
+import LocationPicker from "../../components/LocationPicker/LocationPicker";
+import CaptureMemory from "../../components/CaptureMemory/CaptureMemory";
+
 function AddMoment() {
   const navigate = useNavigate();
 
@@ -29,6 +32,13 @@ function AddMoment() {
     useState("");
   const [location, setLocation] =
     useState("");
+
+  const [lat, setLat] = useState(null);
+
+  const [lng, setLng] = useState(null);
+
+  const [captureOpen, setCaptureOpen] =
+    useState(false);
   const [image, setImage] =
     useState(null);
 
@@ -78,6 +88,8 @@ function AddMoment() {
         description,
         memory_date: memoryDate,
         location,
+        latitude: lat,
+        longitude: lng,
         created_by: user.id,
         image_url: imageUrl,
       });
@@ -124,6 +136,15 @@ function AddMoment() {
               Every moment tells a story.
               Capture yours forever.
             </p>
+
+            <Button
+              variant="secondary"
+              onClick={() =>
+                setCaptureOpen(true)
+              }
+            >
+              📸 Capture now
+            </Button>
           </div>
 
           <div className={styles.card}>
@@ -167,17 +188,29 @@ function AddMoment() {
                   Location
                 </label>
 
-                <input
-                  className={
-                    styles.input
+                <LocationPicker
+                  value={
+                    location
+                      ? {
+                          label: location,
+                          lat: lat,
+                          lng: lng,
+                        }
+                      : null
                   }
-                  placeholder="📍 Kochi, Kerala"
-                  value={location}
-                  onChange={(e) =>
+                  onChange={(picked) => {
                     setLocation(
-                      e.target.value
-                    )
-                  }
+                      picked?.label ?? ""
+                    );
+
+                    setLat(
+                      picked?.lat ?? null
+                    );
+
+                    setLng(
+                      picked?.lng ?? null
+                    );
+                  }}
                 />
 
                 <label>
@@ -280,6 +313,34 @@ function AddMoment() {
           </div>
         </motion.div>
       </Container>
+
+      <CaptureMemory
+        open={captureOpen}
+        onClose={(draft) => {
+          setCaptureOpen(false);
+
+          if (!draft) return;
+
+          setImage(draft.file);
+
+          if (draft.suggestedTitle) {
+            setTitle(draft.suggestedTitle);
+          }
+
+          if (draft.memoryDate) {
+            setMemoryDate(draft.memoryDate);
+          }
+
+          if (draft.placeLabel) {
+            setLocation(draft.placeLabel);
+          }
+
+          if (draft.coords) {
+            setLat(draft.coords.lat);
+            setLng(draft.coords.lng);
+          }
+        }}
+      />
     </PageLayout>
   );
 }

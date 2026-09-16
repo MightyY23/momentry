@@ -247,17 +247,19 @@
 
 .hero{
 
-height:420px;
+height:300px;
 
-border-radius:28px;
+border-radius:24px;
+
+margin-bottom:22px;
 
 }
 
 .content{
 
-left:30px;
+left:22px;
 
-bottom:30px;
+bottom:22px;
 
 }
 
@@ -267,33 +269,52 @@ bottom:30px;
 
 .hero{
 
-height:300px;
+height:min(52vw, 260px);
 
-border-radius:22px;
+border-radius:18px;
+
+margin-bottom:14px;
 
 }
 
 .content{
 
-left:20px;
+left:14px;
 
-bottom:20px;
+right:14px;
+
+bottom:14px;
 
 }
 
 .content h1{
 
-font-size:2rem;
+font-size:1.4rem;
+
+}
+
+.content .badge{
+
+padding:5px 12px;
+
+font-size:.75rem;
+
+margin-bottom:8px;
 
 }
 
 .zoomButton{
 
-width:46px;
+width:38px;
 
-height:46px;
+height:38px;
 
-font-size:18px;
+font-size:16px;
+
+top:10px;
+right:10px;
+
+border-radius:12px;
 
 }
 

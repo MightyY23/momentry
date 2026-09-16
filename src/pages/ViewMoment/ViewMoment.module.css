@@ -154,7 +154,7 @@ transform:none;
 
 .content{
 
-padding:30px;
+padding:22px;
 
 }
 
@@ -166,13 +166,21 @@ font-size:2.2rem;
 
 .story{
 
-padding:25px;
+padding:20px;
+
+margin:18px 0;
 
 }
 
 }
 
 @media(max-width:600px){
+
+.content{
+
+padding:14px;
+
+}
 
 .title{
 
@@ -183,6 +191,32 @@ font-size:1.8rem;
 .description{
 
 font-size:1rem;
+
+}
+
+.story{
+
+padding:16px;
+
+margin:12px 0;
+
+border-radius:16px;
+
+}
+
+.story h2{
+
+font-size:1.05rem;
+
+margin:0 0 8px;
+
+}
+
+.story p{
+
+font-size:.95rem;
+
+line-height:1.65;
 
 }
 

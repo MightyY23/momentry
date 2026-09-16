@@ -4,7 +4,7 @@
 
 .section{
 
-    margin:70px 0;
+    margin:36px 0;
 
 }
 
@@ -109,19 +109,19 @@
 
 .grid{
 
-grid-template-columns:1fr;
+grid-template-columns:repeat(2,1fr);
 
 }
 
 .section{
 
-margin:50px 0;
+margin:20px 0;
 
 }
 
 .header h2{
 
-font-size:1.7rem;
+font-size:1.25rem;
 
 }
 

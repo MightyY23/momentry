@@ -309,7 +309,11 @@ function OccasionGifts() {
 
   return (
     <>
-      {o && (
+      {/* Banner appears only the night
+          before (or on the day itself) —
+          quiet the rest of the year. */}
+
+      {o && o.daysUntil <= 1 && (
         <motion.section
           className={
             o.isToday

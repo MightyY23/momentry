@@ -518,6 +518,7 @@ function StoryBook() {
                   chapters,
                   storyId: story.id,
                 }}
+                autoFullscreen={true}
                 onClose={() =>
                   setOpened(false)
                 }

@@ -4,7 +4,7 @@
 
 .section{
 
-    margin:55px 0;
+    margin:34px 0;
 
 }
 
@@ -193,30 +193,62 @@ repeat(2,1fr);
 
 @media(max-width:768px){
 
-.grid{
+.section{
 
-grid-template-columns:1fr;
-
-}
-
-.card{
-
-padding:20px;
+margin:16px 0;
 
 }
 
-.icon{
+.header{
 
-width:58px;
-height:58px;
-
-font-size:24px;
+margin-bottom:12px;
 
 }
 
 .header h2{
 
-font-size:1.7rem;
+font-size:1.25rem;
+
+}
+
+.grid{
+
+grid-template-columns:repeat(2,1fr);
+
+gap:10px;
+
+}
+
+.card{
+
+padding:12px;
+
+gap:12px;
+
+border-radius:16px;
+
+}
+
+.icon{
+
+width:42px;
+height:42px;
+
+font-size:19px;
+
+border-radius:13px;
+
+}
+
+.label{
+
+font-size:.68rem;
+
+}
+
+.content strong{
+
+font-size:.85rem;
 
 }
 
@@ -226,19 +258,19 @@ font-size:1.7rem;
 
 .section{
 
-margin:40px 0;
+margin:12px 0;
 
 }
 
 .card{
 
-border-radius:20px;
+border-radius:14px;
 
 }
 
 .content strong{
 
-font-size:.95rem;
+font-size:.82rem;
 
 }
 

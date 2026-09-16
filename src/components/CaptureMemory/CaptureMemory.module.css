@@ -1,0 +1,75 @@
+.overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 160;
+
+  display: flex;
+
+  flex-direction: column;
+
+  background: #000;
+}
+
+.video {
+  flex: 1;
+
+  width: 100%;
+
+  min-height: 0;
+
+  object-fit: cover;
+}
+
+.controls {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 18px 24px;
+
+  padding-bottom: calc(18px + env(safe-area-inset-bottom));
+
+  background: rgba(0, 0, 0, 0.6);
+
+  backdrop-filter: blur(8px);
+}
+
+.shutter {
+  width: 72px;
+
+  height: 72px;
+
+  border: 4px solid #fff;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.25);
+
+  cursor: pointer;
+
+  transition: transform 0.15s ease;
+
+  font-size: 1.2rem;
+
+  color: #fff;
+}
+
+.shutter:active {
+  transform: scale(0.92);
+}
+
+.shutter:disabled {
+  opacity: 0.6;
+
+  cursor: wait;
+}
+
+.spacer {
+  width: 96px;
+}

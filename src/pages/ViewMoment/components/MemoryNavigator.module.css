@@ -4,7 +4,7 @@
 
 .section{
 
-    margin:70px 0;
+    margin:36px 0;
 
 }
 
@@ -201,9 +201,17 @@
 
 @media(max-width:900px){
 
+.section{
+
+margin:20px 0;
+
+}
+
 .grid{
 
 grid-template-columns:1fr;
+
+gap:10px;
 
 }
 
@@ -211,23 +219,25 @@ grid-template-columns:1fr;
 
 @media(max-width:600px){
 
-.card{
+.section{
 
-flex-direction:column;
-
-text-align:center;
+margin:14px 0;
 
 }
 
-.content h3{
+.card{
 
-white-space:normal;
+padding:12px;
+
+border-radius:16px;
 
 }
 
 .card button{
 
 width:100%;
+
+padding:9px;
 
 }
 

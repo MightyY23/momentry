@@ -19,6 +19,7 @@ const THEME_KEY =
 function BookReader({
   book,
   onClose,
+  autoFullscreen = false,
 }) {
   const storyKey = book?.storyId
     ? `${PAGE_KEY_BASE}_${book.storyId}`
@@ -134,6 +135,31 @@ function BookReader({
   // Touch swipe page-turning.
   const touchStartX = useRef(null);
 
+  // Direction of the last page turn —
+  // drives the flip animation.
+  const [turnDir, setTurnDir] =
+    useState("next");
+
+  // Portrait-phone hint when the OS
+  // refuses landscape lock.
+  const [rotateHint, setRotateHint] =
+    useState(false);
+
+  //---------------------------------------
+  // Page turning with animation direction
+  //---------------------------------------
+
+  function turnTo(delta) {
+    setTurnDir(delta > 0 ? "next" : "prev");
+
+    setRawPage((p) =>
+      Math.min(
+        Math.max(p + delta, 0),
+        book.chapters.length - 1
+      )
+    );
+  }
+
   const [tocOpen, setTocOpen] =
     useState(false);
 
@@ -209,14 +235,71 @@ function BookReader({
       document.documentElement
         .requestFullscreen?.()
         .catch(() => {});
-    } else if (document.fullscreenElement) {
-      document
-        .exitFullscreen()
-        .catch(() => {});
+
+      // Landscape is the natural book shape
+      // on phones — try to lock it (works
+      // after native fullscreen on Android;
+      // gracefully ignored elsewhere).
+      try {
+        screen.orientation
+          ?.lock?.("landscape")
+          ?.catch?.(() => {});
+      } catch {
+        /* orientation lock unsupported */
+      }
+
+      // If we're still portrait on a phone
+      // (iOS Safari), nudge the reader to
+      // rotate.
+      setTimeout(() => {
+        if (
+          !document.fullscreenElement &&
+          window.matchMedia(
+            "(max-width: 820px) and (orientation: portrait)"
+          ).matches
+        ) {
+          setRotateHint(true);
+
+          setTimeout(
+            () => setRotateHint(false),
+            4000
+          );
+        }
+      }, 350);
+    } else {
+      try {
+        screen.orientation?.unlock?.();
+      } catch {
+        /* noop */
+      }
+
+      if (document.fullscreenElement) {
+        document
+          .exitFullscreen()
+          .catch(() => {});
+      }
     }
 
     setFullscreen(entering);
   }
+
+  //---------------------------------------
+  // Enter fullscreen straight away when
+  // the reader is opened from the cover
+  // (the click itself is the user gesture
+  // browsers want for native fullscreen).
+  //---------------------------------------
+
+  const autoFullscreenRef = useRef(false);
+
+  useEffect(() => {
+    if (autoFullscreen && !autoFullscreenRef.current) {
+      autoFullscreenRef.current = true;
+
+      toggleFullscreen();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Native exit (Esc / browser UI) must
   // also leave the immersive overlay.
@@ -259,18 +342,11 @@ function BookReader({
     function handleKeyDown(e) {
       switch (e.key) {
         case "ArrowRight":
-          setRawPage((prev) =>
-            Math.min(
-              prev + 1,
-              book.chapters.length - 1
-            )
-          );
+          turnTo(1);
           break;
 
         case "ArrowLeft":
-          setRawPage((prev) =>
-            Math.max(prev - 1, 0)
-          );
+          turnTo(-1);
           break;
 
         case "Escape":
@@ -334,16 +410,7 @@ function BookReader({
 
     if (Math.abs(dx) < 60) return;
 
-    if (dx < 0) {
-      setRawPage((p) =>
-        Math.min(
-          p + 1,
-          book.chapters.length - 1
-        )
-      );
-    } else {
-      setRawPage((p) => Math.max(p - 1, 0));
-    }
+    turnTo(dx < 0 ? 1 : -1);
   }
 
   //---------------------------------------
@@ -398,20 +465,29 @@ function BookReader({
             </div>
           </div>
 
-          <BookPage
-            chapter={
-              book.chapters[page]
+          <div
+            key={page}
+            className={
+              turnDir === "next"
+                ? styles.pageTurnNext
+                : styles.pageTurnPrev
             }
-            page={page}
-            totalPages={
-              book.chapters.length
-            }
-            fontSize={fontSize}
-            theme={theme}
-            immersive={
-              fullscreen || immersive
-            }
-          />
+          >
+            <BookPage
+              chapter={
+                book.chapters[page]
+              }
+              page={page}
+              totalPages={
+                book.chapters.length
+              }
+              fontSize={fontSize}
+              theme={theme}
+              immersive={
+                fullscreen || immersive
+              }
+            />
+          </div>
 
           <div
             className={
@@ -420,11 +496,7 @@ function BookReader({
           >
             <button
               disabled={page === 0}
-              onClick={() =>
-                setRawPage((p) =>
-                  Math.max(p - 1, 0)
-                )
-              }
+              onClick={() => turnTo(-1)}
             >
               ← Previous
             </button>
@@ -451,15 +523,7 @@ function BookReader({
                 page ===
                 book.chapters.length - 1
               }
-              onClick={() =>
-                setRawPage((p) =>
-                  Math.min(
-                    p + 1,
-                    book.chapters.length -
-                      1
-                  )
-                )
-              }
+              onClick={() => turnTo(1)}
             >
               Next →
             </button>
@@ -495,6 +559,16 @@ function BookReader({
           "immersiveOverlayHost",
         ].join(" ")}
       >
+        {rotateHint && (
+          <div
+            className={styles.rotateHint}
+            role="status"
+          >
+            📱↻ Rotate your phone for the full
+            spread
+          </div>
+        )}
+
         <ReadingToolbar
           fontSize={fontSize}
           setFontSize={setFontSizeState}

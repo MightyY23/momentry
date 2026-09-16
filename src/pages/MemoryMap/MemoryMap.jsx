@@ -89,6 +89,9 @@ function MemoryMap() {
   const [selected, setSelected] =
     useState(null);
 
+  const [mapFullscreen, setMapFullscreen] =
+    useState(false);
+
   const [search, setSearch] =
     useState("");
 
@@ -332,21 +335,16 @@ function MemoryMap() {
           />
         </div>
 
-        <div className={styles.layout}>
-          <JourneyTimeline
-            moments={moments}
-            selected={selected?.id}
-            onSelect={
-              setSelected
-            }
-          />
+        {/* -------- Map first — the hero -------- */}
 
-          <div
-            className={
-              styles.mapContainer
-            }
-          >
-            <MapControls
+        <div
+          className={
+            mapFullscreen
+              ? `${styles.mapContainer} ${styles.mapFullscreen}`
+              : styles.mapContainer
+          }
+        >
+          <MapControls
               search={search}
               setSearch={
                 setSearch
@@ -423,7 +421,41 @@ function MemoryMap() {
                 )
               )}
             </MapContainer>
-          </div>
+
+          <button
+            type="button"
+            className={styles.fsToggle}
+            onClick={() => {
+              setMapFullscreen((v) => !v);
+
+              // Let Leaflet recompute its size
+              // after the layout change.
+              setTimeout(
+                () =>
+                  mapRef.current?.invalidateSize?.(),
+                250
+              );
+            }}
+            aria-label={
+              mapFullscreen
+                ? "Exit fullscreen map"
+                : "View map fullscreen"
+            }
+          >
+            {mapFullscreen ? "✕" : "⛶"}
+          </button>
+        </div>
+
+        {/* -------- Journey below -------- */}
+
+        <div className={styles.layout}>
+          <JourneyTimeline
+            moments={moments}
+            selected={selected?.id}
+            onSelect={
+              setSelected
+            }
+          />
         </div>
       </Container>
     </PageLayout>

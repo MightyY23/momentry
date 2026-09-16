@@ -14,6 +14,7 @@ import GalleryCard from "./components/GalleryCard";
 import GalleryLightbox from "./components/GalleryLightbox";
 import GalleryFilters from "./components/GalleryFilters";
 import GalleryStats from "./components/GalleryStats/GalleryStats";
+import GalleryPhotos from "./components/GalleryPhotos/GalleryPhotos";
 
 import useMoments from "../../hooks/useMoments";
 
@@ -349,6 +350,10 @@ function Gallery() {
             )}
           </>
         )}
+
+        {/* -------- Photos without memories -------- */}
+
+        <GalleryPhotos />
       </Container>
     </PageLayout>
   );

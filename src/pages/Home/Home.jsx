@@ -179,8 +179,6 @@ function Home() {
           }
         >
 
-          <OccasionGifts />
-
           <HeroSection
             story={story}
             anniversaryDate={
@@ -365,6 +363,12 @@ function Home() {
           <DashboardFeed
             moments={moments}
           />
+
+          {/* Occasions + sealed gifts live at
+              the bottom — celebratory, not in
+              the way of daily use. */}
+
+          <OccasionGifts />
 
         </div>
 

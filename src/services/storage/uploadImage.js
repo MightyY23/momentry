@@ -1,4 +1,8 @@
 import { supabase } from "../supabase/supabaseClient";
+import {
+  normalizeImageFile,
+  guessExtension,
+} from "./imageUtils";
 
 //----------------------------------------
 // Validation rules
@@ -15,42 +19,18 @@ const ALLOWED_TYPES = new Set([
 
 const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
-//
-// iOS photo picker (and some Android share
-// sheets) deliver image Files with an EMPTY
-// `type` — deriving from the extension keeps
-// those uploads working instead of failing
-// validation with a confusing error.
-//
-const EXT_MIME_TYPES = {
-  jpg: "image/jpeg",
-  jpeg: "image/jpeg",
-  png: "image/png",
-  webp: "image/webp",
-  gif: "image/gif",
-  heic: "image/heic",
-  heif: "image/heif",
-};
-
-function resolveMimeType(file) {
-  if (file.type) return file.type;
-
-  const ext = (
-    file.name.split(".").pop() || ""
-  )
-    .toLowerCase();
-
-  return EXT_MIME_TYPES[ext] || "";
-}
-
 export function validateImageFile(file) {
   if (!file) {
     return "No image selected.";
   }
 
-  const mimeType = resolveMimeType(file);
-
-  if (!mimeType || !ALLOWED_TYPES.has(mimeType)) {
+  //
+  // Phone pickers often deliver files with
+  // an EMPTY type — byte-sniffing in
+  // normalizeImageFile() catches those, so
+  // only a *wrong non-empty* type fails here.
+  //
+  if (file.type && !ALLOWED_TYPES.has(file.type)) {
     return "Unsupported image format. Use JPG, PNG, WebP, GIF or HEIC.";
   }
 
@@ -134,14 +114,17 @@ export async function uploadImage(file) {
     );
   }
 
-  // Safe storage path: own folder + timestamp
-  // + sanitized extension.
-  const rawExt = file.name.split(".").pop() || "jpg";
+  //
+  // Normalize first: sniffs real bytes,
+  // re-encodes HEIC and oversized photos
+  // into a safe JPEG the bucket accepts.
+  //
+  const { file: outFile, mimeType } =
+    await normalizeImageFile(file);
 
-  const safeExt = rawExt
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "")
-    .slice(0, 5) || "jpg";
+  // Safe storage path: own folder + timestamp
+  // + extension from the sniffed type.
+  const safeExt = guessExtension(mimeType);
 
   const fileName = `${user.id}/${Date.now()}-${Math.random()
     .toString(36)
@@ -149,8 +132,9 @@ export async function uploadImage(file) {
 
   const { error } = await supabase.storage
     .from("moment-images")
-    .upload(fileName, file, {
+    .upload(fileName, outFile, {
       cacheControl: "3600",
+      contentType: mimeType,
       upsert: false,
     });
 

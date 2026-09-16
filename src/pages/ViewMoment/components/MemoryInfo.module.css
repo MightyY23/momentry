@@ -4,7 +4,7 @@
 
 .section{
 
-    margin:60px 0;
+    margin:34px 0;
 
 }
 
@@ -189,36 +189,56 @@ repeat(2,1fr);
 
 @media(max-width:768px){
 
-.grid{
+.section{
 
-grid-template-columns:1fr;
+margin:16px 0;
+
+}
+
+.header{
+
+margin-bottom:12px;
 
 }
 
 .header h2{
 
-font-size:1.7rem;
+font-size:1.25rem;
+
+margin-top:8px;
+
+}
+
+.grid{
+
+grid-template-columns:repeat(2,1fr);
+
+gap:10px;
 
 }
 
 .card{
 
-padding:24px;
+padding:14px;
+
+border-radius:16px;
 
 }
 
 .icon{
 
-width:64px;
-height:64px;
+width:44px;
+height:44px;
 
-font-size:28px;
+font-size:20px;
+
+border-radius:13px;
 
 }
 
 .card h3{
 
-font-size:1.8rem;
+font-size:1.15rem;
 
 }
 
