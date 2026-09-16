@@ -346,7 +346,6 @@ function GiftComposer({ onClose, onWrapped }) {
               ref={messageRef}
               className={styles.textarea}
               value={message}
-              maxLength={2000}
               placeholder="Write something they'll never forget…"
               onChange={(e) =>
                 setMessage(e.target.value)

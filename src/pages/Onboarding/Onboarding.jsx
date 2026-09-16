@@ -119,7 +119,7 @@ function Onboarding() {
   //---------------------------------------
 
   async function handleFinish() {
-    if (fullName.trim().length < 2 || !birthDate) {
+    if ([...fullName.trim()].length < 2 || !birthDate) {
       notify.error(
         "Almost there",
         "We need your name and birthday to continue."
@@ -200,7 +200,7 @@ function Onboarding() {
   //---------------------------------------
 
   function next() {
-    if (step === 0 && fullName.trim().length < 2) {
+    if (step === 0 && [...fullName.trim()].length < 2) {
       notify.error(
         "Your name",
         "Please enter the name your partner will see."
@@ -230,7 +230,6 @@ function Onboarding() {
           className={styles.input}
           type="text"
           value={fullName}
-          maxLength={60}
           autoComplete="name"
           placeholder="Your name"
           onChange={(e) =>

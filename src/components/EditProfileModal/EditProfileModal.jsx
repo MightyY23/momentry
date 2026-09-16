@@ -141,7 +141,9 @@ function EditProfileModal({
 
     const trimmedName = fullName.trim();
 
-    if (trimmedName.length > 60) {
+    // Code-point length so emoji and
+    // non-BMP characters count fairly.
+    if ([...trimmedName].length > 60) {
       notify.error(
         "Name too long",
         "Keep your display name under 60 characters."
@@ -278,7 +280,6 @@ function EditProfileModal({
             type="text"
             placeholder="Your name"
             value={fullName}
-            maxLength={60}
             onChange={(e) =>
               setFullName(e.target.value)
             }

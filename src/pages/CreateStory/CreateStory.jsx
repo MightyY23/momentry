@@ -8,6 +8,7 @@ import Container from "../../ui/Container/Container";
 import PageLayout from "../../ui/PageLayout/PageLayout";
 
 import { createStory } from "../../services/story/storyService";
+import { pairWithCode } from "../../services/pairing/pairing";
 import useNotification from "../../hooks/useNotification";
 
 function CreateStory() {
@@ -17,6 +18,47 @@ function CreateStory() {
 
   const [storyName, setStoryName] = useState("Our Story");
   const [loading, setLoading] = useState(false);
+
+  //---------------------------------------
+  // Partner-code pairing (skip story
+  // creation and join your partner's)
+  //---------------------------------------
+
+  const [pairCode, setPairCode] = useState("");
+
+  const [pairLoading, setPairLoading] = useState(false);
+
+  async function handlePair() {
+    const code = pairCode.trim().toUpperCase();
+
+    if (code.length < 6) {
+      notify.error(
+        "Code too short",
+        "Partner codes are 6 characters."
+      );
+      return;
+    }
+
+    try {
+      setPairLoading(true);
+
+      await pairWithCode(code);
+
+      notify.success(
+        "You're paired! 💞",
+        "Welcome to your shared story."
+      );
+
+      navigate("/home", { replace: true });
+    } catch (error) {
+      notify.error(
+        "Couldn't pair",
+        error.message || "Please try again."
+      );
+    } finally {
+      setPairLoading(false);
+    }
+  }
 
   async function handleContinue() {
     if (!storyName.trim()) {
@@ -78,6 +120,42 @@ function CreateStory() {
           >
             {loading ? "Creating Story..." : "Continue"}
           </Button>
+
+          <div className={styles.divider}>
+            <span>or</span>
+          </div>
+
+          <p className={styles.pairHint}>
+            Your partner already made a story? Join
+            it with the code they shared with you.
+          </p>
+
+          <div className={styles.pairRow}>
+            <input
+              className={`${styles.input} ${styles.pairInput}`}
+              type="text"
+              inputMode="text"
+              autoCapitalize="characters"
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="ABC123"
+              value={pairCode}
+              onChange={(e) =>
+                setPairCode(e.target.value.toUpperCase())
+              }
+            />
+
+            <Button
+              variant="secondary"
+              onClick={handlePair}
+              disabled={
+                pairLoading ||
+                pairCode.trim().length < 6
+              }
+            >
+              {pairLoading ? "Pairing…" : "Pair up"}
+            </Button>
+          </div>
         </div>
       </Container>
     </PageLayout>

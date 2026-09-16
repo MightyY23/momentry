@@ -161,7 +161,8 @@ function EditMoment() {
       return;
     }
 
-    if (title.trim().length > 120) {
+    // Code-point length: emoji count as one.
+    if ([...title.trim()].length > 120) {
       notify.error(
         "Title too long",
         "Keep the title under 120 characters."
@@ -328,7 +329,6 @@ function EditMoment() {
                     styles.input
                   }
                   value={title}
-                  maxLength={120}
                   onChange={(e) =>
                     setTitle(
                       e.target.value

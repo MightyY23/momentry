@@ -15,12 +15,42 @@ const ALLOWED_TYPES = new Set([
 
 const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
+//
+// iOS photo picker (and some Android share
+// sheets) deliver image Files with an EMPTY
+// `type` — deriving from the extension keeps
+// those uploads working instead of failing
+// validation with a confusing error.
+//
+const EXT_MIME_TYPES = {
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  png: "image/png",
+  webp: "image/webp",
+  gif: "image/gif",
+  heic: "image/heic",
+  heif: "image/heif",
+};
+
+function resolveMimeType(file) {
+  if (file.type) return file.type;
+
+  const ext = (
+    file.name.split(".").pop() || ""
+  )
+    .toLowerCase();
+
+  return EXT_MIME_TYPES[ext] || "";
+}
+
 export function validateImageFile(file) {
   if (!file) {
     return "No image selected.";
   }
 
-  if (!ALLOWED_TYPES.has(file.type)) {
+  const mimeType = resolveMimeType(file);
+
+  if (!mimeType || !ALLOWED_TYPES.has(mimeType)) {
     return "Unsupported image format. Use JPG, PNG, WebP, GIF or HEIC.";
   }
 

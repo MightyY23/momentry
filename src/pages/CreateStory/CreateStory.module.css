@@ -38,3 +38,78 @@
 .input:focus {
   border-color: var(--primary);
 }
+
+/* ---- Join with a partner code ---- */
+
+.divider {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  color: var(--text-tertiary, var(--text-secondary));
+
+  font-size: 0.85rem;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.12em;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+
+  flex: 1;
+
+  height: 1px;
+
+  background: var(--border);
+}
+
+.pairHint {
+  text-align: center;
+
+  color: var(--text-secondary);
+
+  font-size: 0.92rem;
+
+  line-height: 1.6;
+}
+
+.pairRow {
+  display: flex;
+
+  gap: 10px;
+}
+
+.pairInput {
+  flex: 1;
+
+  min-width: 0;
+
+  padding: 14px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.3em;
+
+  text-align: center;
+
+  text-transform: uppercase;
+}
+
+.pairInput::placeholder {
+  letter-spacing: 0.3em;
+
+  font-weight: 400;
+
+  color: var(--text-tertiary, var(--text-secondary));
+}
+
+@media (max-width: 480px) {
+  .pairRow {
+    flex-direction: column;
+  }
+}

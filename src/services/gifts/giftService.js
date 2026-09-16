@@ -20,7 +20,8 @@ export function validateGift({ message, openDate }) {
     return "Write a message for your gift.";
   }
 
-  if (message.length > MAX_MESSAGE_LENGTH) {
+  // Code-point length so emoji count fairly.
+  if ([...message].length > MAX_MESSAGE_LENGTH) {
     return `Message is too long — keep it under ${MAX_MESSAGE_LENGTH} characters.`;
   }
 

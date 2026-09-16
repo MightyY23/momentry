@@ -15,6 +15,12 @@ import {
 import { createInvitation } from "../../../../services/invitation/createInvitation";
 import { cancelInvitation } from "../../../../services/invitation/cancelInvitation";
 import { leaveStory } from "../../../../services/story/leaveStory";
+import {
+  getOrCreatePairCode,
+  regeneratePairCode,
+  lookupPairCode,
+  pairWithCode,
+} from "../../../../services/pairing/pairing";
 
 import useNotification from "../../../../hooks/useNotification";
 
@@ -49,6 +55,32 @@ function Partner() {
   const [email, setEmail] = useState("");
 
   const [sending, setSending] = useState(false);
+
+  //---------------------------------------
+  // Partner code pairing (email-free)
+  //---------------------------------------
+
+  const [myCode, setMyCode] = useState(null);
+
+  const [codeExpiry, setCodeExpiry] = useState(null);
+
+  const [codeLoading, setCodeLoading] = useState(true);
+
+  const [regenerating, setRegenerating] =
+    useState(false);
+
+  const [copied, setCopied] = useState(false);
+
+  const [enterCodeMode, setEnterCodeMode] =
+    useState(false);
+
+  const [enteredCode, setEnteredCode] = useState("");
+
+  const [lookup, setLookup] = useState(null);
+
+  const [lookingUp, setLookingUp] = useState(false);
+
+  const [pairing, setPairing] = useState(false);
 
   //---------------------------------------
   // Danger actions
@@ -126,6 +158,27 @@ function Partner() {
         setPendingInvite(
           invites?.[0] ?? null
         );
+
+        // My partner code (created lazily,
+        // 7-day validity — see migration 023).
+        try {
+          const codeRows =
+            await getOrCreatePairCode();
+
+          if (cancelled) return;
+
+          setMyCode(codeRows[0]?.pair_code ?? null);
+
+          setCodeExpiry(
+            codeRows[0]?.expires_at ?? null
+          );
+        } catch (codeError) {
+          console.error(codeError);
+        } finally {
+          if (!cancelled) {
+            setCodeLoading(false);
+          }
+        }
       } catch (error) {
         console.error(error);
 
@@ -208,6 +261,112 @@ function Partner() {
       );
     } finally {
       setSending(false);
+    }
+  }
+
+  //---------------------------------------
+  // Partner code actions
+  //---------------------------------------
+
+  async function handleCopyCode() {
+    try {
+      await navigator.clipboard.writeText(
+        myCode
+      );
+
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      notify.error(
+        "Couldn't copy",
+        "Long-press the code to copy it manually."
+      );
+    }
+  }
+
+  async function handleRegenerateCode() {
+    try {
+      setRegenerating(true);
+
+      const rows = await regeneratePairCode();
+
+      setMyCode(rows[0]?.pair_code ?? null);
+      setCodeExpiry(rows[0]?.expires_at ?? null);
+
+      notify.success(
+        "New code ready",
+        "The old code no longer works."
+      );
+    } catch (error) {
+      notify.error(
+        "Couldn't make a new code",
+        error.message || "Please try again."
+      );
+    } finally {
+      setRegenerating(false);
+    }
+  }
+
+  async function handleLookupCode(e) {
+    e?.preventDefault?.();
+
+    const code = enteredCode.trim().toUpperCase();
+
+    if (code.length < 6) return;
+
+    try {
+      setLookingUp(true);
+      setLookup(null);
+
+      const result = await lookupPairCode(code);
+
+      setLookup(result);
+    } catch (error) {
+      notify.error(
+        "Couldn't check that code",
+        error.message || "Please try again."
+      );
+    } finally {
+      setLookingUp(false);
+    }
+  }
+
+  async function handlePair() {
+    const code = enteredCode.trim().toUpperCase();
+
+    try {
+      setPairing(true);
+
+      await pairWithCode(code);
+
+      notify.success(
+        "You're paired! 💞",
+        "Your stories are now connected — memories sync instantly."
+      );
+
+      // Full reload of partner state
+      setEnterCodeMode(false);
+      setEnteredCode("");
+      setLookup(null);
+
+      const storyData = await getMyStory();
+
+      setStory(storyData);
+
+      if (storyData) {
+        const memberData = await getStoryMembers(
+          storyData.id
+        );
+
+        setMembers(memberData || []);
+      }
+    } catch (error) {
+      notify.error(
+        "Couldn't pair",
+        error.message || "Please try again."
+      );
+    } finally {
+      setPairing(false);
     }
   }
 
@@ -465,6 +624,182 @@ function Partner() {
           </>
         )}
       </div>
+
+      {/* -------- Partner code pairing (no partner) -------- */}
+
+      {!partner && (
+        <div className={styles.codeCard}>
+          {enterCodeMode ? (
+            <>
+              <p className={styles.codeTitle}>
+                Enter your partner's code
+              </p>
+
+              <form
+                className={styles.codeForm}
+                onSubmit={handleLookupCode}
+              >
+                <input
+                  className={styles.codeInput}
+                  type="text"
+                  inputMode="text"
+                  autoCapitalize="characters"
+                  autoComplete="off"
+                  spellCheck={false}
+                  placeholder="ABC123"
+                  maxLength={6}
+                  value={enteredCode}
+                  onChange={(e) => {
+                    setEnteredCode(
+                      e.target.value.toUpperCase()
+                    );
+                    setLookup(null);
+                  }}
+                />
+
+                <Button
+                  type="submit"
+                  disabled={
+                    lookingUp ||
+                    enteredCode.trim().length < 6
+                  }
+                >
+                  {lookingUp
+                    ? "Checking…"
+                    : "Check code"}
+                </Button>
+
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setEnterCodeMode(false);
+                    setLookup(null);
+                    setEnteredCode("");
+                  }}
+                >
+                  Back
+                </Button>
+              </form>
+
+              {lookup && !lookup.valid && (
+                <p className={styles.codeError}>
+                  {lookup.reason}
+                </p>
+              )}
+
+              {lookup?.valid && (
+                <div className={styles.codeFound}>
+                  <span
+                    className={styles.foundAvatar}
+                    aria-hidden="true"
+                  >
+                    {(lookup.fullName || "♥")
+                      .trim()
+                      .charAt(0)
+                      .toUpperCase() || "♥"}
+                  </span>
+
+                  <div
+                    className={styles.foundMeta}
+                  >
+                    <span
+                      className={styles.foundName}
+                    >
+                      {lookup.fullName ||
+                        "Your partner"}
+                    </span>
+
+                    <span
+                      className={styles.foundHint}
+                    >
+                      Ready to pair — you'll share
+                      one story.
+                    </span>
+                  </div>
+
+                  <Button
+                    onClick={handlePair}
+                    disabled={pairing}
+                  >
+                    {pairing
+                      ? "Pairing…"
+                      : "Pair with them"}
+                  </Button>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <p className={styles.codeTitle}>
+                Your partner code
+              </p>
+
+              {codeLoading ? (
+                <p className={styles.hint}>
+                  Preparing your code…
+                </p>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className={styles.codeValue}
+                    onClick={handleCopyCode}
+                    aria-label={`Copy partner code ${myCode}`}
+                  >
+                    {myCode ?? "— — — — — —"}
+                  </button>
+
+                  <p className={styles.codeHint}>
+                    {copied
+                      ? "Copied! Send it to your partner."
+                    : "Tap the code to copy it — share it any way you like."}
+                    {!copied && codeExpiry && (
+                      <>
+                        {" "}Valid until{" "}
+                        {new Date(
+                          codeExpiry
+                        ).toLocaleDateString(
+                          undefined,
+                          {
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )}
+                        .
+                      </>
+                    )}
+                  </p>
+
+                  <div
+                    className={styles.codeActions}
+                  >
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        setEnterCodeMode(true)
+                      }
+                    >
+                      Have a code?
+                    </Button>
+
+                    <Button
+                      variant="secondary"
+                      onClick={
+                        handleRegenerateCode
+                      }
+                      disabled={regenerating}
+                    >
+                      {regenerating
+                        ? "Making…"
+                        : "New code"}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       {/* -------- Invite form (no partner) -------- */}
 
