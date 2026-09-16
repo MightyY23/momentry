@@ -3,7 +3,13 @@
 
   min-height: 100vh;
 
+  /* clip (not hidden): keeps the decorative
+     blobs inside WITHOUT creating a scroll
+     container — position: sticky (mobile top
+     bar) keeps working. `hidden` is kept as
+     the fallback for older Safari. */
   overflow: hidden;
+  overflow: clip;
 
   background:
     radial-gradient(circle at top left,

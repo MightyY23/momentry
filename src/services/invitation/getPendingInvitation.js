@@ -11,6 +11,13 @@ export async function getPendingInvitation(email) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Invitations are always stored lowercased
+  // (createInvitation normalizes); signing up
+  // with mixed case must still match.
+  const normalizedEmail = (email || "")
+    .trim()
+    .toLowerCase();
+
   // 1. All pending invitations for this email.
   const { data: invitations, error } = await supabase
     .from("invitations")
@@ -21,7 +28,7 @@ export async function getPendingInvitation(email) {
         title
       )`
     )
-    .eq("email", email)
+    .eq("email", normalizedEmail)
     .eq("status", "pending")
     .order("created_at", { ascending: false });
 

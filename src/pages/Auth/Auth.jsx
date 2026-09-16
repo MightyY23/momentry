@@ -51,8 +51,11 @@ function Auth({ resetMode = false }) {
   async function handleSuccessfulLogin() {
     try {
       // 1. Check if the user has a pending invitation
-      const invitation =
-        await getPendingInvitation(email);
+      // (invitations are stored lowercased — the
+      // lookup must match that exactly).
+      const invitation = await getPendingInvitation(
+        email.trim().toLowerCase()
+      );
 
       if (invitation) {
         navigate("/accept-invitation");
@@ -120,9 +123,15 @@ function Auth({ resetMode = false }) {
 
     try {
       if (isSignUp) {
-        const { error } =
+        // Supabase stores emails lowercased —
+        // normalize here so invitation lookups
+        // and profile rows always match.
+        const authEmail =
+          email.trim().toLowerCase();
+
+        const { data, error } =
           await supabase.auth.signUp({
-            email,
+            email: authEmail,
             password,
           });
 
@@ -131,6 +140,18 @@ function Auth({ resetMode = false }) {
             "Sign up failed",
             error.message
           );
+        } else if (data.session) {
+          // Email confirmation is disabled (or the
+          // address is already verified): continue
+          // straight into the invitation /
+          // onboarding / story routing instead of
+          // dead-ending on a toast.
+          notify.success(
+            "Account created!",
+            "Welcome to Momentry 💛"
+          );
+
+          await handleSuccessfulLogin();
         } else {
           notify.success(
             "Account created!",
@@ -141,7 +162,9 @@ function Auth({ resetMode = false }) {
         const { error } =
           await supabase.auth.signInWithPassword(
             {
-              email,
+              email: email
+                .trim()
+                .toLowerCase(),
               password,
             }
           );

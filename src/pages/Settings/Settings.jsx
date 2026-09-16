@@ -10,6 +10,7 @@ import Container from "../../ui/Container/Container";
 import SettingsSection from "./components/SettingsSection/SettingsSection";
 import Appearance from "./components/Appearance/Appearance";
 import Account from "./components/Account/Account";
+import Partner from "./components/Partner/Partner";
 import PreferenceToggles from "./components/PreferenceToggles/PreferenceToggles";
 
 import BackupRestore from "../../components/BackupRestore/BackupRestore";
@@ -220,6 +221,13 @@ function Settings() {
           title="Account"
         >
           <Account />
+        </SettingsSection>
+
+        <SettingsSection
+          icon="💞"
+          title="Partner"
+        >
+          <Partner />
         </SettingsSection>
 
         <SettingsSection
