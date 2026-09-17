@@ -125,7 +125,7 @@ function HeroSection({
                 </strong>
 
                 <p>
-                  {anniversaryDate
+                  {story?.anniversary_date
                     ? "Days Together"
                     : "Days In"}
                 </p>
@@ -162,7 +162,7 @@ function HeroSection({
                 </strong>
 
                 <p>
-                  {anniversaryDate
+                  {story?.anniversary_date
                     ? "Together Since"
                     : "First Memory"}
                 </p>
