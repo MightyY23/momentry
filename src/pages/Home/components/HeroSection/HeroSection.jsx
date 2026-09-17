@@ -172,6 +172,21 @@ function HeroSection({
             repeat: Infinity,
           }}
         >
+          {story?.cover_photo && (
+            <div className={styles.coverWrap}>
+              <img
+                src={story.cover_photo}
+                alt={`${story.title || "Our story"} cover`}
+                className={styles.coverImg}
+                loading="lazy"
+              />
+
+              <span className={styles.coverLabel}>
+                Our Cover
+              </span>
+            </div>
+          )}
+
           <div
             className={
               styles.memoryCard

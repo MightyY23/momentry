@@ -664,7 +664,41 @@
 /* BookPage sizes itself against the viewport
    (86vh max) — inside immersive it must size
    against the leftover space instead. */
+/* The page-turn wrapper (key={page}) sits
+   between bookArea and BookPage — the height
+   chain must flow through it:
+   bookArea -> turn wrapper -> pageWrapper -> book */
 .readerImmersive .bookArea > :nth-child(2) {
+
+    flex: 1;
+
+    min-height: 0 !important;
+
+    max-height: 100% !important;
+
+    height: auto !important;
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+.readerImmersive .bookArea > :nth-child(2) > * {
+
+    flex: 1;
+
+    min-height: 0 !important;
+
+    height: auto !important;
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+.readerImmersive .bookArea > :nth-child(2) .book {
 
     flex: 1;
 
@@ -676,6 +710,17 @@
 
 }
 
+/* Pages scroll internally when a chapter is
+   longer than the fitted book. */
+.readerImmersive .bookArea .leftPage,
+.readerImmersive .bookArea .rightPage {
+
+    overflow-y: auto;
+
+    min-height: 0;
+
+}
+
 
 .immersiveOverlay {
 
@@ -683,7 +728,10 @@
 
     inset: 0;
 
-    z-index: 1200;
+    /* Above the app's fixed chrome —
+       top navbar (var --z-sticky ≈ 200)
+       and mobile tabbar (900). */
+    z-index: 2000;
 
     display: flex;
 

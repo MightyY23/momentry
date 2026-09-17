@@ -9,3 +9,16 @@
     padding:0 24px;
 
 }
+
+/* Phones: slimmer gutters so more
+   content fits per row */
+
+@media (max-width: 600px){
+
+    .container{
+
+        padding: 0 14px;
+
+    }
+
+}

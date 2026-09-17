@@ -17,6 +17,8 @@
 }
 .layout{
 
+    margin-top: 34px;
+
 display:grid;
 
 grid-template-columns:
@@ -180,7 +182,7 @@ border:1px solid var(--border-light);
 
     inset: 0;
 
-    z-index: 150;
+    z-index: 950;
 
     height: 100vh;
 
@@ -202,11 +204,11 @@ border:1px solid var(--border-light);
 
     position: absolute;
 
-    top: 14px;
+    bottom: 16px;
 
-    right: 14px;
+    right: 16px;
 
-    z-index: 500;
+    z-index: 1200;
 
     width: 44px;
 
@@ -240,9 +242,9 @@ border:1px solid var(--border-light);
 
     .fsToggle{
 
-        top: calc(10px + env(safe-area-inset-top));
+        bottom: calc(12px + env(safe-area-inset-bottom));
 
-        right: 10px;
+        right: 12px;
 
     }
 

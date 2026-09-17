@@ -107,21 +107,41 @@
 
 @media(max-width:768px){
 
+.section{
+
+margin:16px 0 0;
+
+padding:14px 12px calc(14px + env(safe-area-inset-bottom));
+
+}
+
+.header{
+
+display:none;
+
+}
+
 .grid{
 
 grid-template-columns:repeat(2,1fr);
 
-}
-
-.section{
-
-margin:20px 0;
+gap:10px;
 
 }
 
-.header h2{
+.grid button{
 
-font-size:1.25rem;
+height:52px;
+
+border-radius:14px;
+
+font-size:.9rem;
+
+}
+
+.grid button:hover{
+
+transform:none;
 
 }
 

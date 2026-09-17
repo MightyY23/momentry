@@ -1,4 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { motion } from "framer-motion";
 
@@ -6,10 +10,10 @@ import Button from "../../../../ui/Button/Button";
 import ConfirmDialog from "../../../../ui/ConfirmDialog/ConfirmDialog";
 
 import {
-  getGalleryPhotos,
-  addGalleryPhotos,
-  deleteGalleryPhoto,
-} from "../../../../services/photo/galleryPhotoService";
+  getGalleryMedia,
+  addGalleryMedia,
+  deleteGalleryMedia,
+} from "../../../../services/photo/mediaService";
 
 import useMoments from "../../../../hooks/useMoments";
 
@@ -18,20 +22,21 @@ import useNotification from "../../../../hooks/useNotification";
 import styles from "./GalleryPhotos.module.css";
 
 /**
- * Photos without memories — a shared wall
- * where any member can drop pictures that
- * don't need a date or a title.
+ * The wall — photos AND videos that don't
+ * need a date or a title. Any member can
+ * add; own media (or the owner) removes.
  */
 function GalleryPhotos() {
   const notify = useNotification();
 
   const { story } = useMoments();
 
-  const [photos, setPhotos] = useState([]);
+  const [items, setItems] = useState([]);
 
   const [loading, setLoading] = useState(true);
 
-  const [uploading, setUploading] = useState(false);
+  const [uploading, setUploading] =
+    useState(false);
 
   const [uploadProgress, setUploadProgress] =
     useState("");
@@ -46,7 +51,7 @@ function GalleryPhotos() {
   const inputRef = useRef(null);
 
   //---------------------------------------
-  // Load + realtime
+  // Load
   //---------------------------------------
 
   useEffect(() => {
@@ -54,10 +59,10 @@ function GalleryPhotos() {
 
     async function load() {
       try {
-        const rows = await getGalleryPhotos();
+        const rows = await getGalleryMedia();
 
         if (!cancelled) {
-          setPhotos(rows);
+          setItems(rows);
         }
       } catch (error) {
         console.error(error);
@@ -76,11 +81,13 @@ function GalleryPhotos() {
   }, []);
 
   //---------------------------------------
-  // Upload
+  // Upload (photos + videos, many at once)
   //---------------------------------------
 
   async function handleFiles(e) {
-    const files = [...(e.target.files || [])];
+    const files = [
+      ...(e.target.files || []),
+    ];
 
     e.target.value = "";
 
@@ -91,35 +98,36 @@ function GalleryPhotos() {
 
       const created = [];
 
-      for (
-        let i = 0;
-        i < files.length;
-        i++
-      ) {
+      for (let i = 0; i < files.length; i++) {
+        const name = files[i].name;
+
         setUploadProgress(
-          `Uploading ${i + 1} of ${files.length}…`
+          `Uploading ${i + 1} of ${files.length}… ${name.slice(0, 18)}`
         );
 
-        const rows = await addGalleryPhotos([
+        const rows = await addGalleryMedia([
           files[i],
         ]);
 
         created.push(...rows);
       }
 
-      setPhotos((prev) => [...created, ...prev]);
+      setItems((prev) => [
+        ...created,
+        ...prev,
+      ]);
 
       notify.success(
-        "Photos added",
-        `${created.length} photo${
+        "Added to your wall",
+        `${created.length} item${
           created.length === 1 ? "" : "s"
-        } now on your wall.`
+        } uploaded.`
       );
     } catch (error) {
       console.error(error);
 
       notify.error(
-        "Couldn't add photos",
+        "Couldn't upload",
         error.message || "Please try again."
       );
     } finally {
@@ -138,9 +146,11 @@ function GalleryPhotos() {
     try {
       setDeleting(true);
 
-      await deleteGalleryPhoto(confirmDelete);
+      await deleteGalleryMedia(
+        confirmDelete
+      );
 
-      setPhotos((prev) =>
+      setItems((prev) =>
         prev.filter(
           (p) => p.id !== confirmDelete.id
         )
@@ -151,7 +161,7 @@ function GalleryPhotos() {
       console.error(error);
 
       notify.error(
-        "Couldn't remove photo",
+        "Couldn't remove",
         error.message || "Please try again."
       );
     } finally {
@@ -160,9 +170,80 @@ function GalleryPhotos() {
     }
   }
 
+  //---------------------------------------
+  // Lightbox keyboard + swipe
+  //---------------------------------------
+
+  useEffect(() => {
+    if (selected === null) return undefined;
+
+    function onKey(e) {
+      if (e.key === "Escape") {
+        setSelected(null);
+      }
+
+      if (e.key === "ArrowRight") {
+        setSelected((i) =>
+          i === null ? null : (i + 1) % items.length
+        );
+      }
+
+      if (e.key === "ArrowLeft") {
+        setSelected((i) =>
+          i === null
+            ? null
+            : (i - 1 + items.length) %
+              items.length
+        );
+      }
+    }
+
+    window.addEventListener(
+      "keydown",
+      onKey
+    );
+
+    return () =>
+      window.removeEventListener(
+        "keydown",
+        onKey
+      );
+  }, [selected, items.length]);
+
+  const touchX = useRef(null);
+
+  function onTouchStart(e) {
+    touchX.current =
+      e.touches?.[0]?.clientX ?? null;
+  }
+
+  function onTouchEnd(e) {
+    if (touchX.current == null) return;
+
+    const dx =
+      (e.changedTouches?.[0]?.clientX ??
+        0) - touchX.current;
+
+    touchX.current = null;
+
+    if (Math.abs(dx) < 50) return;
+
+    setSelected((i) =>
+      i === null
+        ? null
+        : dx < 0
+        ? (i + 1) % items.length
+        : (i - 1 + items.length) %
+          items.length
+    );
+  }
+
   if (!story) {
     return null;
   }
+
+  const currentItem =
+    selected !== null ? items[selected] : null;
 
   return (
     <section
@@ -176,18 +257,20 @@ function GalleryPhotos() {
 
         <Button
           variant="secondary"
-          onClick={() => inputRef.current?.click()}
+          onClick={() =>
+            inputRef.current?.click()
+          }
           disabled={uploading}
         >
           {uploading
             ? uploadProgress || "Uploading…"
-            : "+ Add photos"}
+            : "+ Add photos & videos"}
         </Button>
 
         <input
           ref={inputRef}
           type="file"
-          accept="image/*"
+          accept="image/*,video/*"
           multiple
           hidden
           onChange={handleFiles}
@@ -203,17 +286,17 @@ function GalleryPhotos() {
             />
           ))}
         </div>
-      ) : photos.length === 0 ? (
+      ) : items.length === 0 ? (
         <p className={styles.empty}>
-          Photos without a memory live here —
-          screenshots, random shots, the whole
-          messy beautiful pile.
+          Photos and videos without a memory
+          live here — screenshots, clips, the
+          whole messy beautiful pile.
         </p>
       ) : (
         <div className={styles.grid}>
-          {photos.map((photo, index) => (
+          {items.map((item, index) => (
             <motion.button
-              key={photo.id}
+              key={item.id}
               type="button"
               className={styles.cell}
               onClick={() =>
@@ -221,57 +304,133 @@ function GalleryPhotos() {
               }
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              loading="lazy"
-              aria-label="Open photo"
+              aria-label={
+                item.media_type === "video"
+                  ? "Open video"
+                  : "Open photo"
+              }
             >
-              <img
-                src={photo.image_url}
-                alt=""
-                loading="lazy"
-                className={styles.image}
-              />
+              {item.media_type ===
+              "video" ? (
+                <>
+                  <video
+                    src={item.image_url}
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className={styles.image}
+                  />
+
+                  <span
+                    className={styles.playBadge}
+                    aria-hidden="true"
+                  >
+                    ▶
+                  </span>
+                </>
+              ) : (
+                <img
+                  src={item.image_url}
+                  alt=""
+                  loading="lazy"
+                  className={styles.image}
+                />
+              )}
             </motion.button>
           ))}
         </div>
       )}
 
-      {selected !== null &&
-        photos[selected] && (
-          <div
-            className={styles.lightbox}
-            role="dialog"
-            aria-modal="true"
+      {currentItem && (
+        <div
+          className={styles.lightbox}
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setSelected(null)}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          <button
+            type="button"
+            className={styles.lightboxClose}
             onClick={() => setSelected(null)}
+            aria-label="Close"
           >
-            <img
-              src={photos[selected].image_url}
-              alt=""
-              className={styles.lightboxImage}
+            ✕
+          </button>
+
+          {currentItem.media_type ===
+          "video" ? (
+            <video
+              src={currentItem.image_url}
+              controls
+              autoPlay
+              playsInline
+              className={styles.lightboxMedia}
               onClick={(e) =>
                 e.stopPropagation()
               }
             />
-
-            <div
-              className={styles.lightboxBar}
+          ) : (
+            <img
+              src={currentItem.image_url}
+              alt=""
+              className={styles.lightboxMedia}
               onClick={(e) =>
                 e.stopPropagation()
+              }
+            />
+          )}
+
+          <div
+            className={styles.lightboxBar}
+            onClick={(e) =>
+              e.stopPropagation()
+            }
+          >
+            <span
+              className={styles.lightboxCount}
+            >
+              {selected + 1} / {items.length}
+            </span>
+
+            <div
+              className={
+                styles.lightboxActions
               }
             >
               <Button
                 variant="secondary"
                 onClick={() =>
-                  setSelected(null)
+                  setSelected(
+                    (i) =>
+                      (i - 1 + items.length) %
+                      items.length
+                  )
                 }
+                aria-label="Previous"
               >
-                Close
+                ←
+              </Button>
+
+              <Button
+                variant="secondary"
+                onClick={() =>
+                  setSelected(
+                    (i) =>
+                      (i + 1) % items.length
+                  )
+                }
+                aria-label="Next"
+              >
+                →
               </Button>
 
               <Button
                 variant="secondary"
                 onClick={() =>
                   setConfirmDelete(
-                    photos[selected]
+                    currentItem
                   )
                 }
               >
@@ -279,18 +438,21 @@ function GalleryPhotos() {
               </Button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
       <ConfirmDialog
         open={!!confirmDelete}
-        title="Remove this photo?"
-        message="It will disappear from the photo wall for both of you. This can't be undone."
-        confirmLabel="Delete photo"
+        title="Remove this item?"
+        message="It will disappear from the wall for both of you. This can't be undone."
+        confirmLabel="Delete"
         cancelLabel="Keep it"
         danger
         loading={deleting}
         onConfirm={handleDelete}
-        onCancel={() => setConfirmDelete(null)}
+        onCancel={() =>
+          setConfirmDelete(null)
+        }
       />
     </section>
   );

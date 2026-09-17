@@ -12,3 +12,21 @@
     color: var(--text-secondary);
     margin-bottom:30px;
 }
+
+@media (max-width: 600px){
+
+    .container{
+        margin:20px auto 0;
+
+        padding-bottom: calc(96px + env(safe-area-inset-bottom));
+    }
+
+    .heading{
+        font-size:1.6rem;
+    }
+
+    .subtitle{
+        font-size:.9rem;
+        margin-bottom:20px;
+    }
+}

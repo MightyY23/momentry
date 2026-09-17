@@ -9,3 +9,15 @@ gap:35px;
 padding-bottom:80px;
 
 }
+
+@media (max-width: 600px){
+
+.container{
+
+gap:18px;
+
+padding-bottom: calc(110px + env(safe-area-inset-bottom));
+
+}
+
+}

@@ -207,29 +207,47 @@ margin:20px 0;
 
 }
 
+.header{
+
+display:none;
+
+}
+
 .grid{
 
-grid-template-columns:1fr;
+grid-template-columns:1fr 1fr;
 
 gap:10px;
 
 }
 
-}
-
-@media(max-width:600px){
-
-.section{
-
-margin:14px 0;
-
-}
-
 .card{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:8px;
 
 padding:12px;
 
-border-radius:16px;
+border-radius:14px;
+
+}
+
+.content h3{
+
+font-size:.85rem;
+
+white-space:normal;
+
+display:-webkit-box;
+
+-webkit-line-clamp:2;
+
+-webkit-box-orient:vertical;
+
+overflow:hidden;
 
 }
 
@@ -238,6 +256,8 @@ border-radius:16px;
 width:100%;
 
 padding:9px;
+
+min-height:40px;
 
 }
 

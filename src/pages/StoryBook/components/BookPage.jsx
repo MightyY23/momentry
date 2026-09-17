@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import {
   BookMarked,
   Quote,
@@ -50,38 +49,19 @@ function BookPage({
         })
       : null;
 
+  // NOTE: the page flip is driven by the
+  // CSS keyframe animation on the wrapper
+  // div in BookReader (pageTurnNext/Prev) —
+  // a framer-motion entrance here hung at
+  // its initial state in the immersive
+  // overlay (React 19 interop), leaving the
+  // book invisible. A plain div renders
+  // reliably and the CSS flip still plays.
   return (
-    <motion.div
-      key={page}
+    <div
       className={styles.pageWrapper}
-      initial={{
-        rotateY:
-          page % 2 === 0
-            ? -95
-            : 95,
-        opacity: 0,
-      }}
-      animate={{
-        rotateY: 0,
-        opacity: 1,
-      }}
-      exit={{
-        rotateY:
-          page % 2 === 0
-            ? 95
-            : -95,
-        opacity: 0,
-      }}
-      transition={{
-        duration: 0.8,
-        ease: [0.22, 1, 0.36, 1],
-      }}
       style={{
         transformStyle: "preserve-3d",
-        transformOrigin:
-          page % 2 === 0
-            ? "left center"
-            : "right center",
       }}
     >
       <div
@@ -305,7 +285,7 @@ function BookPage({
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

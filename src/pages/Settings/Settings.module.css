@@ -12,6 +12,18 @@ color:var(--text,#1f1b2d);
 
 }
 
+@media (max-width: 600px){
+
+.heading{
+
+font-size:1.8rem;
+
+margin-bottom:20px;
+
+}
+
+}
+
 .soonNote{
 
 margin:0;
