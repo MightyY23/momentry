@@ -32,12 +32,28 @@ function QuickActions() {
       color: styles.purple,
     },
     {
+      icon: "📊",
+      title: "Monthly Recap",
+      description:
+        "Your month in memories.",
+      route: "/recap",
+      color: styles.blue,
+    },
+    {
       icon: "🗺️",
       title: "Memory Map",
       description:
         "Places you've been together.",
       route: "/memory-map",
       color: styles.blue,
+    },
+    {
+      icon: "✨",
+      title: "On This Day",
+      description:
+        "Relive past-year memories.",
+      route: "/on-this-day",
+      color: styles.pink,
     },
     {
       icon: "👤",

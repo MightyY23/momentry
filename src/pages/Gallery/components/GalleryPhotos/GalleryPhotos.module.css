@@ -160,7 +160,9 @@
 
   inset: 0;
 
-  z-index: 120;
+  /* Above the fixed mobile top navbar
+     (200) and bottom tab bar (900). */
+  z-index: 2000;
 
   display: flex;
 

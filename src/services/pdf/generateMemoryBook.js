@@ -3,11 +3,17 @@
  * jsPDF + helper modules are only
  * downloaded when the user actually
  * exports a memory book.
+ *
+ * `book` (optional) is the AI-written
+ * StoryBook { title, summary, chapters } —
+ * when present its chapters are rendered
+ * as full story pages after the cover.
  */
 export async function generateMemoryBook({
   story,
   moments,
   achievements,
+  book,
 }) {
   const [
     { jsPDF },
@@ -17,6 +23,7 @@ export async function generateMemoryBook({
     { addMemoryPages },
     { addAchievementsPage },
     { addClosingPage },
+    { addChapterPages },
   ] = await Promise.all([
     import("jspdf"),
     import("./addCoverPage"),
@@ -25,6 +32,7 @@ export async function generateMemoryBook({
     import("./addMemoryPages"),
     import("./addAchievementsPage"),
     import("./addClosingPage"),
+    import("./addChapterPages"),
   ]);
 
   const pdf = new jsPDF({
@@ -38,6 +46,26 @@ export async function generateMemoryBook({
   //---------------------------------------
 
   await addCoverPage(pdf, story);
+
+  //---------------------------------------
+  // AI-written story chapters (when the
+  // StoryBook has been generated). Rendered
+  // right after the cover so the exported
+  // PDF contains the full narrative.
+  //---------------------------------------
+
+  const chapterList =
+    Array.isArray(book?.chapters)
+      ? book.chapters
+      : [];
+
+  if (chapterList.length > 0) {
+    await addChapterPages(pdf, {
+      title: book.title || story?.title,
+      summary: book.summary || "",
+      chapters: chapterList,
+    });
+  }
 
   pdf.addPage();
 

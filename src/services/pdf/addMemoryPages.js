@@ -62,6 +62,26 @@ export async function addMemoryPages(
     }
 
     //---------------------------------------
+    // Favorite badge
+    //---------------------------------------
+
+    if (moment.is_favorite) {
+      pdf.setFont("helvetica", "bold");
+
+      pdf.setFontSize(12);
+
+      pdf.setTextColor(200, 60, 110);
+
+      pdf.text("★ Favorite", 190, 35, {
+        align: "right",
+      });
+
+      pdf.setTextColor(0);
+
+      pdf.setFont("helvetica", "normal");
+    }
+
+    //---------------------------------------
     // Description
     //---------------------------------------
 
@@ -83,6 +103,28 @@ export async function addMemoryPages(
     );
 
     pdf.text(lines, 28, y + 12);
+
+    //---------------------------------------
+    // Location
+    //---------------------------------------
+
+    if (moment.location) {
+      pdf.setFont("helvetica", "italic");
+
+      pdf.setFontSize(11);
+
+      pdf.setTextColor(110);
+
+      pdf.text(
+        `📍 ${moment.location}`,
+        28,
+        y + 68
+      );
+
+      pdf.setTextColor(0);
+
+      pdf.setFont("helvetica", "normal");
+    }
 
     //---------------------------------------
     // Photo

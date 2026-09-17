@@ -1,0 +1,160 @@
+/* ==========================================================
+   ON THIS DAY PAGE
+========================================================== */
+
+.page {
+
+    max-width: 640px;
+
+    margin: 24px auto 0;
+
+    padding-bottom: 120px;
+}
+
+.heading {
+
+    margin: 0;
+
+    text-align: center;
+
+    font-size: clamp(1.7rem, 4vw, 2.3rem);
+
+    color: var(--text);
+}
+
+.sub {
+
+    margin: 8px 0 22px;
+
+    text-align: center;
+
+    color: var(--text-secondary);
+
+    line-height: 1.7;
+}
+
+/* -------- Memory cards -------- */
+
+.card {
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-bottom: 18px;
+
+    padding: 20px;
+
+    border-radius: 24px;
+
+    border: 1px solid var(--border-light);
+
+    background: var(--surface);
+
+    box-shadow: 0 14px 40px rgba(255, 92, 141, .10);
+
+    isolation: isolate;
+}
+
+.glow {
+
+    position: absolute;
+
+    width: 190px;
+
+    height: 190px;
+
+    top: -70px;
+
+    right: -50px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 92, 141, .30);
+
+    filter: blur(55px);
+
+    z-index: -1;
+}
+
+.badge {
+
+    align-self: flex-start;
+
+    padding: 5px 13px;
+
+    border-radius: 999px;
+
+    background: linear-gradient(135deg, rgba(255, 92, 141, .16), rgba(124, 77, 255, .14));
+
+    color: var(--primary);
+
+    font-size: .76rem;
+
+    font-weight: 700;
+}
+
+.photo {
+
+    width: 100%;
+
+    max-height: 210px;
+
+    object-fit: cover;
+
+    border-radius: 14px;
+}
+
+.card h3 {
+
+    margin: 0;
+
+    color: var(--text);
+
+    font-size: 1.15rem;
+}
+
+.location {
+
+    margin: 0;
+
+    color: var(--text-secondary);
+
+    font-size: .87rem;
+}
+
+.openButton {
+
+    align-self: flex-start;
+
+    margin-top: 4px;
+
+    padding: 10px 20px;
+
+    border: none;
+
+    border-radius: 999px;
+
+    background: linear-gradient(135deg, #ff6b9a, #ff4d88);
+
+    color: #fff;
+
+    font-weight: 700;
+
+    font-size: .88rem;
+
+    cursor: pointer;
+
+    transition: transform .2s ease;
+}
+
+.openButton:hover {
+
+    transform: translateY(-2px);
+}

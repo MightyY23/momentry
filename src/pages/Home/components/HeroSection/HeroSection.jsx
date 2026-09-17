@@ -124,7 +124,11 @@ function HeroSection({
                   {daysTogether}
                 </strong>
 
-                <p>Days Together</p>
+                <p>
+                  {anniversaryDate
+                    ? "Days Together"
+                    : "Days In"}
+                </p>
               </div>
             </div>
 
@@ -157,7 +161,11 @@ function HeroSection({
                     "--"}
                 </strong>
 
-                <p>First Memory</p>
+                <p>
+                  {anniversaryDate
+                    ? "Together Since"
+                    : "First Memory"}
+                </p>
               </div>
             </div>
           </div>

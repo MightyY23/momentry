@@ -80,12 +80,27 @@ function Navbar() {
           className={styles.brand}
           aria-label="Momentry home"
         >
-          <span className={styles.logoCircle}>
-            ♥
-          </span>
+          {story?.cover_photo ? (
+            <span
+              className={
+                styles.logoCover
+              }
+            >
+              <img
+                src={
+                  story.cover_photo
+                }
+                alt=""
+              />
+            </span>
+          ) : (
+            <span className={styles.logoCircle}>
+              ♥
+            </span>
+          )}
 
           <span className={styles.brandText}>
-            Momentry
+            {story?.title || "Momentry"}
           </span>
         </NavLink>
 

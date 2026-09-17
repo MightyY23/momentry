@@ -8,13 +8,18 @@
 
     flex-direction: column;
 
-    height: calc(100dvh - 210px);
+    /* Fill the viewport between the fixed
+       top navbar (~64px) and the mobile
+       tab bar (~62px + safe area). */
+    height: calc(
+        100dvh - 126px - env(safe-area-inset-bottom, 0px)
+    );
 
     min-height: 420px;
 
     max-width: 760px;
 
-    margin: 18px auto 0;
+    margin: 10px auto 0;
 }
 
 /* ----------------------------------------------------------
@@ -153,9 +158,9 @@
 
     flex-direction: column;
 
-    gap: 4px;
+    gap: 12px;
 
-    padding: 16px 6px;
+    padding: 16px 8px 20px;
 }
 
 .dayDivider {
@@ -467,29 +472,47 @@
 
     .chatShell {
 
-        height: calc(100dvh - 250px);
+        /* Full phone height minus the fixed
+           top navbar and bottom tab bar. */
+        height: calc(
+            100dvh - 128px - env(safe-area-inset-bottom, 0px)
+        );
 
         min-height: 380px;
 
-        margin-top: 10px;
+        margin-top: 6px;
     }
 
     .bubble {
 
-        max-width: 86%;
+        max-width: 88%;
+
+        padding: 11px 15px 7px;
     }
 
     .thread {
 
-        padding: 12px 2px;
+        gap: 14px;
+
+        padding: 14px 4px 18px;
+    }
+
+    .dayDivider {
+
+        margin: 16px 0 8px;
     }
 
     .attachButton,
     .sendButton {
 
-        width: 40px;
+        width: 42px;
 
-        height: 40px;
+        height: 42px;
+    }
+
+    .composer {
+
+        padding: 9px;
     }
 }
 

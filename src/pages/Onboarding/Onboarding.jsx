@@ -33,6 +33,7 @@ function Onboarding() {
   const [step, setStep] = useState(0);
   const [fullName, setFullName] = useState("");
   const [birthDate, setBirthDate] = useState("");
+  const [annivDate, setAnnivDate] = useState("");
 
   const [finishing, setFinishing] = useState(false);
 
@@ -141,6 +142,46 @@ function Onboarding() {
         onboardingCompleted: true,
       });
 
+      // Persist the relationship start date on
+      // the story so Home can show "Together
+      // since" and occasions can celebrate the
+      // anniversary. The security-definer RPC
+      // lets ANY member (owner or invited
+      // partner) set it — the base stories
+      // UPDATE policy is owner-only.
+      if (annivDate) {
+        try {
+          const membership = await supabase
+            .from("story_members")
+            .select("story_id")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+          const storyId =
+            membership.data?.story_id;
+
+          if (storyId) {
+            const { error: annivError } =
+              await supabase.rpc(
+                "set_story_anniversary",
+                {
+                  p_story_id: storyId,
+                  p_date: annivDate,
+                }
+              );
+
+            if (annivError) throw annivError;
+          }
+        } catch (annivErr) {
+          // Non-fatal: onboarding continues —
+          // the date can be added in Settings.
+          console.error(
+            "anniversary_date:",
+            annivErr
+          );
+        }
+      }
+
       // Route like login does: pending invitation
       // first, then story presence.
       const invitation =
@@ -217,7 +258,7 @@ function Onboarding() {
       return;
     }
 
-    setStep((s) => Math.min(s + 1, 2));
+    setStep((s) => Math.min(s + 1, 3));
   }
 
   const steps = [
@@ -262,6 +303,30 @@ function Onboarding() {
               {birthDateError}
             </p>
           )}
+        </>
+      ),
+    },
+    {
+      emoji: "💞",
+      title: "When did your story begin?",
+      hint: "The day it all started — we'll count every day together and celebrate your anniversary.",
+      optional: true,
+      body: (
+        <>
+          <input
+            className={styles.input}
+            type="date"
+            value={annivDate}
+            max={new Date().toISOString().slice(0, 10)}
+            onChange={(e) =>
+              setAnnivDate(e.target.value)
+            }
+          />
+
+          <p className={styles.fieldHint}>
+            Not sure? You can skip this and add
+            it later in Settings.
+          </p>
         </>
       ),
     },
@@ -352,6 +417,12 @@ function Onboarding() {
             {current.hint}
           </p>
 
+          {current.optional && (
+            <span className={styles.optionalTag}>
+              Optional
+            </span>
+          )}
+
           <div className={styles.body}>
             {current.body}
           </div>
@@ -368,7 +439,7 @@ function Onboarding() {
             </Button>
           )}
 
-          {step < 2 ? (
+          {step < 3 ? (
             <Button
               onClick={next}
               className={styles.primaryAction}

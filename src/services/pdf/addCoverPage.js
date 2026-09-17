@@ -95,18 +95,46 @@ export async function addCoverPage(
   );
 
   //---------------------------------------
-  // Dates
+  // Dates — prefer the real anniversary
+  // (stories.anniversary_date) over a
+  // placeholder.
   //---------------------------------------
 
   const start =
+    story?.anniversary_date ||
     story?.relationship_start
       ? new Date(
-          story.relationship_start
+          story.anniversary_date ||
+            story.relationship_start
         ).toLocaleDateString()
       : "-";
 
+  const startLabel =
+    story?.anniversary_date ||
+    story?.relationship_start
+      ? "Together since"
+      : "";
+
   const today =
     new Date().toLocaleDateString();
+
+  pdf.setFontSize(15);
+
+  if (startLabel) {
+    pdf.setFont("helvetica", "italic");
+
+    pdf.setFontSize(11);
+
+    pdf.setTextColor(140);
+
+    pdf.text(startLabel, 105, 144, {
+      align: "center",
+    });
+
+    pdf.setTextColor(0);
+
+    pdf.setFont("helvetica", "normal");
+  }
 
   pdf.setFontSize(15);
 
@@ -165,6 +193,41 @@ export async function addCoverPage(
       align: "center",
     }
   );
+
+  //---------------------------------------
+  // Cover photo — full-bleed behind a
+  // translucent scrim when the story has
+  // one.
+  //---------------------------------------
+
+  if (story?.cover_photo) {
+    try {
+      const { imageToBase64 } = await import(
+        "./imageUtils"
+      );
+
+      const image = await imageToBase64(
+        story.cover_photo
+      );
+
+      if (image) {
+        pdf.setFillColor(255, 240, 246);
+
+        pdf.rect(0, 180, 210, 90, "F");
+
+        pdf.addImage(
+          image,
+          "JPEG",
+          55,
+          180,
+          100,
+          75
+        );
+      }
+    } catch {
+      // Decorative — ignore failures.
+    }
+  }
 
   //---------------------------------------
   // Footer

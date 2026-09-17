@@ -61,6 +61,9 @@ const Chat = lazy(() =>
 const Recap = lazy(() =>
   import("../pages/Recap/Recap")
 );
+const OnThisDayPage = lazy(() =>
+  import("../pages/OnThisDayPage/OnThisDayPage")
+);
 
 function AppRouter() {
   return (
@@ -215,6 +218,15 @@ function AppRouter() {
           element={
             <ProtectedRoute>
               <MemoryMap />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/on-this-day"
+          element={
+            <ProtectedRoute>
+              <OnThisDayPage />
             </ProtectedRoute>
           }
         />

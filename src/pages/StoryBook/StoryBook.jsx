@@ -194,15 +194,62 @@ function StoryBook() {
       const { achievements } =
         getAchievements(moments);
 
+      // Resolve the couple's real names for
+      // the cover ("You ❤️ Partner" is a
+      // placeholder no more).
+      let ownerName = "You";
+
+      let partnerName = "Partner";
+
+      try {
+        const { getStoryMembers } =
+          await import(
+            "../../services/story/members"
+          );
+
+        const members =
+          await getStoryMembers(story.id);
+
+        const me =
+          members.find(
+            (m) => m.role === "owner"
+          ) || members[0];
+
+        const other = members.find(
+          (m) => m.id !== me?.id
+        );
+
+        ownerName =
+          me?.profiles?.full_name || "You";
+
+        partnerName =
+          other?.profiles?.full_name ||
+          "Partner";
+      } catch {
+        // Names are cosmetic — placeholders fine.
+      }
+
       await generateMemoryBook({
         story: {
           ...story,
           title:
             storyData?.title ||
             story.title,
+          owner_name: ownerName,
+          partner_name: partnerName,
         },
         moments,
         achievements,
+
+        // The AI-written narrative, so the PDF
+        // includes every chapter.
+        book: storyData
+          ? {
+              title: storyData.title,
+              summary: storyData.summary,
+              chapters,
+            }
+          : null,
       });
 
       notify.success(

@@ -73,10 +73,18 @@ function Home() {
 
   //----------------------------------------
   // Anniversary Date
+  // Prefer the story's real anniversary
+  // (set at onboarding); fall back to the
+  // oldest memory.
   //----------------------------------------
 
   const anniversaryDate =
     useMemo(() => {
+      if (
+        story?.anniversary_date
+      )
+        return story.anniversary_date;
+
       if (!moments.length)
         return null;
 
@@ -89,7 +97,7 @@ function Home() {
             b.memory_date
           )
       )[0].memory_date;
-    }, [moments]);
+    }, [story, moments]);
 
   //----------------------------------------
   // Filter Memories

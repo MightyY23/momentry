@@ -140,6 +140,36 @@
   color:var(--danger, #e5484d);
 }
 
+.fieldHint{
+  margin:10px 0 0;
+
+  font-size:.82rem;
+
+  color:var(--text-secondary, #9a8fa3);
+}
+
+.optionalTag{
+  display:inline-block;
+
+  margin-top:6px;
+
+  padding:3px 12px;
+
+  border-radius:999px;
+
+  font-size:.72rem;
+
+  font-weight:600;
+
+  letter-spacing:.04em;
+
+  text-transform:uppercase;
+
+  color:var(--primary, #ec4899);
+
+  background:color-mix(in srgb, var(--primary, #ec4899) 12%, transparent);
+}
+
 /* ------------------------------------------
    Inputs
 ------------------------------------------ */
