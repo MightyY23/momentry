@@ -953,3 +953,83 @@
     }
 
 }
+
+/* ==========================================
+   LANDSCAPE PHONE / SHORT VIEWPORTS
+   360-430px tall: chrome must shrink so
+   the book keeps most of the viewport.
+   ========================================== */
+
+@media (max-height: 500px) {
+
+    /* Toolbar: one slim pill */
+
+    :global(.immersiveOverlayHost) .toolbar {
+
+        margin: 6px auto 4px;
+
+        padding: 6px 12px;
+
+        gap: 8px;
+    }
+
+    .toolbar button,
+    .group button {
+
+        width: 34px;
+
+        height: 34px;
+    }
+
+    /* Progress: hairline */
+
+    .wrapper.compact {
+
+        margin: 4px auto;
+
+        height: 5px;
+    }
+
+    /* Reader spacing */
+
+    .readerImmersive {
+
+        gap: 6px;
+
+        padding: 0 8px 4px;
+    }
+
+    .readerImmersive .navigation {
+
+        margin-top: 0;
+
+        gap: 8px;
+    }
+
+    .readerImmersive .navigation button {
+
+        min-height: 40px;
+
+        padding: 6px 14px;
+
+        font-size: 0.85rem;
+    }
+
+    .readerImmersive .pageInfo {
+
+        padding: 4px 10px;
+
+        font-size: 0.85rem;
+    }
+
+    /* Rotate hint sits tight to the top */
+
+    .rotateHint {
+
+        top: calc(6px + env(safe-area-inset-top));
+
+        padding: 6px 14px;
+
+        font-size: 0.75rem;
+    }
+}

@@ -94,15 +94,17 @@
   align-items: center;
 
   gap: 6px;
-}
+}.iconButton {
+  position: relative;
 
-.iconButton {
   display: flex;
 
   align-items: center;
+
   justify-content: center;
 
   width: 42px;
+
   height: 42px;
 
   border-radius: var(--radius-md);
@@ -293,4 +295,30 @@
 :global(.dark) .navbar,
 :global(.dark) .tabbar {
   border-color: rgba(255, 255, 255, .06);
+}
+
+/* ==========================================================
+   CHAT UNREAD DOT — pinned to the chat
+   icon's top-right corner.
+========================================================== */
+
+.unreadDot {
+
+    position: absolute;
+
+    top: 7px;
+
+    right: 7px;
+
+    width: 9px;
+
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: var(--primary);
+
+    box-shadow:
+        0 0 0 2px var(--surface),
+        0 2px 6px rgba(255, 92, 141, .5);
 }

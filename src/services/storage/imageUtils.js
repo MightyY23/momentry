@@ -241,6 +241,24 @@ export function guessExtension(mimeType) {
       return "heic";
     case "image/heif":
       return "heif";
+    // Videos — the Photo Wall stores
+    // them in the same bucket.
+    case "video/mp4":
+      return "mp4";
+    case "video/quicktime":
+      return "mov";
+    case "video/webm":
+      return "webm";
+    case "video/x-matroska":
+      return "mkv";
+    case "video/x-msvideo":
+      return "avi";
+    case "video/3gpp":
+      return "3gp";
+    case "video/3gpp2":
+      return "3g2";
+    case "video/mpeg":
+      return "mpeg";
     default:
       return "jpg";
   }

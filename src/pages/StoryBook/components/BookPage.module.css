@@ -1390,4 +1390,150 @@
 
     border-radius:24px;
 
+    /* ALWAYS a left/right spread in the
+       fullscreen reader — the generic
+       tablet rule (max-width:900px) turns
+       .book into a vertical stack, which
+       breaks landscape phones (640-932px
+       wide). This rule is appended after
+       it, so it wins the cascade. */
+    flex-direction:row !important;
+
+}
+
+/* ==========================================================
+   LANDSCAPE PHONE / SHORT VIEWPORTS
+   Fullscreen reading on phones happens at
+   roughly 640-932px wide and only 360-430px
+   tall. Desktop paddings (70px), display
+   headings (3.5rem) and the 290px hero eat
+   the whole height. Compact everything so
+   the fitted spread + chrome stay visible.
+   ========================================================== */
+
+@media (max-height: 500px) {
+
+    .bookImmersive {
+
+        border-radius: 14px;
+    }
+
+    .bookImmersive .leftPage,
+    .bookImmersive .rightPage {
+
+        padding: 16px 22px;
+
+        gap: 0;
+    }
+
+    /* Chapter header: one tight block */
+
+    .bookImmersive .chapterHeader {
+
+        margin: 6px 0 10px;
+    }
+
+    .bookImmersive .chapterHeader h2 {
+
+        margin: 4px 0 2px;
+
+        font-size: 1.35rem;
+    }
+
+    .bookImmersive .chapterLabel {
+
+        font-size: 0.62rem;
+    }
+
+    .bookImmersive .chapterDate {
+
+        font-size: 0.68rem;
+
+        letter-spacing: 1px;
+    }
+
+    /* Story text: scale the user's chosen
+       size down to fit the short page —
+       A-/A+ in the toolbar still work. */
+
+    .bookImmersive .story {
+
+        font-size: clamp(
+            12px,
+            calc(var(--font-size, 24px) * 0.62),
+            17px
+        );
+
+        line-height: 1.65;
+
+        text-align: left;
+    }
+
+    .bookImmersive .story::first-letter {
+
+        font-size: 2.4em;
+
+        margin: 4px 8px 0 0;
+    }
+
+    /* Media + decorations */
+
+    .bookImmersive .heroImage {
+
+        height: 110px;
+
+        margin: 8px 0;
+
+        border-radius: 10px;
+    }
+
+    .bookImmersive .decorative {
+
+        margin: 6px auto;
+
+        font-size: 16px;
+
+        letter-spacing: 8px;
+    }
+
+    /* Quote page compaction */
+
+    .bookImmersive .quoteCard {
+
+        padding: 18px;
+
+        gap: 10px;
+
+        border-radius: 14px;
+    }
+
+    .bookImmersive .quoteCard p {
+
+        font-size: 1.05rem;
+
+        line-height: 1.7;
+    }
+
+    /* Footer meta rows */
+
+    .bookImmersive .readingMeta,
+    .bookImmersive .footer {
+
+        gap: 6px;
+    }
+
+    .bookImmersive .pageNumber {
+
+        font-size: 0.68rem;
+    }
+
+    .bookImmersive .totalPages {
+
+        display: none;
+    }
+
+    .bookImmersive .bookmark {
+
+        display: none;
+    }
 }

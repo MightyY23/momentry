@@ -19,7 +19,7 @@ import { getMyStory } from "../story/getStory";
 // 50 MB cap.
 //----------------------------------------
 
-const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
+const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
 
 const VIDEO_EXTS = new Set([
   "mp4",
@@ -201,7 +201,7 @@ export async function uploadMedia(file) {
     mimeType = normalized.mimeType;
   } else if (file.size > MAX_VIDEO_BYTES) {
     throw new Error(
-      "Video is too large. Maximum size is 50 MB."
+      "Video is too large. Maximum size is 100 MB."
     );
   }
 
@@ -223,7 +223,7 @@ export async function uploadMedia(file) {
     if (error.message?.includes("size")) {
       throw new Error(
         media.kind === "video"
-          ? "Video is too large. Maximum size is 50 MB."
+          ? "Video is too large. Maximum size is 100 MB."
           : "Image is too large. Maximum size is 10 MB."
       );
     }

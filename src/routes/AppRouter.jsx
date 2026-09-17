@@ -55,6 +55,9 @@ const SharedStory = lazy(() =>
 const NotFound = lazy(() =>
   import("../pages/NotFound/NotFound")
 );
+const Chat = lazy(() =>
+  import("../pages/Chat/Chat")
+);
 
 function AppRouter() {
   return (
@@ -209,6 +212,15 @@ function AppRouter() {
           element={
             <ProtectedRoute>
               <MemoryMap />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <Chat />
             </ProtectedRoute>
           }
         />

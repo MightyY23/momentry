@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import { NavLink } from "react-router-dom";
 
 import {
@@ -6,6 +8,7 @@ import {
   Home,
   Images,
   MapPinned,
+  MessageCircle,
   PenLine,
   Search,
   Settings,
@@ -86,10 +89,21 @@ function Navbar() {
           </span>
         </NavLink>
 
-        {/* Actions: story settings,
+        {/* Actions: chat, story settings,
             search, settings */}
 
         <div className={styles.actions}>
+          <NavLink
+            to="/chat"
+            className={styles.iconButton}
+            aria-label="Chat with your partner"
+            title="Chat"
+          >
+            <MessageCircle size={20} />
+
+            <ChatUnreadDot />
+          </NavLink>
+
           <button
             type="button"
             className={styles.iconButton}
@@ -176,12 +190,12 @@ function Navbar() {
  * event so the modal opens from the
  * top-bar icon on any page.
  */
-import { useEffect, useState } from "react";
+import { useEffect as useEffectHost, useState as useStateHost } from "react";
 
 function StorySettingsHost({ story }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useStateHost(false);
 
-  useEffect(() => {
+  useEffectHost(() => {
     function handleOpen() {
       setOpen(true);
     }
@@ -208,3 +222,135 @@ function StorySettingsHost({ story }) {
 }
 
 export default Navbar;
+
+/**
+ * Live unread indicator for the partner
+ * chat. Subscribes to the story's chat
+ * thread and shows a dot when a message
+ * arrived after the last time /chat was
+ * open. Cheap: one realtime channel per
+ * logged-in app session.
+ */
+function ChatUnreadDot() {
+  const [dot, setDot] = useState(false);
+
+  useEffect(() => {
+    let unsubscribe = null;
+
+    let seenAt = Number(
+      localStorage.getItem(
+        "momentry:chat-last-seen"
+      ) || 0
+    );
+
+    async function wire() {
+      const {
+        getMyStory,
+      } = await import(
+        "../../services/story/getStory"
+      );
+
+      const {
+        subscribeToChat,
+      } = await import(
+        "../../services/chat/chatService"
+      );
+
+      let story;
+
+      try {
+        story = await getMyStory();
+      } catch {
+        return;
+      }
+
+      if (!story) return;
+
+      unsubscribe = subscribeToChat(
+        story.id,
+        {
+          onInsert: async (msg) => {
+            if (!msg) return;
+
+            // Own sends never count as unread.
+            const { supabase } =
+              await import(
+                "../../services/supabase/supabaseClient"
+              );
+
+            const {
+              data: { user },
+            } = await supabase.auth.getUser();
+
+            if (
+              user &&
+              msg.sender_id === user.id
+            ) {
+              return;
+            }
+
+            seenAt = Number(
+              localStorage.getItem(
+                "momentry:chat-last-seen"
+              ) || 0
+            );
+
+            const at = new Date(
+              msg.created_at
+            ).getTime();
+
+            if (at > seenAt) {
+              setDot(true);
+            }
+          },
+        }
+      );
+    }
+
+    wire();
+
+    function markSeen() {
+      if (
+        window.location.pathname ===
+        "/chat"
+      ) {
+        localStorage.setItem(
+          "momentry:chat-last-seen",
+          String(Date.now())
+        );
+
+        setDot(false);
+      }
+    }
+
+    window.addEventListener(
+      "focus",
+      markSeen
+    );
+
+    const poll = setInterval(
+      markSeen,
+      1500
+    );
+
+    return () => {
+      unsubscribe?.();
+
+      window.removeEventListener(
+        "focus",
+        markSeen
+      );
+
+      clearInterval(poll);
+    };
+  }, []);
+
+  if (!dot) return null;
+
+  return (
+    <span
+      className={styles.unreadDot}
+      aria-label="New chat messages"
+    />
+  );
+}

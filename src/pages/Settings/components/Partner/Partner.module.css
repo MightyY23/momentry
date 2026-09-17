@@ -30,6 +30,39 @@
   align-items: center;
 
   gap: 14px;
+
+  border: none;
+
+  background: none;
+
+  padding: 0;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  font: inherit;
+
+  color: inherit;
+
+  width: 100%;
+}
+
+/* Photo avatar inside the tappable
+   partner row */
+
+.avatarImg {
+  width: 46px;
+
+  height: 46px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  flex-shrink: 0;
+
+  border: 2px solid var(--primary-50);
 }
 
 .avatar {

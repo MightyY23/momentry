@@ -24,6 +24,8 @@ import {
 
 import useNotification from "../../../../hooks/useNotification";
 
+import PartnerProfileModal from "../../../../components/PartnerProfileModal/PartnerProfileModal";
+
 import styles from "./Partner.module.css";
 
 const ROLE_LABELS = {
@@ -55,6 +57,8 @@ function Partner() {
   const [email, setEmail] = useState("");
 
   const [sending, setSending] = useState(false);
+
+  const [viewProfile, setViewProfile] = useState(false);
 
   //---------------------------------------
   // Partner code pairing (email-free)
@@ -486,19 +490,40 @@ function Partner() {
       <div className={styles.infoCard}>
         {partner ? (
           <>
-            <div className={styles.partnerRow}>
-              <span
-                className={styles.avatar}
-                aria-hidden="true"
-              >
-                {(
-                  partner.profiles
-                    ?.full_name || "♥"
-                )
-                  .trim()
-                  .charAt(0)
-                  .toUpperCase() || "♥"}
-              </span>
+            <button
+              type="button"
+              className={styles.partnerRow}
+              onClick={() =>
+                setViewProfile(true)
+              }
+              aria-label={`View ${partner.profiles?.full_name || "partner"}'s profile`}
+            >
+              {partner.profiles
+                ?.avatar_url ? (
+                <img
+                  src={
+                    partner.profiles
+                      .avatar_url
+                  }
+                  alt=""
+                  className={
+                    styles.avatarImg
+                  }
+                />
+              ) : (
+                <span
+                  className={styles.avatar}
+                  aria-hidden="true"
+                >
+                  {(
+                    partner.profiles
+                      ?.full_name || "♥"
+                  )
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase() || "♥"}
+                </span>
+              )}
 
               <div className={styles.partnerMeta}>
                 <span
@@ -518,7 +543,7 @@ function Partner() {
                   · in your story
                 </span>
               </div>
-            </div>
+            </button>
 
             <p className={styles.hint}>
               You're sharing this story. Memories
@@ -902,6 +927,15 @@ function Partner() {
         onConfirm={handleRemovePartner}
         onCancel={() =>
           setConfirmRemove(false)
+        }
+      />
+
+      <PartnerProfileModal
+        member={partner}
+        storyTitle={story?.title}
+        open={viewProfile}
+        onClose={() =>
+          setViewProfile(false)
         }
       />
     </div>

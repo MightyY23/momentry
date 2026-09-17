@@ -1,0 +1,186 @@
+/* ==========================================================
+   PARTNER PROFILE MODAL
+========================================================== */
+
+.card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+
+    padding-top: 4px;
+}
+
+/* -------- Hero -------- */
+
+.hero {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+}
+
+.avatarImg {
+
+    width: 72px;
+
+    height: 72px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 3px solid var(--primary-50);
+
+    box-shadow: 0 10px 26px rgba(255, 92, 141, .25);
+}
+
+.avatarFallback {
+
+    width: 72px;
+
+    height: 72px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: linear-gradient(135deg, #ff6b9a, #ff4d88);
+
+    color: #fff;
+
+    font-size: 1.8rem;
+
+    font-weight: 700;
+
+    flex-shrink: 0;
+}
+
+.heroText {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    min-width: 0;
+}
+
+.heroText h3 {
+
+    margin: 0;
+
+    font-size: 1.3rem;
+
+    color: var(--text);
+
+    overflow-wrap: anywhere;
+}
+
+.roleChip {
+
+    align-self: flex-start;
+
+    padding: 4px 12px;
+
+    border-radius: 999px;
+
+    background: var(--primary-50);
+
+    color: var(--primary);
+
+    font-size: .75rem;
+
+    font-weight: 700;
+}
+
+/* -------- Facts -------- */
+
+.facts {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin: 0;
+}
+
+.fact {
+
+    display: flex;
+
+    align-items: baseline;
+
+    justify-content: space-between;
+
+    gap: 14px;
+
+    padding: 12px 14px;
+
+    border: 1px solid var(--border-light);
+
+    border-radius: 14px;
+
+    background: var(--background-secondary);
+}
+
+.fact dt {
+
+    color: var(--text-muted);
+
+    font-size: .85rem;
+
+    flex-shrink: 0;
+}
+
+.fact dd {
+
+    margin: 0;
+
+    color: var(--text);
+
+    font-weight: 600;
+
+    font-size: .92rem;
+
+    text-align: right;
+
+    overflow-wrap: anywhere;
+}
+
+/* -------- Actions -------- */
+
+.actions {
+
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+
+    .fact {
+
+        flex-direction: column;
+
+        gap: 4px;
+    }
+
+    .fact dd {
+
+        text-align: left;
+    }
+}

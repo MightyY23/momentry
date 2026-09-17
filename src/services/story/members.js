@@ -16,7 +16,8 @@ export async function getStoryMembers(storyId) {
       profiles (
         id,
         full_name,
-        avatar_url
+        avatar_url,
+        birth_date
       )
     `
     )
