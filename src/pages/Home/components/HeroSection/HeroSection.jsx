@@ -8,6 +8,7 @@ function HeroSection({
   story,
   anniversaryDate,
   memoriesCount,
+  onJumpToTimeline,
 }) {
   const navigate = useNavigate();
 
@@ -55,7 +56,11 @@ function HeroSection({
 
   return (
     <motion.section
-      className={styles.hero}
+      className={
+        story?.cover_photo
+          ? `${styles.hero} heroHasCover`
+          : styles.hero
+      }
       initial={{
         opacity: 0,
         y: 35,
@@ -68,6 +73,20 @@ function HeroSection({
         duration: 0.55,
       }}
     >
+      {/* Cover photo as the hero backdrop —
+          the app "loads into" your story. */}
+      {story?.cover_photo && (
+        <div
+          className={styles.coverBackdrop}
+          aria-hidden="true"
+        >
+          <img
+            src={story.cover_photo}
+            alt=""
+          />
+        </div>
+      )}
+
       <div className={styles.blurOne} />
       <div className={styles.blurTwo} />
 
@@ -154,10 +173,10 @@ function HeroSection({
 
             <button
               className={styles.secondaryButton}
-              onClick={() => navigate("/gallery")}
+              onClick={onJumpToTimeline}
             >
-              <span>🖼️</span>
-              Open Gallery
+              <span>🕰️</span>
+              Our Timeline
             </button>
           </div>
         </div>
@@ -172,21 +191,6 @@ function HeroSection({
             repeat: Infinity,
           }}
         >
-          {story?.cover_photo && (
-            <div className={styles.coverWrap}>
-              <img
-                src={story.cover_photo}
-                alt={`${story.title || "Our story"} cover`}
-                className={styles.coverImg}
-                loading="lazy"
-              />
-
-              <span className={styles.coverLabel}>
-                Our Cover
-              </span>
-            </div>
-          )}
-
           <div
             className={
               styles.memoryCard

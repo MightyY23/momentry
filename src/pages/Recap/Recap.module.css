@@ -1,0 +1,291 @@
+/* ==========================================================
+   MONTHLY RECAP
+========================================================== */
+
+.page {
+
+    max-width: 640px;
+
+    margin: 24px auto 0;
+
+    padding-bottom: 120px;
+}
+
+.heading {
+
+    margin: 0;
+
+    text-align: center;
+
+    font-size: clamp(1.7rem, 4vw, 2.3rem);
+
+    color: var(--text);
+}
+
+.sub {
+
+    margin: 8px 0 22px;
+
+    text-align: center;
+
+    color: var(--text-secondary);
+}
+
+/* -------- Month picker -------- */
+
+.pickerRow {
+
+    display: flex;
+
+    justify-content: center;
+
+    margin-bottom: 22px;
+}
+
+.picker {
+
+    padding: 12px 20px;
+
+    border-radius: 14px;
+
+    border: 1px solid var(--border);
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-size: 1rem;
+
+    font-weight: 600;
+}
+
+/* -------- Hero stat -------- */
+
+.heroCard {
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 4px;
+
+    padding: 30px 20px;
+
+    border-radius: 28px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(255, 92, 141, .92),
+            rgba(255, 60, 172, .85) 45%,
+            rgba(124, 77, 255, .85)
+        );
+
+    color: #fff;
+
+    box-shadow: 0 22px 55px rgba(255, 92, 141, .35);
+}
+
+.heroLabel {
+
+    font-size: .9rem;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+    opacity: .9;
+}
+
+.heroValue {
+
+    font-size: clamp(3rem, 10vw, 4.4rem);
+
+    line-height: 1;
+}
+
+.heroCaption {
+
+    font-size: 1rem;
+
+    opacity: .95;
+}
+
+/* -------- Stat chips -------- */
+
+.statGrid {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 12px;
+
+    margin-top: 16px;
+}
+
+.statCard {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 3px;
+
+    padding: 16px 8px;
+
+    border-radius: 18px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border-light);
+}
+
+.statCard span {
+
+    font-size: 1.3rem;
+}
+
+.statCard strong {
+
+    color: var(--text);
+
+    font-size: 1.25rem;
+}
+
+.statCard small {
+
+    color: var(--text-muted);
+
+    font-size: .78rem;
+}
+
+/* -------- Photo strip -------- */
+
+.photoStrip {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 8px;
+
+    margin-top: 16px;
+}
+
+.photoStrip img {
+
+    width: 100%;
+
+    aspect-ratio: 1;
+
+    object-fit: cover;
+
+    border-radius: 12px;
+}
+
+/* -------- Memory list -------- */
+
+.memoryList {
+
+    list-style: none;
+
+    margin: 18px 0 0;
+
+    padding: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.memoryRow {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 13px 16px;
+
+    border-radius: 14px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border-light);
+}
+
+.memoryDate {
+
+    color: var(--text-muted);
+
+    font-size: .8rem;
+
+    font-variant-numeric: tabular-nums;
+
+    flex-shrink: 0;
+
+    min-width: 62px;
+}
+
+.memoryTitle {
+
+    color: var(--text);
+
+    font-size: .95rem;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.empty {
+
+    margin-top: 22px;
+
+    text-align: center;
+
+    color: var(--text-secondary);
+
+    line-height: 1.7;
+}
+
+/* -------- Share -------- */
+
+.shareRow {
+
+    display: flex;
+
+    justify-content: center;
+
+    margin-top: 26px;
+}
+
+@media (max-width: 480px) {
+
+    .statGrid {
+
+        gap: 8px;
+    }
+
+    .photoStrip {
+
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

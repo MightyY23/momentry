@@ -1,0 +1,206 @@
+/* ==========================================================
+   VOICE CALL OVERLAY
+========================================================== */
+
+.overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 3000;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(8, 5, 12, .88);
+
+    backdrop-filter: blur(14px);
+
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 18px;
+
+    padding: 44px 40px;
+
+    border-radius: 32px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border-light);
+
+    box-shadow: 0 40px 90px rgba(0, 0, 0, .45);
+}
+
+/* -------- Avatar with pulse ring -------- */
+
+.avatarRing {
+
+    width: 104px;
+
+    height: 104px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: linear-gradient(135deg, #ff6b9a, #ff4d88);
+
+    box-shadow: 0 0 0 8px rgba(255, 92, 141, .12);
+}
+
+.ringPulse {
+
+    animation: ringPulse 1.6s ease-out infinite;
+}
+
+@keyframes ringPulse {
+
+    0% {
+
+        box-shadow:
+            0 0 0 8px rgba(255, 92, 141, .18);
+    }
+
+    70% {
+
+        box-shadow:
+            0 0 0 26px rgba(255, 92, 141, 0);
+    }
+
+    100% {
+
+        box-shadow:
+            0 0 0 8px rgba(255, 92, 141, .18);
+    }
+}
+
+.avatarInitial {
+
+    font-size: 2.2rem;
+
+    font-weight: 700;
+
+    color: #fff;
+}
+
+.card h2 {
+
+    margin: 6px 0 0;
+
+    color: var(--text);
+
+    font-size: 1.4rem;
+}
+
+.status {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: .95rem;
+
+    font-variant-numeric: tabular-nums;
+}
+
+/* -------- Controls -------- */
+
+.controls {
+
+    display: flex;
+
+    gap: 22px;
+
+    margin-top: 16px;
+}
+
+.roundButton {
+
+    width: 64px;
+
+    height: 64px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    color: #fff;
+
+    transition: transform .2s ease, opacity .2s ease;
+}
+
+.roundButton:active {
+
+    transform: scale(.94);
+}
+
+.accept {
+
+    background: linear-gradient(135deg, #34c77b, #1fa860);
+}
+
+.decline {
+
+    background: linear-gradient(135deg, #ff5c72, #e5304a);
+}
+
+.roundButton {
+
+    background: var(--background-secondary);
+
+    color: var(--text);
+}
+
+.roundButton.accept {
+
+    background: linear-gradient(135deg, #34c77b, #1fa860);
+
+    color: #fff;
+}
+
+.roundButton.decline {
+
+    background: linear-gradient(135deg, #ff5c72, #e5304a);
+
+    color: #fff;
+}
+
+.mutedActive {
+
+    background: var(--primary) !important;
+
+    color: #fff !important;
+}
+
+@media (max-width: 480px) {
+
+    .card {
+
+        padding: 36px 28px;
+    }
+}

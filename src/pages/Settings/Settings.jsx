@@ -12,6 +12,7 @@ import Appearance from "./components/Appearance/Appearance";
 import Account from "./components/Account/Account";
 import Partner from "./components/Partner/Partner";
 import PreferenceToggles from "./components/PreferenceToggles/PreferenceToggles";
+import Notifications from "./components/Notifications/Notifications";
 
 import BackupRestore from "../../components/BackupRestore/BackupRestore";
 import BackupPreview from "../../components/BackupPreview/BackupPreview";
@@ -194,6 +195,13 @@ function Settings() {
         >
           ⚙ Settings
         </h1>
+
+        <SettingsSection
+          icon="🔔"
+          title="Notifications"
+        >
+          <Notifications />
+        </SettingsSection>
 
         <SettingsSection
           icon="🎨"

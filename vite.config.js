@@ -29,6 +29,12 @@ export default defineConfig({
             return 'maps';
           }
 
+          // Supabase (auth/db/realtime/storage)
+          // is its own cacheable chunk.
+          if (id.includes('@supabase')) {
+            return 'supabase';
+          }
+
           // Charts are only used by the lazy
           // Analytics page — keep them out of
           // the eagerly-loaded vendor chunk.

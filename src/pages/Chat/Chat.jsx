@@ -7,7 +7,13 @@ import {
 
 import { Link } from "react-router-dom";
 
-import { ImagePlus, Send } from "lucide-react";
+import {
+  ImagePlus,
+  Mic,
+  Phone,
+  Send,
+  X,
+} from "lucide-react";
 
 import PageLayout from "../../ui/PageLayout/PageLayout";
 import Container from "../../ui/Container/Container";
@@ -16,6 +22,8 @@ import Loader from "../../ui/Loader/Loader";
 import Button from "../../ui/Button/Button";
 
 import PartnerProfileModal from "../../components/PartnerProfileModal/PartnerProfileModal";
+
+import CallOverlay from "../../components/CallOverlay/CallOverlay";
 
 import { useAuth } from "../../contexts/useAuth";
 
@@ -28,6 +36,12 @@ import {
   getChatMessages,
   sendChatMessage,
   subscribeToChat,
+  setReaction,
+  markThreadSeen,
+  sendVoiceNote,
+  subscribeToTyping,
+  broadcastTyping,
+  REACTION_EMOJIS,
 } from "../../services/chat/chatService";
 import { uploadImage } from "../../services/storage/uploadImage";
 
@@ -108,11 +122,38 @@ function Chat() {
     {}
   );
 
+  const [reactingTo, setReactingTo] =
+    useState(null);
+
+  const [partnerTyping, setPartnerTyping] =
+    useState(false);
+
+  const [recording, setRecording] =
+    useState(false);
+
+  const [recordSecs, setRecordSecs] =
+    useState(0);
+
+  const [callState, setCallState] =
+    useState(null);
+
   const listRef = useRef(null);
 
   const bottomRef = useRef(null);
 
   const attachRef = useRef(null);
+
+  const recorderRef = useRef(null);
+
+  const chunksRef = useRef([]);
+
+  const recordTimerRef = useRef(null);
+
+  const typingSentAtRef = useRef(0);
+
+  const longPressRef = useRef(null);
+
+  const recordSecsRef = useRef(0);
 
   //---------------------------------------
   // Load thread + partner
@@ -284,7 +325,84 @@ function Chat() {
       behavior: "smooth",
       block: "end",
     });
-  }, [messages.length]);
+  }, [messages.length, partnerTyping]);
+
+  //---------------------------------------
+  // Seen receipts — mark the partner's
+  // messages seen when the thread is open.
+  //---------------------------------------
+
+  useEffect(() => {
+    if (!storyId || !user?.id) return;
+
+    markThreadSeen(storyId, user.id);
+  }, [storyId, user?.id, messages.length]);
+
+  //---------------------------------------
+  // Typing indicator — partner's "typing…"
+  //---------------------------------------
+
+  useEffect(() => {
+    if (!storyId || !user?.id) return;
+
+    const unsubscribe = subscribeToTyping(
+      storyId,
+      user.id,
+      (typing) => {
+        setPartnerTyping(typing);
+      }
+    );
+
+    return unsubscribe;
+  }, [storyId, user?.id]);
+
+  //---------------------------------------
+  // Realtime UPDATEs — reactions and seen
+  // receipts from the partner arrive here.
+  //---------------------------------------
+
+  useEffect(() => {
+    if (!storyId) return;
+
+    const channel = supabase
+      .channel(
+        `chat-upd-${storyId}-${Math.random()
+          .toString(36)
+          .slice(2, 8)}`
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "chat_messages",
+          filter: `story_id=eq.${storyId}`,
+        },
+        (payload) => {
+          const upd = payload.new;
+
+          if (!upd) return;
+
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === upd.id
+                ? {
+                    ...m,
+                    reactions:
+                      upd.reactions || {},
+                    seen_at: upd.seen_at,
+                  }
+                : m
+            )
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [storyId]);
 
   //---------------------------------------
   // Group messages under day dividers
@@ -380,6 +498,192 @@ function Chat() {
     } finally {
       setSending(false);
     }
+  }
+
+  //---------------------------------------
+  // Reactions — long-press opens the
+  // picker; double-tap = instant ❤️.
+  //---------------------------------------
+
+  function toggleReactionLocal(msg, emoji) {
+    const reactions = {
+      ...(msg.reactions || {}),
+    };
+
+    if (reactions[user.id] === emoji) {
+      delete reactions[user.id];
+    } else {
+      reactions[user.id] = emoji;
+    }
+
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === msg.id
+          ? { ...m, reactions }
+          : m
+      )
+    );
+
+    setReaction(msg.id, reactions).catch(
+      () => {
+        notify.error(
+          "Reaction failed",
+          "Please try again."
+        );
+      }
+    );
+  }
+
+  function handleBubbleTap(msg) {
+    const now = Date.now();
+
+    if (
+      now - (msg._lastTap || 0) < 320
+    ) {
+      // Double tap — Instagram heart.
+      toggleReactionLocal(msg, "❤️");
+    }
+
+    msg._lastTap = now;
+  }
+
+  function startLongPress(msg) {
+    longPressRef.current = setTimeout(() => {
+      setReactingTo(msg);
+    }, 420);
+  }
+
+  function cancelLongPress() {
+    clearTimeout(longPressRef.current);
+  }
+
+  //---------------------------------------
+  // Typing broadcast — throttled.
+  //---------------------------------------
+
+  function handleDraftChange(e) {
+    const value = e.target.value;
+
+    setDraft(value);
+
+    if (!storyId || !user?.id) return;
+
+    const now = Date.now();
+
+    if (now - typingSentAtRef.current > 1200) {
+      typingSentAtRef.current = now;
+
+      broadcastTyping(
+        storyId,
+        user.id,
+        true
+      );
+    }
+  }
+
+  //---------------------------------------
+  // Voice notes — hold to record.
+  //---------------------------------------
+
+  async function startRecording() {
+    try {
+      const stream =
+        await navigator.mediaDevices.getUserMedia(
+          { audio: true }
+        );
+
+      const recorder = new MediaRecorder(
+        stream
+      );
+
+      chunksRef.current = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size) {
+          chunksRef.current.push(e.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        stream.getTracks().forEach((t) =>
+          t.stop()
+        );
+
+        const secs = recordSecsRef.current;
+
+        const blob = new Blob(
+          chunksRef.current,
+          {
+            type:
+              recorder.mimeType ||
+              "audio/webm",
+          }
+        );
+
+        if (blob.size && secs >= 1) {
+          try {
+            setUploading(true);
+
+            await sendVoiceNote(
+              storyId,
+              blob,
+              secs * 1000
+            );
+          } catch (error) {
+            notify.error(
+              "Voice note not sent",
+              error.message ||
+                "Please try again."
+            );
+          } finally {
+            setUploading(false);
+          }
+        }
+      };
+
+      recorder.start();
+
+      recorderRef.current = recorder;
+
+      setRecording(true);
+
+      setRecordSecs(0);
+
+      recordSecsRef.current = 0;
+
+      recordTimerRef.current = setInterval(
+        () => {
+          recordSecsRef.current += 1;
+
+          setRecordSecs(
+            recordSecsRef.current
+          );
+
+          // Hard cap: 60 seconds.
+          if (
+            recordSecsRef.current >= 60
+          ) {
+            stopRecording();
+          }
+        },
+        1000
+      );
+    } catch {
+      notify.error(
+        "Microphone unavailable",
+        "Allow mic access to send voice notes."
+      );
+    }
+  }
+
+  function stopRecording() {
+    clearInterval(recordTimerRef.current);
+
+    recorderRef.current?.stop();
+
+    recorderRef.current = null;
+
+    setRecording(false);
   }
 
   async function handleRetry(tempId) {
@@ -497,6 +801,15 @@ function Chat() {
         </Container>
       </PageLayout>
     );
+  }
+
+  // Calls: partner presence + handlers are
+  // provided by the CallOverlay integration.
+
+  const partnerHasAudio = Boolean(partner);
+
+  function onStartCall() {
+    setCallState("calling");
   }
 
   // Partner name: prefer the membership
@@ -626,32 +939,63 @@ function Chat() {
                           ? styles.bubbleFailed
                           : "",
                       ].join(" ")}
-                      onClick={
-                        row.failed
-                          ? () =>
-                              handleRetry(
-                                row.id
-                              )
-                          : undefined
+                      onClick={() => {
+                        if (row.failed) {
+                          handleRetry(row.id);
+
+                          return;
+                        }
+
+                        if (
+                          row.kind === "text"
+                        ) {
+                          handleBubbleTap(row);
+                        }
+                      }}
+                      onTouchStart={() =>
+                        startLongPress(row)
                       }
-                      role={
-                        row.failed
-                          ? "button"
-                          : undefined
+                      onTouchEnd={
+                        cancelLongPress
                       }
+                      onTouchMove={
+                        cancelLongPress
+                      }
+                      onContextMenu={(e) => {
+                        // Desktop long-press
+                        // equivalent.
+                        e.preventDefault();
+
+                        setReactingTo(row);
+                      }}
                     >
-                      {row.image_url && (
-                        <img
-                          src={
-                            row.image_url
-                          }
-                          alt="Shared photo"
-                          className={
-                            styles.bubbleImage
-                          }
-                          loading="lazy"
-                        />
-                      )}
+                      {row.image_url &&
+                        row.kind !== "voice" && (
+                          <img
+                            src={
+                              row.image_url
+                            }
+                            alt="Shared photo"
+                            className={
+                              styles.bubbleImage
+                            }
+                            loading="lazy"
+                          />
+                        )}
+
+                      {row.kind ===
+                        "voice" && (
+                          <audio
+                            src={
+                              row.image_url
+                            }
+                            controls
+                            preload="metadata"
+                            className={
+                              styles.voicePlayer
+                            }
+                          />
+                        )}
 
                       {row.body && (
                         <p>
@@ -669,11 +1013,53 @@ function Chat() {
                           : timeLabel(
                               row.created_at
                             )}
+                        {row.sender_id ===
+                          user?.id &&
+                          row.seen_at &&
+                          " ✓✓"}
                       </small>
+
+                      {/* Reaction chip */}
+
+                      {row.reactions &&
+                        Object.keys(row.reactions)
+                          .length > 0 && (
+                          <span
+                            className={
+                              styles.reactionChip
+                            }
+                          >
+                            {
+                              row.reactions[
+                                Object.keys(
+                                  row.reactions
+                                )[0]
+                              ]
+                            }
+                          </span>
+                        )}
                     </div>
                   </div>
                 )
               )
+            )}
+
+            {partnerTyping && (
+              <div
+                className={styles.typingRow}
+              >
+                <div
+                  className={
+                    styles.typingBubble
+                  }
+                >
+                  <span />
+
+                  <span />
+
+                  <span />
+                </div>
+              </div>
             )}
 
             <div ref={bottomRef} />
@@ -709,8 +1095,8 @@ function Chat() {
             <input
               className={styles.input}
               value={draft}
-              onChange={(e) =>
-                setDraft(e.target.value)
+              onChange={
+                handleDraftChange
               }
               placeholder={
                 uploading
@@ -721,20 +1107,150 @@ function Chat() {
               aria-label="Message"
             />
 
-            <button
-              type="submit"
-              className={styles.sendButton}
-              disabled={
-                sending ||
-                uploading ||
-                !draft.trim()
-              }
-              aria-label="Send message"
-            >
-              <Send size={18} />
-            </button>
+            {draft.trim() ? (
+              <button
+                type="submit"
+                className={styles.sendButton}
+                disabled={sending || uploading}
+                aria-label="Send message"
+              >
+                <Send size={18} />
+              </button>
+            ) : (
+              <button
+                type="button"
+                className={
+                  recording
+                    ? `${styles.sendButton} ${styles.recordingPulse}`
+                    : styles.sendButton
+                }
+                onClick={
+                  recording
+                    ? stopRecording
+                    : startRecording
+                }
+                aria-label={
+                  recording
+                    ? "Stop and send voice note"
+                    : "Record voice note"
+                }
+                title={
+                  recording
+                    ? "Tap to send"
+                    : "Voice note"
+                }
+              >
+                <Mic size={18} />
+              </button>
+            )}
           </form>
+
+          {/* Call buttons under the composer */}
+
+          <div className={styles.callRow}>
+            <button
+              type="button"
+              className={styles.callButton}
+              onClick={onStartCall}
+              disabled={!partner || !partnerHasAudio}
+              aria-label="Start voice call"
+            >
+              <Phone size={16} />
+
+              Voice call
+            </button>
+          </div>
+
+          {recording && (
+            <div className={styles.recordBar}>
+              <span
+                className={styles.recordDot}
+              />
+
+              Recording… {recordSecs}s
+
+              <button
+                type="button"
+                className={styles.recordCancel}
+                onClick={() => {
+                  chunksRef.current = [];
+
+                  recordSecsRef.current = 0;
+
+                  stopRecording();
+                }}
+              >
+                <X size={14} />
+
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
+
+        {/* -------- Reaction picker -------- */}
+
+        {reactingTo && (
+          <div
+            className={styles.reactionSheet}
+            onClick={() => setReactingTo(null)}
+          >
+            <div
+              className={
+                styles.reactionSheetInner
+              }
+              onClick={(e) =>
+                e.stopPropagation()
+              }
+            >
+              {REACTION_EMOJIS.map(
+                (emoji) => (
+                  <button
+                    key={emoji}
+                    type="button"
+                    className={
+                      styles.reactionOption
+                    }
+                    onClick={() => {
+                      toggleReactionLocal(
+                        reactingTo,
+                        emoji
+                      );
+
+                      setReactingTo(null);
+                    }}
+                  >
+                    {emoji}
+                  </button>
+                )
+              )}
+
+              <button
+                type="button"
+                className={
+                  styles.reactionClose
+                }
+                onClick={() =>
+                  setReactingTo(null)
+                }
+                aria-label="Cancel"
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* -------- Voice call -------- */}
+
+        <CallOverlay
+          storyId={storyId}
+          myUserId={user?.id}
+          partnerName={partnerName}
+          state={callState}
+          onStateChange={setCallState}
+          onClose={() => setCallState(null)}
+        />
 
         {/* -------- Partner profile -------- */}
 

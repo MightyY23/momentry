@@ -58,6 +58,9 @@ const NotFound = lazy(() =>
 const Chat = lazy(() =>
   import("../pages/Chat/Chat")
 );
+const Recap = lazy(() =>
+  import("../pages/Recap/Recap")
+);
 
 function AppRouter() {
   return (
@@ -212,6 +215,15 @@ function AppRouter() {
           element={
             <ProtectedRoute>
               <MemoryMap />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/recap"
+          element={
+            <ProtectedRoute>
+              <Recap />
             </ProtectedRoute>
           }
         />

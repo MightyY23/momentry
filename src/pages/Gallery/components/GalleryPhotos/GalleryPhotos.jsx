@@ -346,41 +346,59 @@ function GalleryPhotos() {
           className={styles.lightbox}
           role="dialog"
           aria-modal="true"
-          onClick={() => setSelected(null)}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          <button
-            type="button"
-            className={styles.lightboxClose}
-            onClick={() => setSelected(null)}
-            aria-label="Close"
-          >
-            ✕
-          </button>
+          {/* ---- Top bar: close + counter ---- */}
 
-          {currentItem.media_type ===
-          "video" ? (
-            <video
-              src={currentItem.image_url}
-              controls
-              autoPlay
-              playsInline
-              className={styles.lightboxMedia}
-              onClick={(e) =>
-                e.stopPropagation()
-              }
+          <div
+            className={styles.lightboxTop}
+          >
+            <button
+              type="button"
+              className={styles.lightboxClose}
+              onClick={() => setSelected(null)}
+              aria-label="Close viewer"
+            >
+              ✕
+            </button>
+
+            <span
+              className={styles.lightboxCount}
+            >
+              {selected + 1} / {items.length}
+            </span>
+
+            <span
+              className={styles.lightboxTopSpacer}
             />
-          ) : (
-            <img
-              src={currentItem.image_url}
-              alt=""
-              className={styles.lightboxMedia}
-              onClick={(e) =>
-                e.stopPropagation()
-              }
-            />
-          )}
+          </div>
+
+          {/* ---- Media fills the middle ---- */}
+
+          <div
+            className={styles.lightboxStage}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {currentItem.media_type ===
+            "video" ? (
+              <video
+                src={currentItem.image_url}
+                controls
+                autoPlay
+                playsInline
+                className={styles.lightboxMedia}
+              />
+            ) : (
+              <img
+                src={currentItem.image_url}
+                alt=""
+                className={styles.lightboxMedia}
+              />
+            )}
+          </div>
+
+          {/* ---- Bottom action bar ---- */}
 
           <div
             className={styles.lightboxBar}
@@ -388,55 +406,48 @@ function GalleryPhotos() {
               e.stopPropagation()
             }
           >
-            <span
-              className={styles.lightboxCount}
-            >
-              {selected + 1} / {items.length}
-            </span>
-
-            <div
-              className={
-                styles.lightboxActions
+            <button
+              type="button"
+              className={styles.lightboxNav}
+              onClick={() =>
+                setSelected(
+                  (i) =>
+                    (i - 1 + items.length) %
+                    items.length
+                )
               }
+              aria-label="Previous"
             >
-              <Button
-                variant="secondary"
-                onClick={() =>
-                  setSelected(
-                    (i) =>
-                      (i - 1 + items.length) %
-                      items.length
-                  )
-                }
-                aria-label="Previous"
-              >
-                ←
-              </Button>
+              ←
+            </button>
 
-              <Button
-                variant="secondary"
-                onClick={() =>
-                  setSelected(
-                    (i) =>
-                      (i + 1) % items.length
-                  )
-                }
-                aria-label="Next"
-              >
-                →
-              </Button>
+            <button
+              type="button"
+              className={
+                styles.lightboxDelete
+              }
+              onClick={() =>
+                setConfirmDelete(
+                  currentItem
+                )
+              }
+              aria-label="Delete item"
+            >
+              Delete
+            </button>
 
-              <Button
-                variant="secondary"
-                onClick={() =>
-                  setConfirmDelete(
-                    currentItem
-                  )
-                }
-              >
-                Delete
-              </Button>
-            </div>
+            <button
+              type="button"
+              className={styles.lightboxNav}
+              onClick={() =>
+                setSelected(
+                  (i) => (i + 1) % items.length
+                )
+              }
+              aria-label="Next"
+            >
+              →
+            </button>
           </div>
         </div>
       )}

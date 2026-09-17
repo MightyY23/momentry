@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./Home.module.css";
@@ -19,6 +19,7 @@ import OccasionGifts from "./components/OccasionGifts/OccasionGifts";
 import StatsGrid from "./components/StatsGrid/StatsGrid";
 import RecentMemories from "./components/RecentMemories/RecentMemories";
 import QuickActions from "./components/QuickActions/QuickActions";
+import OnThisDay from "./components/OnThisDay/OnThisDay";
 import AnniversaryCard from "./components/AnniversaryCard/AnniversaryCard";
 import DashboardFeed from "./components/DashboardFeed/DashboardFeed";
 
@@ -33,6 +34,15 @@ function Home() {
   } = useMoments();
 
   const notify = useNotification();
+
+  const timelineRef = useRef(null);
+
+  function jumpToTimeline() {
+    timelineRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
 
   const [search, setSearch] =
     useState("");
@@ -187,12 +197,22 @@ function Home() {
             memoriesCount={
               moments.length
             }
+            onJumpToTimeline={
+              jumpToTimeline
+            }
           />
 
           <StatsGrid
             moments={moments}
             anniversaryDate={
               anniversaryDate
+            }
+          />
+
+          <OnThisDay
+            moments={moments}
+            onOpenMoment={(id) =>
+              navigate(`/moment/${id}`)
             }
           />
 
@@ -233,6 +253,7 @@ function Home() {
           </div>
 
           <div
+            ref={timelineRef}
             className={
               styles.timelineSection
             }
