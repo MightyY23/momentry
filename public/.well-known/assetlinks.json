@@ -1,0 +1,11 @@
+[
+  {
+    "target": "android_app",
+    "target_info": {
+      "package_name": "com.momentry.app",
+      "sha256_cert_fingerprints": [
+        "REPLACE_WITH_YOUR_UPLOAD_KEY_SHA256"
+      ]
+    }
+  }
+]

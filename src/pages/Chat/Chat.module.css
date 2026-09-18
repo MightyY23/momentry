@@ -899,3 +899,185 @@
 
     position: relative;
 }
+
+/* ==========================================================
+   LOVE NOTES JAR
+   ========================================================== */
+
+.noteSealed {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    width: 100%;
+
+    padding: 12px 14px;
+
+    border: 1.5px dashed rgba(255, 255, 255, .55);
+
+    border-radius: 16px;
+
+    background: rgba(255, 255, 255, .14);
+
+    color: #fff;
+
+    font-size: .92rem;
+
+    font-weight: 600;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    animation: noteWiggle 2.4s ease-in-out infinite;
+
+}
+
+.noteSealIcon {
+
+    font-size: 1.5rem;
+
+}
+
+@keyframes noteWiggle {
+
+    0%, 100% { transform: rotate(0deg); }
+
+    6% { transform: rotate(-2.5deg); }
+
+    12% { transform: rotate(2.5deg); }
+
+    18% { transform: rotate(0deg); }
+
+}
+
+.noteModalScrim {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 2200;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(20, 16, 15, .6);
+
+    backdrop-filter: blur(6px);
+
+    -webkit-backdrop-filter: blur(6px);
+
+}
+
+.noteModal {
+
+    width: min(420px, 100%);
+
+    padding: 22px;
+
+    border-radius: 22px;
+
+    background: var(--surface, #1c1518);
+
+    border: 1px solid var(--border, rgba(255,255,255,.1));
+
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .5);
+
+}
+
+.noteModal h3 {
+
+    margin: 0 0 6px;
+
+    color: var(--text, #fff);
+
+}
+
+.noteModal p {
+
+    margin: 0 0 14px;
+
+    font-size: .88rem;
+
+    color: var(--text-secondary, rgba(255,255,255,.65));
+
+}
+
+.noteModal textarea {
+
+    width: 100%;
+
+    min-height: 110px;
+
+    padding: 12px 14px;
+
+    border-radius: 14px;
+
+    border: 1px solid var(--border, rgba(255,255,255,.12));
+
+    background: var(--background-secondary, rgba(255,255,255,.05));
+
+    color: var(--text, #fff);
+
+    font: inherit;
+
+    resize: vertical;
+
+}
+
+.noteModalActions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 14px;
+
+}
+
+.noteModalActions button {
+
+    padding: 10px 16px;
+
+    border-radius: 12px;
+
+    border: 1px solid var(--border, rgba(255,255,255,.12));
+
+    background: transparent;
+
+    color: var(--text, #fff);
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+.noteModalActions .noteSend {
+
+    border: none;
+
+    background: linear-gradient(135deg, #ff5c8d, #e0447a);
+
+    color: #fff;
+
+}
+
+.noteModalActions button:disabled {
+
+    opacity: .5;
+
+    cursor: not-allowed;
+
+}

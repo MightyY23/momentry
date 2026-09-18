@@ -294,3 +294,45 @@ export function broadcastTyping(
     payload: { userId: myUserId, typing },
   });
 }
+
+//----------------------------------------
+// LOVE NOTES JAR
+//
+// A note is a chat message with kind
+// 'note'. It lands SEALED in the
+// partner's thread — they discover it by
+// tapping the envelope, which flips
+// discovered_at through the
+// discover_chat_note RPC.
+//----------------------------------------
+
+export async function sendLoveNote(
+  storyId,
+  body
+) {
+  const trimmed = (body || "").trim();
+
+  if (!trimmed) {
+    throw new Error("Write your note first 💕");
+  }
+
+  return sendChatMessage(
+    storyId,
+    trimmed,
+    null,
+    "note"
+  );
+}
+
+export async function discoverLoveNote(
+  messageId
+) {
+  const { error } = await supabase.rpc(
+    "discover_chat_note",
+    { p_message_id: messageId }
+  );
+
+  if (error) throw error;
+
+  return true;
+}

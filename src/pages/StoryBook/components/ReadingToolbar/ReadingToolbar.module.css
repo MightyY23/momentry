@@ -209,3 +209,135 @@ height:42px;
     margin: 10px auto 8px;
 
 }
+
+/* ==========================================================
+   COMPACT (fullscreen) — small translucent icon pill
+   floating at the top, out of the book's way.
+   Host-scoped to beat the :global(.immersiveOverlayHost)
+   static-flow rule above.
+========================================================== */
+
+:global(.immersiveOverlayHost) .compact,
+.compact{
+
+    position:fixed;
+
+    top:calc(8px + env(safe-area-inset-top));
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    margin:0;
+
+    z-index:2100;
+
+    gap:4px;
+
+    padding:6px 10px;
+
+    background:rgba(20,16,15,.32);
+
+    backdrop-filter:blur(16px);
+
+    -webkit-backdrop-filter:blur(16px);
+
+    border:1px solid rgba(255,255,255,.14);
+
+    box-shadow:none;
+
+}
+
+.compact .button{
+
+    width:36px;
+
+    height:36px;
+
+    border-radius:12px;
+
+    color:rgba(255,255,255,.92);
+
+}
+
+.compact .button:hover{
+
+    background:rgba(255,255,255,.12);
+
+    color:#fff;
+
+    transform:none;
+
+}
+
+.compact .active{
+
+    background:rgba(255,92,141,.85) !important;
+
+    color:#fff !important;
+
+    box-shadow:none;
+
+}
+
+.compact .divider{
+
+    height:22px;
+
+    background:rgba(255,255,255,.18);
+
+}
+
+.compact .font{
+
+    min-width:0;
+
+    padding:0 2px;
+
+    gap:4px;
+
+    font-size:.78rem;
+
+    color:rgba(255,255,255,.75);
+
+}
+
+@media(max-width:600px){
+
+    .compact{
+
+        gap:2px;
+
+        padding:4px 6px;
+
+    }
+
+    .compact .button{
+
+        width:32px;
+
+        height:32px;
+
+        border-radius:10px;
+
+    }
+
+    .compact .divider{
+
+        display:none;
+
+    }
+
+    .compact .font span{
+
+        display:none;
+
+    }
+
+    .compact .font{
+
+        padding:0;
+
+    }
+
+}

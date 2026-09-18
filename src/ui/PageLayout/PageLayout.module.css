@@ -33,7 +33,9 @@
     color .4s ease;
 
   padding: 32px;
-}
+
+
+  overflow-x: clip;}
 
 /* ========================================= */
 
@@ -115,6 +117,18 @@
   left: 35%;
 
   animation-delay: 6s;
+}
+
+/* Blobs are decoration: they must never create
+   scrollable overflow on any viewport. */
+.blobOne,
+.blobTwo,
+.blobThree {
+
+  max-width: none;
+
+  contain: layout paint;
+
 }
 
 /* ========================================= */

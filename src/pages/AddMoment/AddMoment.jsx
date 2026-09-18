@@ -15,6 +15,8 @@ import { uploadImage } from "../../services/storage/uploadImage";
 import useMoments from "../../hooks/useMoments";
 import useNotification from "../../hooks/useNotification";
 
+import { celebrate } from "../../utils/celebrate";
+
 import LocationPicker from "../../components/LocationPicker/LocationPicker";
 import CaptureMemory from "../../components/CaptureMemory/CaptureMemory";
 
@@ -93,6 +95,8 @@ function AddMoment() {
         created_by: user.id,
         image_url: imageUrl,
       });
+
+      celebrate();
 
       navigate("/home");
     } catch (error) {

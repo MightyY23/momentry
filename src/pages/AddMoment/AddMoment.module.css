@@ -532,15 +532,14 @@ font-size:16px;
 
 }
 
-
+}
 
 /* ==========================================================
-   PHONE HARDENING (≤600px)
-   The card must never exceed the viewport: on some Android
-   WebViews the glass card's backdrop-filter region plus
-   fixed-size children (map button row, upload tile) push
-   the card past the right edge, clipping inputs. Every
-   block is now explicitly viewport-bound.
+   PHONE HARDENING (<=600px)
+   The card must never exceed the viewport: on narrow Android
+   WebViews fixed-size children (map button row, upload tile)
+   pushed the card past the right edge, clipping inputs. Every
+   block is explicitly viewport-bound and can shrink.
 ========================================================== */
 
 @media(max-width:600px){
@@ -555,21 +554,25 @@ margin:12px auto 0;
 
 .card{
 
-max-width:calc(100vw - 28px);
+max-width:calc(100vw - 24px);
+
+width:100%;
 
 margin:0 auto;
 
-padding:22px 16px;
+padding:20px 14px;
 
-border-radius:24px;
+border-radius:20px;
 
 overflow-wrap:break-word;
+
+min-width:0;
 
 }
 
 .header h1{
 
-font-size:1.55rem;
+font-size:1.5rem;
 
 }
 
@@ -580,16 +583,15 @@ font-size:.92rem;
 }
 
 .input,
-
 .textarea,
-
 .upload,
-
 .footer button{
 
 max-width:100%;
 
 min-width:0;
+
+width:100%;
 
 }
 
@@ -599,7 +601,34 @@ max-width:calc(100vw - 60px);
 
 }
 
+/* The story textarea must not force a 420px wall on phones */
+.textarea{
+
+min-height:160px;
+
 }
 
+.footer{
 
-/* ========================================================== */}
+flex-direction:column;
+
+gap:10px;
+
+}
+
+.footer button{
+
+width:100%;
+
+min-width:0;
+
+}
+
+/* Location row: input shrinks, map button stays square */
+.card :global(*){
+
+max-width:100%;
+
+}
+
+}

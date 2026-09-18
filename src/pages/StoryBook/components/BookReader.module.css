@@ -741,7 +741,57 @@
 
     overflow: hidden;
 
-    padding-top: env(safe-area-inset-top);
+    /* Room for the floating compact toolbar. */
+    padding-top: calc(52px + env(safe-area-inset-top));
+
+}
+
+
+/* Small translucent X at the top-left —
+   always reachable, never covering the book. */
+.exitButton {
+
+    position: fixed;
+
+    top: calc(12px + env(safe-area-inset-top));
+
+    left: 12px;
+
+    z-index: 2100;
+
+    width: 36px;
+
+    height: 36px;
+
+    border: 1px solid rgba(255, 255, 255, .14);
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    color: rgba(255, 255, 255, .92);
+
+    background: rgba(20, 16, 15, .32);
+
+    backdrop-filter: blur(16px);
+
+    -webkit-backdrop-filter: blur(16px);
+
+    transition: .25s ease;
+
+}
+
+.exitButton:hover {
+
+    background: rgba(255, 92, 141, .85);
+
+    color: #fff;
 
 }
 
@@ -1032,4 +1082,129 @@
 
         font-size: 0.75rem;
     }
+}
+
+/* ==========================================================
+   NON-FULLSCREEN PHONE — a small fitted book, not a wall.
+   Portrait phones get the single-page layout (BookPage.css
+   owns the page internals); here we cap the reader box and
+   keep "Back to Cover" visible above it.
+   ========================================================== */
+
+@media (max-width: 600px) and (min-height: 501px) {
+
+    .reader {
+
+        min-height: auto;
+
+        padding: 0 4px;
+
+    }
+
+    .reader .bookArea {
+
+        width: 100%;
+
+        max-width: min(92vw, 380px);
+
+        margin: 0 auto;
+
+    }
+
+    .reader .topBar {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        gap: 10px;
+
+        margin-bottom: 10px;
+
+    }
+
+    /* The book must leave room for topBar + nav:
+       cap its turn wrapper so Back to Cover and
+       Previous/Next stay on screen. */
+    .reader .bookArea > :nth-child(2) {
+
+        flex: 0 1 auto;
+
+        min-height: 0;
+
+        max-height: calc(100dvh - 300px);
+
+    }
+
+    .reader .coverButton {
+
+        font-size: 0.85rem;
+
+        padding: 8px 14px;
+
+        min-height: 40px;
+
+    }
+
+    .reader .navigation {
+
+        margin-top: 12px;
+
+    }
+
+    .reader .navigation button {
+
+        flex: 1;
+
+        min-height: 44px;
+
+    }
+
+    /* The turn wrapper holds BookPage — let the
+       book size to content, capped to viewport. */
+    .reader .bookArea > :nth-child(2) {
+
+        max-width: 100%;
+
+    }
+}
+
+/* ==========================================================
+   READING STREAK BADGE — small pill under the toolbar.
+   ========================================================== */
+
+.streakBadge {
+
+    position: fixed;
+
+    top: calc(52px + env(safe-area-inset-top));
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 2090;
+
+    padding: 4px 12px;
+
+    border-radius: 999px;
+
+    font-size: 0.72rem;
+
+    font-weight: 600;
+
+    color: rgba(255, 255, 255, .85);
+
+    background: rgba(255, 92, 141, .22);
+
+    border: 1px solid rgba(255, 92, 141, .35);
+
+    backdrop-filter: blur(10px);
+
+    -webkit-backdrop-filter: blur(10px);
+
+    pointer-events: none;
+
 }

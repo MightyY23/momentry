@@ -20,6 +20,7 @@ import StatsGrid from "./components/StatsGrid/StatsGrid";
 import RecentMemories from "./components/RecentMemories/RecentMemories";
 import QuickActions from "./components/QuickActions/QuickActions";
 import OnThisDay from "./components/OnThisDay/OnThisDay";
+import MemoryOfTheDay from "./components/MemoryOfTheDay/MemoryOfTheDay";
 import AnniversaryCard from "./components/AnniversaryCard/AnniversaryCard";
 import AnniversaryCountdown from "./components/AnniversaryCountdown/AnniversaryCountdown";
 import DashboardFeed from "./components/DashboardFeed/DashboardFeed";
@@ -216,7 +217,9 @@ function Home() {
             anniversaryDate={
               anniversaryDate
             }
-          />          <OnThisDay
+          />          <MemoryOfTheDay moments={moments} />
+
+          <OnThisDay
             moments={moments}
             onOpenMoment={(id) =>
               navigate(`/moment/${id}`)

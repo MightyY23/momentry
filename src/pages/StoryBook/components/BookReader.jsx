@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
+import { X } from "lucide-react";
+
 import BookPage from "./BookPage";
 import ProgressBar from "./ProgressBar";
 import TableOfContents from "./TableOfContents";
@@ -142,10 +144,7 @@ function BookReader({
 
   // Portrait-phone hint when the OS
   // refuses landscape lock.
-  const [rotateHint, setRotateHint] =
-    useState(false);
-
-  //---------------------------------------
+    //---------------------------------------
   // Page turning with animation direction
   //---------------------------------------
 
@@ -217,6 +216,51 @@ function BookReader({
   }
 
   //---------------------------------------
+  // Reading streak — one tick per day, kept
+  // in localStorage: { count, last }.
+  //---------------------------------------
+
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    const KEY = "momentry_reading_streak";
+
+    // Resolve outside the synchronous effect
+    // body (lint: cascading renders).
+    Promise.resolve().then(() => {
+      try {
+      const today = new Date().toDateString();
+
+      const prev = JSON.parse(
+        localStorage.getItem(KEY) || "{}"
+      );
+
+      if (prev.last === today) {
+        setStreak(prev.count || 1);
+
+        return;
+      }
+
+      const yesterday = new Date(
+        Date.now() - 86400000
+      ).toDateString();
+
+      const next = {
+        count: prev.last === yesterday ? (prev.count || 0) + 1 : 1,
+
+        last: today,
+      };
+
+      localStorage.setItem(KEY, JSON.stringify(next));
+
+      setStreak(next.count);
+      } catch {
+        /* private mode etc. — streak is cosmetic */
+      }
+    });
+  }, []);
+
+  //---------------------------------------
   // Fullscreen
   //---------------------------------------
 
@@ -236,36 +280,9 @@ function BookReader({
         .requestFullscreen?.()
         .catch(() => {});
 
-      // Landscape is the natural book shape
-      // on phones — try to lock it (works
-      // after native fullscreen on Android;
-      // gracefully ignored elsewhere).
-      try {
-        screen.orientation
-          ?.lock?.("landscape")
-          ?.catch?.(() => {});
-      } catch {
-        /* orientation lock unsupported */
-      }
-
-      // If we're still portrait on a phone
-      // (iOS Safari), nudge the reader to
-      // rotate.
-      setTimeout(() => {
-        if (
-          !document.fullscreenElement &&
-          window.matchMedia(
-            "(max-width: 820px) and (orientation: portrait)"
-          ).matches
-        ) {
-          setRotateHint(true);
-
-          setTimeout(
-            () => setRotateHint(false),
-            4000
-          );
-        }
-      }, 350);
+      // Portrait stays portrait: the reader is
+      // now a single-page portrait layout, so
+      // never lock or suggest landscape.
     } else {
       try {
         screen.orientation?.unlock?.();
@@ -559,15 +576,14 @@ function BookReader({
           "immersiveOverlayHost",
         ].join(" ")}
       >
-        {rotateHint && (
-          <div
-            className={styles.rotateHint}
-            role="status"
-          >
-            📱↻ Rotate your phone for the full
-            spread
-          </div>
-        )}
+        <button
+          className={styles.exitButton}
+          onClick={toggleFullscreen}
+          title="Exit fullscreen"
+          aria-label="Exit fullscreen"
+        >
+          <X size={18} />
+        </button>
 
         <ReadingToolbar
           fontSize={fontSize}
@@ -581,6 +597,7 @@ function BookReader({
           onToggleToc={() =>
             setTocOpen((v) => !v)
           }
+          compact={true}
         />
 
         {tocOpen && (
@@ -593,6 +610,12 @@ function BookReader({
               setTocOpen(false);
             }}
           />
+        )}
+
+        {streak > 1 && (
+          <div className={styles.streakBadge} role="status">
+            🔥 {streak}-day reading streak
+          </div>
         )}
 
         <ProgressBar

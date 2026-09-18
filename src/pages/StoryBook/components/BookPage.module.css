@@ -1716,3 +1716,78 @@
         display: none;
     }
 }
+
+/* ===================================================/* ==========================================================
+   PORTRAIT PHONE (non-immersive only) — the open book under
+   the cover is ALSO a single fitted page. Scoped with
+   :not(.bookImmersive) so fullscreen keeps its own layout.
+   ========================================================== */
+
+@media (max-width: 600px) and (min-height: 501px) {
+
+    .book:not(.bookImmersive) {
+
+        width: 100%;
+
+        max-width: min(92vw, 380px);
+
+        margin: 0 auto;
+
+        min-height: auto;
+
+        max-height: calc(100dvh - 300px);
+
+        border-radius: 18px;
+
+    }
+
+    .book:not(.bookImmersive) .spine,
+
+    .book:not(.bookImmersive) .rightPage,
+
+    .book:not(.bookImmersive) .bookmark {
+
+        display: none;
+
+    }
+
+    .book:not(.bookImmersive) .leftPage {
+
+        flex: 1 1 100%;
+
+        width: 100%;
+
+        padding: 20px 18px 14px;
+
+        border-right: none;
+
+        overflow-y: auto;
+
+        min-height: 0;
+
+        overscroll-behavior: contain;
+
+        -webkit-overflow-scrolling: touch;
+
+    }
+
+    .book:not(.bookImmersive) .chapterHeader h2 {
+
+        font-size: 1.4rem;
+
+    }
+
+    .book:not(.bookImmersive) .heroImage {
+
+        height: 140px;
+
+    }
+
+    .book:not(.bookImmersive) .story {
+
+        font-size: clamp(15px, calc(var(--font-size, 24px) * 0.72), 20px);
+
+        line-height: 1.8;
+
+    }
+}

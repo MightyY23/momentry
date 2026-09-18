@@ -41,9 +41,13 @@ import {
   sendVoiceNote,
   subscribeToTyping,
   broadcastTyping,
+  sendLoveNote,
+  discoverLoveNote,
   REACTION_EMOJIS,
 } from "../../services/chat/chatService";
 import { uploadImage } from "../../services/storage/uploadImage";
+
+import { celebrate } from "../../utils/celebrate";
 
 import { supabase } from "../../services/supabase/supabaseClient";
 
@@ -497,6 +501,77 @@ function Chat() {
       );
     } finally {
       setSending(false);
+    }
+  }
+
+  //---------------------------------------
+  // LOVE NOTES JAR — write a sealed note;
+  // the partner discovers it by tapping.
+  //---------------------------------------
+
+  const [noteOpen, setNoteOpen] = useState(false);
+
+  const [noteText, setNoteText] = useState("");
+
+  const [noteBusy, setNoteBusy] = useState(false);
+
+  async function handleSendNote() {
+    const text = noteText.trim();
+
+    if (!text || noteBusy) return;
+
+    setNoteBusy(true);
+
+    try {
+      const saved = await sendLoveNote(
+        storyId,
+        text
+      );
+
+      setMessages((prev) => [
+        ...prev,
+        { ...saved, justSent: true },
+      ]);
+
+      setNoteText("");
+
+      setNoteOpen(false);
+
+      notify.success(
+        "Note sealed 💌",
+        "It will stay sealed until your partner finds it."
+      );
+    } catch (error) {
+      notify.error(
+        "Couldn't seal the note",
+        error.message || "Try again."
+      );
+    } finally {
+      setNoteBusy(false);
+    }
+  }
+
+  async function handleDiscoverNote(row) {
+    try {
+      await discoverLoveNote(row.id);
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === row.id
+            ? {
+                ...m,
+                discovered_at: new Date().toISOString(),
+              }
+            : m
+        )
+      );
+
+      celebrate();
+    } catch (error) {
+      notify.error(
+        "Couldn't open the note",
+        error.message || "Tap again."
+      );
     }
   }
 
@@ -997,9 +1072,45 @@ function Chat() {
                           />
                         )}
 
-                      {row.body && (
+                      {row.kind === "note" &&
+                        row.sender_id !==
+                          user?.id &&
+                        !row.discovered_at && (
+                          <button
+                            type="button"
+                            className={
+                              styles.noteSealed
+                            }
+                            onClick={() =>
+                              handleDiscoverNote(
+                                row
+                              )
+                            }
+                          >
+                            <span
+                              className={
+                                styles.noteSealIcon
+                              }
+                            >
+                              💌
+                            </span>
+
+                            <span>
+                              A sealed note from
+                              your person — tap
+                              to open
+                            </span>
+                          </button>
+                        )}
+
+                      {!(row.kind === "note" &&
+                        row.sender_id !==
+                          user?.id &&
+                        !row.discovered_at) && (
                         <p>
-                          {row.body}
+                          {row.kind === "note"
+                            ? `💌 ${row.body}`
+                            : row.body}
                         </p>
                       )}
 
@@ -1084,6 +1195,21 @@ function Chat() {
               <ImagePlus size={20} />
             </button>
 
+            <button
+              type="button"
+              className={
+                styles.attachButton
+              }
+              onClick={() =>
+                setNoteOpen(true)
+              }
+              disabled={!partner}
+              aria-label="Hide a love note"
+              title="Hide a love note 💌"
+            >
+              💌
+            </button>
+
             <input
               ref={attachRef}
               type="file"
@@ -1144,6 +1270,84 @@ function Chat() {
               </button>
             )}
           </form>
+
+          {noteOpen && (
+            <div
+              className={styles.noteModalScrim}
+              onClick={() =>
+                noteBusy
+                  ? null
+                  : setNoteOpen(false)
+              }
+            >
+              <div
+                className={styles.noteModal}
+                onClick={(e) =>
+                  e.stopPropagation()
+                }
+                role="dialog"
+                aria-label="Write a love note"
+              >
+                <h3>
+                  💌 Hide a love note
+                </h3>
+
+                <p>
+                  It lands sealed in{" "}
+                  {partnerName}'s chat —
+                  they'll find it when they
+                  open the thread.
+                </p>
+
+                <textarea
+                  value={noteText}
+                  onChange={(e) =>
+                    setNoteText(
+                      e.target.value
+                    )
+                  }
+                  placeholder="Write something they'll smile at…"
+                  rows={4}
+                  maxLength={500}
+                  autoFocus
+                />
+
+                <div
+                  className={
+                    styles.noteModalActions
+                  }
+                >
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setNoteOpen(false)
+                    }
+                    disabled={noteBusy}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    className={
+                      styles.noteSend
+                    }
+                    onClick={
+                      handleSendNote
+                    }
+                    disabled={
+                      noteBusy ||
+                      !noteText.trim()
+                    }
+                  >
+                    {noteBusy
+                      ? "Sealing…"
+                      : "Seal & send 💌"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Call buttons under the composer */}
 

@@ -18,6 +18,7 @@ function ReadingToolbar({
   theme,
   setTheme,
   onToggleToc,
+  compact = false,
 }) {
 
   const themes = [
@@ -39,7 +40,12 @@ function ReadingToolbar({
   ];
 
   return (
-    <div className={styles.toolbar}>
+    <div
+      className={[
+        styles.toolbar,
+        compact ? styles.compact : "",
+      ].join(" ")}
+    >
       <div className={styles.group}>
         <button
           className={styles.button}
