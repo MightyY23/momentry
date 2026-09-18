@@ -1,10 +1,13 @@
 [
   {
-    "target": "android_app",
-    "target_info": {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
       "package_name": "com.momentry.app",
       "sha256_cert_fingerprints": [
-        "REPLACE_WITH_YOUR_UPLOAD_KEY_SHA256"
+        "50:E7:36:B5:0E:E7:29:A6:B5:37:ED:16:FA:04:52:B9:02:C6:E6:4D:23:C7:AD:AF:21:95:6E:B6:AB:26:A4:F5"
       ]
     }
   }
