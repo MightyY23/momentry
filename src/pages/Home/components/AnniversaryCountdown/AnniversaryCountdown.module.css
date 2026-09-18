@@ -1,0 +1,283 @@
+/* ==========================================================
+   ANNIVERSARY COUNTDOWN — Home celebration strip
+========================================================== */
+
+.strip {
+  position: relative;
+
+  overflow: hidden;
+
+  margin: 4px 0 10px;
+
+  padding: 22px 24px;
+
+  border-radius: 24px;
+
+  border: 1px solid rgba(255, 92, 141, .25);
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(255, 92, 141, .18),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(167, 139, 250, .16),
+      transparent 55%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(255, 92, 141, .08),
+      rgba(103, 232, 249, .07)
+    );
+
+  box-shadow: 0 16px 40px rgba(255, 92, 141, .12);
+}
+
+/* Anniversary day itself: party mode */
+
+.todayStrip {
+  border-color: rgba(255, 92, 141, .5);
+
+  background:
+    radial-gradient(
+      circle at 20% 25%,
+      rgba(255, 92, 141, .35),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 80% 75%,
+      rgba(250, 204, 21, .25),
+      transparent 55%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(255, 92, 141, .2),
+      rgba(167, 139, 250, .18)
+    );
+
+  box-shadow:
+    0 18px 50px rgba(255, 92, 141, .3);
+}
+
+.sparkleOne,
+.sparkleTwo {
+  position: absolute;
+
+  font-size: 22px;
+
+  opacity: .8;
+
+  animation: sparkleFloat 5s ease-in-out infinite;
+
+  pointer-events: none;
+}
+
+.sparkleOne {
+  top: 12px;
+
+  right: 24px;
+}
+
+.sparkleTwo {
+  bottom: 12px;
+
+  right: 64px;
+
+  font-size: 17px;
+
+  animation-delay: 2.2s;
+}
+
+@keyframes sparkleFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(12deg);
+  }
+}
+
+.badge {
+  display: inline-block;
+
+  padding: 6px 14px;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, .65);
+
+  backdrop-filter: blur(8px);
+
+  color: var(--primary, #ec4899);
+
+  font-size: .78rem;
+
+  font-weight: 700;
+
+  letter-spacing: .02em;
+}
+
+.headline {
+  margin: 12px 0 4px;
+
+  font-size: clamp(1.35rem, 4vw, 1.8rem);
+
+  color: var(--text);
+}
+
+.sub {
+  margin: 0;
+
+  font-size: .92rem;
+
+  line-height: 1.6;
+
+  color: var(--text-secondary);
+}
+
+/* Countdown row */
+
+.countRow {
+  display: flex;
+
+  align-items: center;
+
+  gap: 20px;
+
+  margin-top: 8px;
+}
+
+.countBlock {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  min-width: 86px;
+
+  padding: 12px 16px;
+
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, .55);
+
+  backdrop-filter: blur(8px);
+
+  border: 1px solid rgba(255, 92, 141, .2);
+}
+
+.countBlock strong {
+  font-size: 2rem;
+
+  font-weight: 800;
+
+  line-height: 1.1;
+
+  background: linear-gradient(
+    135deg,
+    #ec4899,
+    #a78bfa
+  );
+
+  -webkit-background-clip: text;
+
+  background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+
+  color: var(--primary, #ec4899);
+}
+
+.countBlock span {
+  margin-top: 2px;
+
+  font-size: .74rem;
+
+  font-weight: 600;
+
+  color: var(--text-secondary);
+
+  text-align: center;
+}
+
+.countMeta {
+  min-width: 0;
+}
+
+.countMeta .headline {
+  margin: 0 0 3px;
+}
+
+/* Dark mode: deepen the glass */
+
+:global(.dark) .strip,
+:global(.dark) .todayStrip {
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(255, 92, 141, .22),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(167, 139, 250, .2),
+      transparent 55%
+    ),
+    rgba(30, 22, 30, .75);
+}
+
+:global(.dark) .todayStrip {
+  background:
+    radial-gradient(
+      circle at 20% 25%,
+      rgba(255, 92, 141, .4),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 80% 75%,
+      rgba(250, 204, 21, .22),
+      transparent 55%
+    ),
+    rgba(40, 20, 32, .85);
+}
+
+:global(.dark) .badge,
+:global(.dark) .countBlock {
+  background: rgba(255, 255, 255, .08);
+
+  border-color: rgba(255, 92, 141, .3);
+}
+
+@media (max-width: 560px) {
+  .strip {
+    padding: 18px 18px;
+
+    border-radius: 20px;
+  }
+
+  .countRow {
+    gap: 14px;
+  }
+
+  .countBlock {
+    min-width: 74px;
+
+    padding: 10px 13px;
+  }
+
+  .countBlock strong {
+    font-size: 1.65rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sparkleOne,
+  .sparkleTwo {
+    animation: none;
+  }
+}

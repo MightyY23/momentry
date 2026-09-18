@@ -1,0 +1,202 @@
+/* ==========================================================
+   PRIVACY POLICY PAGE
+========================================================== */
+
+.page {
+  max-width: 720px;
+
+  margin: 0 auto;
+
+  padding: 28px 0 140px;
+}
+
+.badge {
+  display: inline-block;
+
+  padding: 7px 16px;
+
+  border-radius: 999px;
+
+  background: var(--primary-50, rgba(236, 72, 153, .1));
+
+  color: var(--primary, #ec4899);
+
+  font-size: .85rem;
+
+  font-weight: 600;
+}
+
+.page h1 {
+  margin: 16px 0 6px;
+
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+
+  color: var(--text);
+}
+
+.updated {
+  margin: 0 0 20px;
+
+  font-size: .85rem;
+
+  color: var(--text-muted, #9a8fa3);
+}
+
+.intro {
+  margin: 0 0 28px;
+
+  font-size: 1.02rem;
+
+  line-height: 1.75;
+
+  color: var(--text-secondary);
+}
+
+section {
+  margin: 0 0 30px;
+
+  padding: 22px;
+
+  border: 1px solid var(--border-light, rgba(0, 0, 0, .07));
+
+  border-radius: 20px;
+
+  background: var(--surface, rgba(255, 255, 255, .6));
+}
+
+section h2 {
+  margin: 0 0 14px;
+
+  font-size: 1.2rem;
+
+  color: var(--text);
+}
+
+section p {
+  margin: 0 0 10px;
+
+  line-height: 1.75;
+
+  color: var(--text-secondary);
+
+  font-size: .95rem;
+}
+
+section ul {
+  margin: 0;
+
+  padding-left: 20px;
+
+  display: grid;
+
+  gap: 9px;
+}
+
+section li {
+  line-height: 1.65;
+
+  color: var(--text-secondary);
+
+  font-size: .95rem;
+}
+
+section a {
+  color: var(--primary, #ec4899);
+
+  font-weight: 600;
+}
+
+/* Data table */
+
+.table {
+  display: grid;
+
+  gap: 0;
+
+  border: 1px solid var(--border-light, rgba(0, 0, 0, .07));
+
+  border-radius: 14px;
+
+  overflow: hidden;
+}
+
+.thead,
+.trow {
+  display: grid;
+
+  grid-template-columns: 1.1fr 1.3fr .8fr;
+
+  gap: 10px;
+
+  padding: 11px 14px;
+}
+
+.thead {
+  background: var(--primary-50, rgba(236, 72, 153, .07));
+
+  font-size: .78rem;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: .05em;
+
+  color: var(--primary, #ec4899);
+}
+
+.trow {
+  border-top: 1px solid var(--border-light, rgba(0, 0, 0, .06));
+
+  font-size: .86rem;
+
+  line-height: 1.5;
+
+  color: var(--text-secondary);
+}
+
+.trow span:first-child {
+  color: var(--text);
+
+  font-weight: 600;
+}
+
+@media (max-width: 560px) {
+  .page {
+    padding-top: 18px;
+  }
+
+  section {
+    padding: 17px 15px;
+
+    border-radius: 16px;
+  }
+
+  .thead {
+    display: none;
+  }
+
+  .trow {
+    grid-template-columns: 1fr;
+
+    gap: 3px;
+
+    padding: 13px 14px;
+  }
+
+  .trow span:nth-child(2)::before {
+    content: "Why: ";
+
+    font-weight: 700;
+
+    color: var(--primary, #ec4899);
+  }
+
+  .trow span:nth-child(3)::before {
+    content: "Required: ";
+
+    font-weight: 700;
+
+    color: var(--primary, #ec4899);
+  }
+}

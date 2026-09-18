@@ -16,6 +16,9 @@ import { createInvitation } from "../../../../services/invitation/createInvitati
 import { cancelInvitation } from "../../../../services/invitation/cancelInvitation";
 import { leaveStory } from "../../../../services/story/leaveStory";
 import {
+  setStoryAnniversary,
+} from "../../../../services/story/setStoryAnniversary";
+import {
   getOrCreatePairCode,
   regeneratePairCode,
   lookupPairCode,
@@ -104,6 +107,15 @@ function Partner() {
   const [removing, setRemoving] = useState(false);
 
   //---------------------------------------
+  // Anniversary date (story-wide)
+  //---------------------------------------
+
+  const [annivDate, setAnnivDate] = useState("");
+
+  const [savingAnniv, setSavingAnniv] =
+    useState(false);
+
+  //---------------------------------------
   // Load story, members, pending invite
   //---------------------------------------
 
@@ -129,6 +141,10 @@ function Partner() {
         if (!storyData) {
           return;
         }
+
+        setAnnivDate(
+          storyData.anniversary_date || ""
+        );
 
         const memberData =
           await getStoryMembers(
@@ -222,6 +238,43 @@ function Partner() {
   );
 
   const isSolo = members.length <= 1;
+
+  //---------------------------------------
+  // Save anniversary (either partner)
+  //---------------------------------------
+
+  async function handleSaveAnniversary() {
+    if (!story?.id || !annivDate) {
+      notify.error(
+        "Pick a date",
+        "Choose the day your story began."
+      );
+      return;
+    }
+
+    try {
+      setSavingAnniv(true);
+
+      await setStoryAnniversary(
+        story.id,
+        annivDate
+      );
+
+      notify.success(
+        "Anniversary saved ❤️",
+        "It now shows on Home and powers your anniversary reminders."
+      );
+    } catch (err) {
+      console.error(err);
+
+      notify.error(
+        "Couldn't save the date",
+        err.message || "Please try again."
+      );
+    } finally {
+      setSavingAnniv(false);
+    }
+  }
 
   //---------------------------------------
   // Actions
@@ -648,6 +701,46 @@ function Partner() {
             </p>
           </>
         )}
+      </div>
+
+      {/* -------- Anniversary (story-wide) -------- */}
+
+      <div className={styles.infoCard}>
+        <p className={styles.dangerTitle}>
+          💞 When did your story begin?
+        </p>
+
+        <p className={styles.hint}>
+          The day it all started — Home counts
+          every day together from here, and your
+          anniversary appears in reminders. Either
+          of you can set or correct it.
+        </p>
+
+        <div className={styles.annivRow}>
+          <input
+            className={styles.annivInput}
+            type="date"
+            value={annivDate}
+            max={
+              new Date()
+                .toISOString()
+                .slice(0, 10)
+            }
+            onChange={(e) =>
+              setAnnivDate(e.target.value)
+            }
+            aria-label="Relationship start date"
+          />
+
+          <Button
+            onClick={handleSaveAnniversary}
+            loading={savingAnniv}
+            disabled={!annivDate}
+          >
+            Save
+          </Button>
+        </div>
       </div>
 
       {/* -------- Partner code pairing (no partner) -------- */}

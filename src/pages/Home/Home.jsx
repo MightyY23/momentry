@@ -21,6 +21,7 @@ import RecentMemories from "./components/RecentMemories/RecentMemories";
 import QuickActions from "./components/QuickActions/QuickActions";
 import OnThisDay from "./components/OnThisDay/OnThisDay";
 import AnniversaryCard from "./components/AnniversaryCard/AnniversaryCard";
+import AnniversaryCountdown from "./components/AnniversaryCountdown/AnniversaryCountdown";
 import DashboardFeed from "./components/DashboardFeed/DashboardFeed";
 
 function Home() {
@@ -215,12 +216,22 @@ function Home() {
             anniversaryDate={
               anniversaryDate
             }
-          />
-
-          <OnThisDay
+          />          <OnThisDay
             moments={moments}
             onOpenMoment={(id) =>
               navigate(`/moment/${id}`)
+            }
+          />
+
+          {/* Anniversary countdown — placed right
+              after the Milestone card (which lives
+              in the side column below) as its own
+              full-width celebration strip. */}
+
+          <AnniversaryCountdown
+            anniversaryDate={
+              story?.anniversary_date ||
+              anniversaryDate
             }
           />
 
@@ -228,7 +239,7 @@ function Home() {
             className={
               styles.dashboardGrid
             }
-          >
+            >
 
             <div
               className={

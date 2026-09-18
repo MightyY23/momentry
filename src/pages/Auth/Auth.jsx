@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { motion } from "framer-motion";
 import {
@@ -519,6 +519,13 @@ function Auth({ resetMode = false }) {
               : "Don't have an account? Create One"}
           </button>
         </div>
+
+        {isSignUp && mode === "auth" && (
+          <p className={styles.legalNote}>
+            By creating an account you agree to our{" "}
+            <Link to="/privacy">Privacy Policy</Link>.
+          </p>
+        )}
       </>
   );
 

@@ -65,6 +65,10 @@ const OnThisDayPage = lazy(() =>
   import("../pages/OnThisDayPage/OnThisDayPage")
 );
 
+const Privacy = lazy(() =>
+  import("../pages/Privacy/Privacy")
+);
+
 function AppRouter() {
   return (
     <Suspense
@@ -282,6 +286,21 @@ function AppRouter() {
             <ProtectedRoute>
               <Calendar />
             </ProtectedRoute>
+          }
+        />
+
+        {/* ------------------------------------
+            Privacy policy — public (Play Store
+            requirement; must be reachable
+            without signing in)
+        ------------------------------------ */}
+
+        <Route
+          path="/privacy"
+          element={
+            <Suspense fallback={null}>
+              <Privacy />
+            </Suspense>
           }
         />
 

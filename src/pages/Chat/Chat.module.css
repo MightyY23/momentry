@@ -10,9 +10,15 @@
 
     /* Fill the viewport between the fixed
        top navbar (~64px) and the mobile
-       tab bar (~62px + safe area). */
+       tab bar (~79px incl. padding + safe
+       area). The tab bar is fixed, so its
+       height must be reserved here or the
+       composer's call button hides under
+       it. (The phone rule below tightens
+       this further using the measured
+       offset to the shell's top.) */
     height: calc(
-        100dvh - 126px - env(safe-area-inset-bottom, 0px)
+        100dvh - 152px - env(safe-area-inset-bottom, 0px)
     );
 
     min-height: 420px;
@@ -20,6 +26,10 @@
     max-width: 760px;
 
     margin: 10px auto 0;
+
+    /* Never spill under the fixed tab bar. */
+
+    padding-bottom: 2px;
 }
 
 /* ----------------------------------------------------------
@@ -472,13 +482,16 @@
 
     .chatShell {
 
-        /* Full phone height minus the fixed
-           top navbar and bottom tab bar. */
+        /* Full phone height minus everything
+           above the shell (fixed navbar +
+           spacer ≈ 157px to the shell's top)
+           and the fixed tab bar (~67px + safe
+           area) so the call button clears it. */
         height: calc(
-            100dvh - 128px - env(safe-area-inset-bottom, 0px)
+            100dvh - 228px - env(safe-area-inset-bottom, 0px)
         );
 
-        min-height: 380px;
+        min-height: 360px;
 
         margin-top: 6px;
     }

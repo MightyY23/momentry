@@ -1467,6 +1467,19 @@
         line-height: 1.65;
 
         text-align: left;
+
+        /* Long chapters scroll INSIDE the page
+           so Previous/Next + progress never get
+           pushed below the fold. */
+        flex: 1;
+
+        min-height: 0;
+
+        overflow-y: auto;
+
+        overscroll-behavior: contain;
+
+        -webkit-overflow-scrolling: touch;
     }
 
     .bookImmersive .story::first-letter {
@@ -1533,6 +1546,172 @@
     }
 
     .bookImmersive .bookmark {
+
+        display: none;
+    }
+}
+
+/* ==========================================================
+   PORTRAIT PHONE — ONE PAGE, FULL SCREEN
+   On portrait phones the user wants a single page that
+   fills the entire screen (no left/right spread, no tiny
+   two-column squeeze). The left page becomes the book;
+   the spine, quote card and right page disappear, and a
+   compact meta strip (date · location · favorite) keeps
+   the chapter's context visible under the story.
+   ========================================================== */
+
+@media (max-width: 600px) and (min-height: 501px) {
+
+    .bookImmersive {
+
+        width: 100%;
+
+        border-radius: 18px;
+    }
+
+    /* Hide the spread chrome */
+
+    .bookImmersive .spine,
+    .bookImmersive .rightPage,
+    .bookImmersive .bookmark {
+
+        display: none !important;
+    }
+
+    /* The left page IS the book now */
+
+    .bookImmersive .leftPage {
+
+        flex: 1 1 100%;
+
+        width: 100%;
+
+        padding: 22px 20px 16px;
+
+        border-right: none;
+    }
+
+    /* Compact header */
+
+    .bookImmersive .chapterHeader {
+
+        margin: 2px 0 12px;
+    }
+
+    .bookImmersive .chapterHeader h2 {
+
+        margin: 4px 0 4px;
+
+        font-size: 1.5rem;
+    }
+
+    .bookImmersive .chapterLabel {
+
+        font-size: 0.66rem;
+    }
+
+    .bookImmersive .chapterDate {
+
+        font-size: 0.72rem;
+    }
+
+    .bookImmersive .decorative {
+
+        margin: 8px auto 0;
+
+        font-size: 15px;
+
+        letter-spacing: 10px;
+    }
+
+    /* Reading meta: one small row */
+
+    .bookImmersive .readingMeta {
+
+        flex-direction: row;
+
+        justify-content: flex-start;
+
+        gap: 12px;
+
+        margin: 0 0 10px;
+    }
+
+    .bookImmersive .readingBadge,
+    .bookImmersive .readingTime {
+
+        font-size: 0.68rem;
+    }
+
+    /* Hero image: a banner, not a wall */
+
+    .bookImmersive .heroImage {
+
+        height: 150px;
+
+        margin: 0 0 12px;
+
+        border-radius: 12px;
+    }
+
+    /* Story text: readable, scales with A-/A+ */
+
+    .bookImmersive .story {
+
+        flex: 1;
+
+        font-size: clamp(
+            15px,
+            calc(var(--font-size, 24px) * 0.72),
+            20px
+        );
+
+        line-height: 1.85;
+
+        text-align: left;
+
+        /* Same in-page scrolling on portrait. */
+        min-height: 0;
+
+        overflow-y: auto;
+
+        overscroll-behavior: contain;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .bookImmersive .story::first-letter {
+
+        font-size: 2.6em;
+
+        margin: 4px 8px 0 0;
+    }
+
+    /* Slim footer */
+
+    .bookImmersive .footer {
+
+        flex-direction: row;
+
+        justify-content: space-between;
+
+        gap: 8px;
+
+        padding-top: 8px;
+    }
+
+    .bookImmersive .footerLeft span {
+
+        font-size: 0.66rem;
+    }
+
+    .bookImmersive .pageNumber {
+
+        font-size: 0.7rem;
+    }
+
+    .bookImmersive .totalPages {
 
         display: none;
     }

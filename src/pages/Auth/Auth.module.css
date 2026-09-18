@@ -437,3 +437,25 @@
     animation: none !important;
   }
 }
+
+/* Privacy-policy note under the sign-up form */
+
+.legalNote {
+  margin: 18px 0 0;
+
+  font-size: .8rem;
+
+  line-height: 1.6;
+
+  text-align: center;
+
+  color: var(--text-muted, #9a8fa3);
+}
+
+.legalNote a {
+  color: var(--primary, #ec4899);
+
+  font-weight: 600;
+
+  text-decoration: underline;
+}

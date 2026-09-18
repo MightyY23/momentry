@@ -533,4 +533,73 @@ font-size:16px;
 }
 
 
+
+/* ==========================================================
+   PHONE HARDENING (≤600px)
+   The card must never exceed the viewport: on some Android
+   WebViews the glass card's backdrop-filter region plus
+   fixed-size children (map button row, upload tile) push
+   the card past the right edge, clipping inputs. Every
+   block is now explicitly viewport-bound.
+========================================================== */
+
+@media(max-width:600px){
+
+.page{
+
+max-width:100vw;
+
+margin:12px auto 0;
+
 }
+
+.card{
+
+max-width:calc(100vw - 28px);
+
+margin:0 auto;
+
+padding:22px 16px;
+
+border-radius:24px;
+
+overflow-wrap:break-word;
+
+}
+
+.header h1{
+
+font-size:1.55rem;
+
+}
+
+.header p{
+
+font-size:.92rem;
+
+}
+
+.input,
+
+.textarea,
+
+.upload,
+
+.footer button{
+
+max-width:100%;
+
+min-width:0;
+
+}
+
+.header button{
+
+max-width:calc(100vw - 60px);
+
+}
+
+}
+
+
+/* ========================================================== */}

@@ -24,8 +24,19 @@ function StoryHeader({ story }) {
         Every chapter deserves to be remembered.
         <br />
         <br />
-        {story &&
+        {story?.anniversary_date &&
           `Together since ${new Date(
+            story.anniversary_date
+          ).toLocaleDateString(
+            undefined,
+            {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }
+          )}`}
+        {!story?.anniversary_date && story &&
+          `First memory: ${new Date(
             story.created_at
           ).toLocaleDateString()}`}
       </p>
