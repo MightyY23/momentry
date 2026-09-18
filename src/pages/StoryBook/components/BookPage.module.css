@@ -1493,11 +1493,13 @@
 
     .bookImmersive .heroImage {
 
-        height: 110px;
+        height: 84px;
 
         margin: 8px 0;
 
         border-radius: 10px;
+
+        object-fit: cover;
     }
 
     .bookImmersive .decorative {
@@ -1644,15 +1646,18 @@
         font-size: 0.68rem;
     }
 
-    /* Hero image: a banner, not a wall */
-
+    /* Hero image: a compact snapshot at the
+       top of the page — the story text is the
+       hero, the photo supports it. */
     .bookImmersive .heroImage {
 
-        height: 150px;
+        height: 92px;
 
-        margin: 0 0 12px;
+        margin: 0 0 10px;
 
         border-radius: 12px;
+
+        object-fit: cover;
     }
 
     /* Story text: readable, scales with A-/A+ */

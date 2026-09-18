@@ -5,7 +5,10 @@ import {
   useState,
 } from "react";
 
-import { Link } from "react-router-dom";
+import {
+  Link,
+  useSearchParams,
+} from "react-router-dom";
 
 import {
   ImagePlus,
@@ -46,6 +49,9 @@ import {
   REACTION_EMOJIS,
 } from "../../services/chat/chatService";
 import { uploadImage } from "../../services/storage/uploadImage";
+import {
+  notifyPartner,
+} from "../../services/push/pushService";
 
 import { celebrate } from "../../utils/celebrate";
 
@@ -486,6 +492,16 @@ function Chat() {
           m.id === tempId ? saved : m
         )
       );
+
+      notifyPartner({
+        storyId,
+
+        senderId: user.id,
+
+        title: "💬 New message",
+
+        body: text.slice(0, 80),
+      });
     } catch (error) {
       setMessages((prev) =>
         prev.map((m) =>
@@ -515,6 +531,39 @@ function Chat() {
 
   const [noteBusy, setNoteBusy] = useState(false);
 
+  //---------------------------------------
+  // Deep link: /chat?compose=note (from
+  // the occasion banner) opens the note
+  // composer right away, then cleans the
+  // URL so a refresh doesn't reopen it.
+  //---------------------------------------
+
+  const [searchParams, setSearchParams] =
+    useSearchParams();
+
+  useEffect(() => {
+    if (
+      searchParams.get("compose") ===
+        "note" &&
+      storyId
+    ) {
+      // Defer the state updates out of the
+      // effect body (React Compiler rule).
+      const t = setTimeout(() => {
+        setNoteOpen(true);
+
+        searchParams.delete("compose");
+
+        setSearchParams(searchParams, {
+          replace: true,
+        });
+      }, 0);
+
+      return () => clearTimeout(t);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, storyId]);
+
   async function handleSendNote() {
     const text = noteText.trim();
 
@@ -532,6 +581,15 @@ function Chat() {
         ...prev,
         { ...saved, justSent: true },
       ]);
+
+      // Mystery alert — never the note body.
+      notifyPartner({
+        storyId,
+
+        senderId: user.id,
+
+        isNote: true,
+      });
 
       setNoteText("");
 
@@ -704,6 +762,16 @@ function Chat() {
               blob,
               secs * 1000
             );
+
+            notifyPartner({
+              storyId,
+
+              senderId: user.id,
+
+              title: "🎙️ Voice note",
+
+              body: `Tap to listen (${secs}s)`,
+            });
           } catch (error) {
             notify.error(
               "Voice note not sent",
@@ -788,6 +856,17 @@ function Chat() {
           m.id === tempId ? saved : m
         )
       );
+
+      notifyPartner({
+        storyId,
+
+        senderId: user.id,
+
+        title: "💬 New message",
+
+        body: (msg.body || "")
+          .slice(0, 80),
+      });
     } catch {
       setMessages((prev) =>
         prev.map((m) =>
@@ -822,6 +901,18 @@ function Chat() {
         draft.trim(),
         url
       );
+
+      notifyPartner({
+        storyId,
+
+        senderId: user.id,
+
+        title: "📷 Photo",
+
+        body: draft.trim()
+          ? draft.trim().slice(0, 80)
+          : "Tap to view",
+      });
 
       setDraft("");
     } catch (error) {

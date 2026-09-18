@@ -355,6 +355,18 @@ function OccasionGifts() {
               type="button"
               className={styles.ghostBtn}
               onClick={() =>
+                navigate(
+                  "/chat?compose=note"
+                )
+              }
+            >
+              💌 Hide a note
+            </button>
+
+            <button
+              type="button"
+              className={styles.ghostBtn}
+              onClick={() =>
                 navigate("/storybook")
               }
             >

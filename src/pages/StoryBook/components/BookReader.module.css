@@ -795,6 +795,17 @@
 
 }
 
+/* Immersive: the overlay owns the chrome
+   (exit button + compact pill + progress).
+   The in-flow Back-to-Cover / % Read row
+   would sit right under the floating pill,
+   crowding and overlapping the book top. */
+.readerImmersive .topBar {
+
+    display: none;
+
+}
+
 /* Backdrop follows the READING theme
    (paper/sepia/dark), not the app theme —
    the book itself drives the reading mood. */
@@ -1177,13 +1188,15 @@
 
 .streakBadge {
 
-    position: fixed;
+    /* Static in the overlay flow (a slim row
+       above the progress bar) instead of fixed
+       at top:52px, which painted it on top of
+       the book. */
+    position: static;
 
-    top: calc(52px + env(safe-area-inset-top));
+    width: fit-content;
 
-    left: 50%;
-
-    transform: translateX(-50%);
+    margin: 0 auto 4px;
 
     z-index: 2090;
 

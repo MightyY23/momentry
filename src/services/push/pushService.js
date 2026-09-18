@@ -137,3 +137,63 @@ export async function disablePush() {
 
   await sub.unsubscribe();
 }
+
+//----------------------------------------
+// Partner alerts — call after inserting a
+// chat message. Fire-and-forget: chat must
+// never wait on (or fail because of) push.
+// The Edge Function verifies the caller's
+// JWT + story membership, so the anon key
+// in the browser is all we need here.
+//----------------------------------------
+
+export async function notifyPartner({
+  storyId,
+  senderId,
+  title,
+  body,
+  url = "/chat",
+  isNote = false,
+}) {
+  if (!storyId || !senderId) return;
+
+  try {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/push`,
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+
+          Authorization: `Bearer ${session?.access_token ?? ""}`,
+
+          apikey:
+            import.meta.env.VITE_SUPABASE_ANON_KEY,
+        },
+
+        body: JSON.stringify({
+          kind: "chat",
+
+          storyId,
+
+          senderId,
+
+          title,
+
+          body,
+
+          url,
+
+          isNote,
+        }),
+      }
+    );
+  } catch {
+    /* push is best-effort */
+  }
+}

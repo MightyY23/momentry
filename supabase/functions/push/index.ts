@@ -440,9 +440,64 @@ interface Req {
 
   url?: string;
 
+  // chat: sealed love note flag (copy + deep link)
+  isNote?: boolean;
+
   // occasion: notify every subscription
   // whose user has at least one subscription
   // row (already user-scoped by RLS writes).
+}
+
+// ------------------------------------------------------------
+// Auth: the caller must carry a valid Supabase access token
+// AND be a member of the story they're notifying for. This
+// turns the function from "anyone with the URL" into
+// "members only" — no key leakage can spam your partner.
+// ------------------------------------------------------------
+
+async function assertStoryMember(
+  req: Request,
+  storyId: string
+): Promise<{ ok: boolean; userId?: string }> {
+  const authHeader =
+    req.headers.get("Authorization") ?? "";
+
+  const token = authHeader.replace(
+    /^Bearer\s+/i,
+    ""
+  );
+
+  if (!token) return { ok: false };
+
+  const authRes = await fetch(
+    `${SUPABASE_URL}/auth/v1/user`,
+    {
+      headers: {
+        apikey: SERVICE_ROLE,
+
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!authRes.ok) return { ok: false };
+
+  const user = (await authRes.json()) as {
+    id?: string;
+  };
+
+  if (!user.id) return { ok: false };
+
+  const memRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/story_members?story_id=eq.${storyId}&user_id=eq.${user.id}&select=user_id`,
+    { headers: { apikey: SERVICE_ROLE, Authorization: `Bearer ${SERVICE_ROLE}` } }
+  );
+
+  const members = (await memRes.json()) as Array<{
+    user_id: string;
+  }>;
+
+  return members.length ? { ok: true, userId: user.id } : { ok: false };
 }
 
 serve(async (req) => {
@@ -458,14 +513,50 @@ serve(async (req) => {
     return json({ error: "Bad JSON" }, 400);
   }
 
+  if (
+    body.kind === "chat" &&
+    body.storyId
+  ) {
+    const gate = await assertStoryMember(
+      req,
+      body.storyId
+    );
+
+    if (!gate.ok) {
+      return json(
+        { error: "Not a story member" },
+        403
+      );
+    }
+
+    // Server-side identity wins over the body.
+    body.senderId = gate.userId;
+  }
+
+  // Sealed love notes get their own mystery
+  // copy — never leak the note body in the
+  // notification, the surprise is the point.
+  const isNote = body.kind === "chat" &&
+    Boolean(body.isNote);
+
+  const fallbackTitle = isNote
+    ? "💌 A sealed note arrived"
+    : "Momentry";
+
+  const fallbackBody = isNote
+    ? "Your partner hid a note for you. Open chat to unseal it."
+    : "";
+
   const payloadStr = JSON.stringify({
-    title: body.title || "Momentry",
+    title: body.title || fallbackTitle,
 
-    body: body.body || "",
+    body: body.body || fallbackBody,
 
-    url: body.url || "/chat",
+    url: isNote && !body.url
+      ? "/chat?note=1"
+      : body.url || "/chat",
 
-    tag: body.kind,
+    tag: isNote ? "love-note" : body.kind,
   });
 
   // Fetch targets.
