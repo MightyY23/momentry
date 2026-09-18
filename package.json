@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "setup:push": "node scripts/setup-push.mjs"
+    "setup:push": "node scripts/setup-push.mjs",
+    "assets:playstore": "node scripts/generate-playstore-assets.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.2",
