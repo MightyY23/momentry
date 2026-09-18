@@ -36,3 +36,13 @@ supabase/.temp/
 
 # Agent tool state
 .freebuff/
+
+# Android build artifacts (upload .aab to Play, don't commit binaries)
+.gradle/
+/build/
+app/build/
+app/.gradle/
+*.aab
+*.apk
+*.idsig
+local.properties

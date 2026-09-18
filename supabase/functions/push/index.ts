@@ -17,11 +17,6 @@
 
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts";
 
-import {
-  generate_key_pair,
-  export_public_key,
-  export_private_key,
-} from "https://cdn.jsdelivr.net/gh/pushfox/push-encryption-js@v1.1.4/mod.ts";
 
 // pako isn't needed; use web Crypto for aesgcm via the
 // web-push protocol implemented inline below.

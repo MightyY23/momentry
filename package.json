@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "setup:push": "node scripts/setup-push.mjs",
-    "assets:playstore": "node scripts/generate-playstore-assets.cjs"
+    "assets:playstore": "node scripts/generate-playstore-assets.cjs",
+    "build:aab": "node scripts/signing-env.cjs build",
+    "signing:check": "node scripts/signing-env.cjs check"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.2",

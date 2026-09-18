@@ -58,13 +58,42 @@ the updated file at
 ## Step 5 — Build the bundle
 
 ```bash
-bubblewrap build
+npm run build:aab
 ```
 
 Outputs:
 
 - `app-release-bundle.aab` ← **upload this to Play**
 - `app-release-signed.apk` ← for direct sideload testing
+
+> **Why not plain `bubblewrap build`?** Two Windows quirks on this machine:
+> the username contains spaces (`C:\Users\m s i`), which breaks Bubblewrap's
+> quoting of the signing tools, and Node's
+> `NoDefaultCurrentDirectoryInExePath` blocks its `gradlew.bat` spawn.
+> `npm run build:aab` (`scripts/signing-env.cjs`) drives the **same tools**
+> (Gradle → jarsigner → zipalign → apksigner) with correct quoting, loading
+> passwords from `%USERPROFILE%\.bubblewrap\signingKey.txt` (2 lines:
+> keystore password, key password — never committed, never printed).
+
+### SDK repair (fresh machine — one-time)
+
+If `~/.bubblewrap/android_sdk` is missing `cmdline-tools` / `platform-tools`
+/ `build-tools` / `platforms`:
+
+```bash
+# 1. Download commandlinetools-win from dl.google.com and unzip to:
+#    %USERPROFILE%\.bubblewrap\android_sdk\cmdline-tools\latest
+# 2. Accept licenses + install what AGP 8.9.1 / Bubblewrap 1.25 need:
+export JAVA_HOME="$USERPROFILE/.bubblewrap/jdk/jdk-17.0.11+9"
+SDK="$USERPROFILE/.bubblewrap/android_sdk"
+yes | "$SDK/cmdline-tools/latest/bin/sdkmanager.bat" --sdk_root="$SDK" --licenses
+yes | "$SDK/cmdline-tools/latest/bin/sdkmanager.bat" --sdk_root="$SDK" \
+  "platform-tools" "platforms;android-36" "build-tools;35.0.0" "build-tools;36.1.0"
+```
+
+(build-tools 36.1.0 is Bubblewrap 1.25's pinned zipalign/apksigner version;
+35.0.0 is what AGP 8.9.1 uses. If Gradle can't reserve its heap, lower
+`org.gradle.jvmargs` in `gradle.properties` — already set to 1024m here.)
 
 ## Step 6 — Play Console listing
 
@@ -92,8 +121,8 @@ Outputs:
 ## Updating the app later
 
 ```bash
-bubblewrap update --manifest=https://<your-domain>/manifest.webmanifest
-bubblewrap build   # bump appVersionCode in twa-manifest.json first
+# bump appVersion / appVersionCode in twa-manifest.json first
+npm run build:aab
 ```
 
 The web code updates instantly for everyone — you only rebuild the TWA for

@@ -4,39 +4,46 @@
   "name": "Momentry",
   "launcherName": "Momentry",
   "display": "standalone",
-  "themeColor": "#14100f",
-  "themeColorDark": "#14100f",
-  "navigationColor": "#14100f",
-  "navigationColorDark": "#14100f",
-  "navigationDividerColor": "#14100f",
-  "navigationDividerColorDark": "#14100f",
-  "backgroundColor": "#14100f",
+  "themeColor": "#FF5C8D",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#14100F",
   "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://momentry-smoky.vercel.app/icons/icon-512.png",
+  "maskableIconUrl": "https://momentry-smoky.vercel.app/icons/icon-maskable-512.png",
+  "monochromeIconUrl": "https://momentry-smoky.vercel.app/icons/icon-maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "C:\\Users\\m s i\\Desktop\\Momentry\\momentry\\momentry.keystore",
+    "alias": "momentry"
+  },
+  "appVersionName": "2",
+  "appVersionCode": 2,
   "shortcuts": [
     {
       "name": "Add Memory",
-      "short_name": "Add Memory",
-      "url": "/add-moment",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "shortName": "Add Memory",
+      "url": "https://momentry-smoky.vercel.app/add-moment",
+      "chosenIconUrl": "https://momentry-smoky.vercel.app/icons/icon-192.png"
     },
     {
-      "name": "Chat",
-      "short_name": "Chat",
-      "url": "/chat",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "name": "StoryBook",
+      "shortName": "StoryBook",
+      "url": "https://momentry-smoky.vercel.app/storybook",
+      "chosenIconUrl": "https://momentry-smoky.vercel.app/icons/icon-192.png"
     }
   ],
-  "appVersionName": "1.0.0",
-  "appVersionCode": 1,
-  "splashScreenFadeOutDuration": 300,
-  "iconUrl": "https://momentry-smoky.vercel.app/icons/icon-512.png",
-  "maskableIconUrl": "https://momentry-smoky.vercel.app/icons/icon-maskable-512.png",
-  "splashIconUrl": "https://momentry-smoky.vercel.app/icons/icon-512.png",
-  "monochromeIconUrl": "https://momentry-smoky.vercel.app/icons/icon-maskable-512.png",
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://momentry-smoky.vercel.app/manifest.webmanifest",
   "fallbackType": "customtabs",
   "features": {
-    "locationDelegation": { "enabled": true },
-    "playBilling": { "enabled": false }
+    "locationDelegation": {
+      "enabled": true
+    }
   },
   "alphaDependencies": {
     "enabled": false
@@ -44,5 +51,15 @@
   "enableSiteSettingsShortcut": true,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
-  "orientation": "portrait"
+  "fullScopeUrl": "https://momentry-smoky.vercel.app/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [],
+  "fileHandlers": [],
+  "launchHandlerClientMode": "",
+  "displayOverride": [],
+  "appVersion": "2"
 }
