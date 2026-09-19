@@ -1,7 +1,17 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 //----------------------------------------
-// CORS
+// GENERATE STORY — Edge Function
+//
+// POST { storyId } with the caller's Supabase
+// JWT. The caller must be a member of the
+// story. Loads the story's moments, asks
+// Gemini for a structured storybook, and
+// writes the result to ai_stories.
+//
+// Deployed with verify_jwt: true — the
+// platform rejects requests without a valid
+// token before this code runs.
 //----------------------------------------
 
 const corsHeaders = {
@@ -10,24 +20,25 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-//----------------------------------------
-// Clients & config
-//----------------------------------------
-
-// Service role client: full DB access,
-// used to load the story + moments and
-// update the ai_stories job row.
 const admin = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 );
 
-// Gemini
 const GEMINI_API_KEY =
   Deno.env.get("GEMINI_API_KEY") ?? "";
 
-const GEMINI_MODEL =
-  Deno.env.get("GEMINI_MODEL") ?? "gemini-3.6-flash";
+// Fallback chain: if the configured model is
+// unavailable/unknown (404/400), walk down
+// until one answers. A wrong model id can
+// never 500 the whole job again.
+const MODEL_CHAIN = [
+  Deno.env.get("GEMINI_MODEL") || "gemini-2.5-flash",
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+  "gemini-2.0-flash-lite",
+  "gemini-1.5-flash",
+].filter((m, i, arr) => m && arr.indexOf(m) === i);
 
 //----------------------------------------
 // Types
@@ -107,7 +118,35 @@ Return ONLY valid JSON in exactly this shape (no markdown, no commentary):
 }`;
 }
 
-async function generateWithGemini(
+// Strip markdown fences and grab the first
+// JSON object — models sometimes wrap JSON
+// in ```json blocks despite instructions.
+function extractJson(raw: string): unknown {
+  const cleaned = raw
+    .replace(/^\s*```(?:json)?\s*/i, "")
+    .replace(/\s*```\s*$/, "")
+    .trim();
+
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    const start = cleaned.indexOf("{");
+    const end = cleaned.lastIndexOf("}");
+
+    if (start !== -1 && end > start) {
+      return JSON.parse(
+        cleaned.slice(start, end + 1)
+      );
+    }
+
+    throw new Error(
+      "Gemini's response was not valid JSON."
+    );
+  }
+}
+
+async function callGeminiOnce(
+  model: string,
   prompt: string
 ): Promise<{
   title: string;
@@ -115,7 +154,7 @@ async function generateWithGemini(
   chapters: { title: string; content: string }[];
 }> {
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
     {
       method: "POST",
       headers: {
@@ -140,9 +179,15 @@ async function generateWithGemini(
   if (!res.ok) {
     const text = await res.text();
 
-    throw new Error(
-      `Gemini error ${res.status}: ${text.slice(0, 300)}`
-    );
+    // Caller decides whether to try the next
+    // model (404/400/429) or abort (401/403).
+    const err = new Error(
+      `Gemini ${model} error ${res.status}: ${text.slice(0, 300)}`
+    ) as Error & { status?: number };
+
+    err.status = res.status;
+
+    throw err;
   }
 
   const data = await res.json();
@@ -158,7 +203,11 @@ async function generateWithGemini(
     );
   }
 
-  const parsed = JSON.parse(raw);
+  const parsed = extractJson(raw) as {
+    title?: unknown;
+    summary?: unknown;
+    chapters?: unknown;
+  };
 
   if (
     !parsed ||
@@ -171,40 +220,234 @@ async function generateWithGemini(
     );
   }
 
+  const chapters = (parsed.chapters as Chapter[])
+    .filter(
+      (c) =>
+        !!c &&
+        typeof c.title === "string" &&
+        typeof c.content === "string"
+    )
+    .map((c) => ({
+      title: c.title,
+      content: c.content,
+    }));
+
+  if (chapters.length === 0) {
+    throw new Error(
+      "Gemini's chapters were malformed."
+    );
+  }
+
   return {
     title: parsed.title,
     summary:
       typeof parsed.summary === "string"
         ? parsed.summary
         : "",
-    chapters: parsed.chapters
-      .filter(
-        (c: unknown) =>
-          !!c &&
-          typeof (c as Chapter).title === "string" &&
-          typeof (c as Chapter).content === "string"
-      )
-      .map((c: Chapter) => ({
-        title: c.title,
-        content: c.content,
-      })),
+    chapters,
   };
+}
+
+// Last resort: ask Gemini which models
+// actually exist right now and pick a
+// capable one. Model ids get retired over
+// time — discovery keeps the feature
+// working without code changes.
+// `excluded` = models already tried and
+// rejected (a model can be listed but
+// blocked for newer API keys).
+async function discoverModel(
+  excluded: Set<string>
+): Promise<string | null> {
+  try {
+    const res = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models",
+      {
+        headers: {
+          "x-goog-api-key": GEMINI_API_KEY,
+        },
+      }
+    );
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+
+    const usable = (
+      data?.models as Array<{
+        name?: string;
+        supportedGenerationMethods?: string[];
+      }>
+    )
+      .filter(
+        (m) =>
+          !!m?.name &&
+          m?.supportedGenerationMethods?.includes(
+            "generateContent"
+          )
+      )
+      .map((m) =>
+        String(m.name).replace(/^models\//, "")
+      )
+      .filter((n) => !excluded.has(n));
+
+    if (usable.length === 0) return null;
+
+    // Prefer a stable flash tier model.
+    const stableFlash = usable.find(
+      (n) =>
+        /flash/i.test(n) &&
+        !/lite|exp|thinking|8b|preview/i.test(n)
+    );
+
+    const anyFlash = usable.find((n) =>
+      /flash/i.test(n)
+    );
+
+    const pro = usable.find((n) => /pro/i.test(n));
+
+    return stableFlash || anyFlash || pro || usable[0];
+  } catch {
+    return null;
+  }
+}
+
+async function generateWithGemini(
+  prompt: string
+): Promise<{
+  title: string;
+  summary: string;
+  chapters: { title: string; content: string }[];
+}> {
+  if (!GEMINI_API_KEY) {
+    throw new Error(
+      "The AI service isn't configured yet (missing GEMINI_API_KEY). Ask the app owner to set the Supabase secret."
+    );
+  }
+
+  const tried = new Set<string>();
+
+  const queue = [...MODEL_CHAIN];
+
+  let lastError: unknown = null;
+
+  while (queue.length > 0) {
+    const model = queue.shift()!;
+
+    if (tried.has(model)) continue;
+
+    tried.add(model);
+
+    try {
+      return await callGeminiOnce(
+        model,
+        prompt
+      );
+    } catch (e) {
+      lastError = e;
+
+      const status = (e as { status?: number })
+        .status;
+
+      // Auth/key problems won't fix themselves
+      // on the next model — abort immediately.
+      if (status === 401 || status === 403) {
+        throw e;
+      }
+
+      // Retirement notices often name the
+      // replacement: "...use models/X instead".
+      // Feed that model straight into the queue.
+      const hint = /use models\/([a-z0-9.\-]+)/i
+        .exec(
+          (e as Error)?.message ?? ""
+        )?.[1];
+
+      if (hint && !tried.has(hint)) {
+        queue.unshift(hint);
+      }
+
+      // 404 (bad model id), 400 (bad request for
+      // that model), 429 (rate limit) → next one.
+      continue;
+    }
+  }
+
+  // Every known model failed — discover what
+  // exists today (excluding tried ones) and
+  // try that.
+  const discovered = await discoverModel(tried);
+
+  if (discovered && !tried.has(discovered)) {
+    try {
+      return await callGeminiOnce(
+        discovered,
+        prompt
+      );
+    } catch (e) {
+      lastError = e;
+    }
+  }
+
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(String(lastError));
+}
+
+//----------------------------------------
+// Auth: caller JWT → user id → membership
+//----------------------------------------
+
+async function authorize(
+  req: Request,
+  storyId: string
+): Promise<string | null> {
+  const token = (req.headers.get("Authorization") ?? "")
+    .replace(/^Bearer\s+/i, "");
+
+  if (!token) return null;
+
+  const authRes = await fetch(
+    `${Deno.env.get("SUPABASE_URL")}/auth/v1/user`,
+    {
+      headers: {
+        apikey: Deno.env.get(
+          "SUPABASE_SERVICE_ROLE_KEY"
+        )!,
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!authRes.ok) return null;
+
+  const user = (await authRes.json()) as {
+    id?: string;
+  };
+
+  if (!user.id) return null;
+
+  const memRes = await fetch(
+    `${Deno.env.get("SUPABASE_URL")}/rest/v1/story_members?story_id=eq.${storyId}&user_id=eq.${user.id}&select=user_id`,
+    {
+      headers: {
+        apikey: Deno.env.get(
+          "SUPABASE_SERVICE_ROLE_KEY"
+        )!,
+        Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+      },
+    }
+  );
+
+  const members = (await memRes.json()) as Array<{
+    user_id: string;
+  }>;
+
+  return members.length ? user.id : null;
 }
 
 //----------------------------------------
 // Serve
-//
-// Contract with the live database:
-//   * ai_stories.story_id is UNIQUE — one row
-//     per story, so we UPSERT (never insert).
-//   * A "Generate AI Story" AFTER INSERT
-//     database trigger fires this function
-//     with the inserted row when the frontend
-//     creates a job via ai/createStoryJob.js.
-//     In that mode we resolve the story from
-//     the record payload.
-//   * Direct calls with { storyId } are also
-//     supported (used by the retry button).
 //----------------------------------------
 
 Deno.serve(async (req) => {
@@ -215,38 +458,19 @@ Deno.serve(async (req) => {
     });
   }
 
+  if (req.method !== "POST") {
+    return json({ error: "POST only" }, 405);
+  }
+
   let storyId: string | null = null;
 
   try {
-    //----------------------------------------
-    // 1. Work out which story to generate for
-    //----------------------------------------
+    const body = await req.json().catch(() => ({}));
 
-    let body: {
-      storyId?: string;
-      record?: { story_id?: string };
-      type?: string;
-    } = {};
-
-    try {
-      const text = await req.text();
-
-      if (text) {
-        body = JSON.parse(text);
-      }
-    } catch {
-      // Empty or malformed body — tolerated.
-    }
-
-    if (body.storyId) {
-      // Direct call from the app (retry path).
-      storyId = body.storyId;
-    } else if (body.record?.story_id) {
-      // Database trigger webhook — the trigger
-      // posts the inserted row using the
-      // service key; no user JWT is involved.
-      storyId = body.record.story_id;
-    }
+    storyId =
+      typeof body?.storyId === "string"
+        ? body.storyId
+        : null;
 
     if (!storyId) {
       return json(
@@ -256,17 +480,20 @@ Deno.serve(async (req) => {
     }
 
     //----------------------------------------
-    // 2. Authorise the caller
-    //
-    // This endpoint is only invoked by the
-    // database trigger (service key) or by
-    // the app. No client-supplied data is
-    // trusted beyond the story id, which is
-    // re-checked against the DB below.
+    // 1. Authorise: valid member of the story
     //----------------------------------------
 
+    const userId = await authorize(req, storyId);
+
+    if (!userId) {
+      return json(
+        { error: "Not authorized for this story." },
+        403
+      );
+    }
+
     //----------------------------------------
-    // 3. Load story + moments
+    // 2. Load story + moments
     //----------------------------------------
 
     const { data: story } = await admin
@@ -293,8 +520,6 @@ Deno.serve(async (req) => {
     const momentRows: MomentRow[] = moments ?? [];
 
     if (momentRows.length === 0) {
-      // Mark the job failed so the UI can
-      // show a retry button.
       await admin
         .from("ai_stories")
         .update({
@@ -315,8 +540,8 @@ Deno.serve(async (req) => {
     }
 
     //----------------------------------------
-    // 4. Mark the job as generating
-    //    (upsert — story_id is unique)
+    // 3. Mark generating (upsert — story_id is
+    //    unique per migration 033)
     //----------------------------------------
 
     const { error: upsertError } = await admin
@@ -325,7 +550,7 @@ Deno.serve(async (req) => {
         {
           story_id: storyId,
           status: "generating",
-          ai_model: GEMINI_MODEL,
+          ai_model: MODEL_CHAIN[0],
           error_message: null,
           started_at: new Date().toISOString(),
           completed_at: null,
@@ -340,7 +565,7 @@ Deno.serve(async (req) => {
     }
 
     //----------------------------------------
-    // 5. Generate with Gemini
+    // 4. Generate with Gemini
     //----------------------------------------
 
     const generated = await generateWithGemini(
@@ -365,7 +590,7 @@ Deno.serve(async (req) => {
     );
 
     //----------------------------------------
-    // 6. Persist the completed story
+    // 5. Persist the completed story
     //----------------------------------------
 
     const { data: completed, error: updateError } =
@@ -392,11 +617,6 @@ Deno.serve(async (req) => {
 
     return json({ story: completed });
   } catch (e) {
-    //----------------------------------------
-    // Failure: mark the job as failed so the
-    // UI can offer a retry.
-    //----------------------------------------
-
     const message = e instanceof Error
       ? e.message
       : String(e);

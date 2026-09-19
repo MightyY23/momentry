@@ -9,6 +9,9 @@ import PageLayout from "../../ui/PageLayout/PageLayout";
 
 import { createStory } from "../../services/story/storyService";
 import { pairWithCode } from "../../services/pairing/pairing";
+import {
+  applyPendingAnniversary,
+} from "../../services/story/applyPendingAnniversary";
 import useNotification from "../../hooks/useNotification";
 
 function CreateStory() {
@@ -44,10 +47,19 @@ function CreateStory() {
 
       await pairWithCode(code);
 
-      notify.success(
-        "You're paired! 💞",
-        "Welcome to your shared story."
-      );
+      // Apply the anniversary collected in
+      // onboarding now that a story exists.
+      if (await applyPendingAnniversary()) {
+        notify.success(
+          "You're paired! 💞",
+          "Your anniversary is saved too."
+        );
+      } else {
+        notify.success(
+          "You're paired! 💞",
+          "Welcome to your shared story."
+        );
+      }
 
       navigate("/home", { replace: true });
     } catch (error) {
@@ -73,6 +85,15 @@ function CreateStory() {
       setLoading(true);
 
       const story = await createStory(storyName.trim());
+
+      // Apply the anniversary collected in
+      // onboarding now that the story exists.
+      if (await applyPendingAnniversary()) {
+        notify.success(
+          "Story created! 💞",
+          "Your anniversary is saved."
+        );
+      }
 
         navigate("/invite-partner", {
         state: {

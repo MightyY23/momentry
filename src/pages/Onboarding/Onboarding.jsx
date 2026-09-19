@@ -12,6 +12,9 @@ import {
   uploadAvatar,
 } from "../../services/profile/avatar";
 import {
+  stashPendingAnniversary,
+} from "../../services/story/applyPendingAnniversary";
+import {
   validateImageFile,
 } from "../../services/storage/uploadImage";
 
@@ -142,44 +145,14 @@ function Onboarding() {
         onboardingCompleted: true,
       });
 
-      // Persist the relationship start date on
-      // the story so Home can show "Together
-      // since" and occasions can celebrate the
-      // anniversary. The security-definer RPC
-      // lets ANY member (owner or invited
-      // partner) set it — the base stories
-      // UPDATE policy is owner-only.
+      // The relationship start date is collected
+      // BEFORE any story exists (the user is
+      // routed to create-story / pairing next).
+      // Stash it — whichever exit creates the
+      // story applies it via set_story_anniversary
+      // and Home lights up "Together since".
       if (annivDate) {
-        try {
-          const membership = await supabase
-            .from("story_members")
-            .select("story_id")
-            .eq("user_id", user.id)
-            .maybeSingle();
-
-          const storyId =
-            membership.data?.story_id;
-
-          if (storyId) {
-            const { error: annivError } =
-              await supabase.rpc(
-                "set_story_anniversary",
-                {
-                  p_story_id: storyId,
-                  p_date: annivDate,
-                }
-              );
-
-            if (annivError) throw annivError;
-          }
-        } catch (annivErr) {
-          // Non-fatal: onboarding continues —
-          // the date can be added in Settings.
-          console.error(
-            "anniversary_date:",
-            annivErr
-          );
-        }
+        stashPendingAnniversary(annivDate);
       }
 
       // Route like login does: pending invitation

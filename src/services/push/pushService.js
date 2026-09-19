@@ -10,11 +10,14 @@ import { supabase } from "../supabase/supabaseClient";
 // Edge Function environment.
 //----------------------------------------
 
-// Set this in a Vercel env var
-// (VITE_VAPID_PUBLIC_KEY) generated with:
-//   npx web-push generate-vapid-keys
-const VAPID_PUBLIC_KEY =
+// Resolved at runtime from the push Edge
+// Function's GET endpoint — no build-time
+// env var needed. (A VITE_VAPID_PUBLIC_KEY
+// override still wins if it is set.)
+let cachedPublicKey =
   import.meta.env.VITE_VAPID_PUBLIC_KEY || "";
+
+let keyPromise = null;
 
 function urlBase64ToUint8Array(
   base64String
@@ -38,13 +41,69 @@ function urlBase64ToUint8Array(
   );
 }
 
+async function getVapidPublicKey() {
+  if (cachedPublicKey) return cachedPublicKey;
+
+  if (!keyPromise) {
+    keyPromise = (async () => {
+      // verify_jwt is on, so the GET needs the
+      // caller's session token too.
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/push`,
+        {
+          headers: {
+            apikey:
+              import.meta.env
+                .VITE_SUPABASE_ANON_KEY,
+
+            Authorization: `Bearer ${session?.access_token ?? ""}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      if (!data?.publicKey) {
+        throw new Error(
+          "Push isn't configured on the server yet."
+        );
+      }
+
+      cachedPublicKey = data.publicKey;
+
+      return cachedPublicKey;
+    })();
+  }
+
+  return keyPromise;
+}
+
 export function pushSupported() {
   return (
     "serviceWorker" in navigator &&
     "PushManager" in window &&
-    "Notification" in window &&
-    Boolean(VAPID_PUBLIC_KEY)
+    "Notification" in window
   );
+}
+
+/**
+ * True when the server has VAPID keys set
+ * (the push function can actually send).
+ * Used by UI to hide/soften notification
+ * prompts until setup:push has been run.
+ */
+export async function isPushServerConfigured() {
+  try {
+    await getVapidPublicKey();
+
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export async function getPushPermission() {
@@ -61,9 +120,12 @@ export async function getPushPermission() {
 export async function enablePush() {
   if (!pushSupported()) {
     throw new Error(
-      "Push isn't supported on this device or the server key is missing."
+      "Push isn't supported on this device."
     );
   }
+
+  const vapidPublicKey =
+    await getVapidPublicKey();
 
   const permission =
     await Notification.requestPermission();
@@ -86,9 +148,7 @@ export async function enablePush() {
       userVisibleOnly: true,
 
       applicationServerKey:
-        urlBase64ToUint8Array(
-          VAPID_PUBLIC_KEY
-        ),
+        urlBase64ToUint8Array(vapidPublicKey),
     }));
 
   const {

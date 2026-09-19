@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { motion } from "framer-motion";
@@ -43,6 +43,36 @@ function Auth({ resetMode = false }) {
 
   const [resetSent, setResetSent] =
     useState(false);
+
+  //---------------------------------------
+  // OTP email verification states
+  //---------------------------------------
+
+  const [otpCode, setOtpCode] = useState("");
+
+  const [verifying, setVerifying] =
+    useState(false);
+
+  const [resendCooldown, setResendCooldown] =
+    useState(0);
+
+  // Tick the resend cooldown down once a
+  // second while it's active.
+  useEffect(() => {
+    if (resendCooldown <= 0) {
+      return undefined;
+    }
+
+    const timer = setTimeout(
+      () =>
+        setResendCooldown(
+          (s) => s - 1
+        ),
+      1000
+    );
+
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
 
   //---------------------------------------
   // Redirect after sign-in
@@ -153,9 +183,17 @@ function Auth({ resetMode = false }) {
 
           await handleSuccessfulLogin();
         } else {
-          notify.success(
-            "Account created!",
-            "Please verify your email before signing in."
+          // Email confirmation is on: a 6-digit
+          // OTP code is on its way. Ask for it
+          // inline instead of dead-ending on a
+          // "check your email" toast.
+          setMode("verify");
+          setOtpCode("");
+          setResendCooldown(60);
+
+          notify.info(
+            "Check your inbox 📬",
+            `We sent a 6-digit code to ${authEmail}.`
           );
         }
       } else {
@@ -188,6 +226,106 @@ function Auth({ resetMode = false }) {
       setLoading(false);
     }
   };
+
+  //---------------------------------------
+  // Verify the signup OTP code
+  //---------------------------------------
+
+  async function handleVerify(event) {
+    event?.preventDefault?.();
+
+    const token = otpCode.replace(/\D/g, "");
+
+    if (token.length !== 6) {
+      notify.error(
+        "Enter the code",
+        "Type the 6-digit code from your email."
+      );
+      return;
+    }
+
+    setVerifying(true);
+
+    try {
+      const { error } =
+        await supabase.auth.verifyOtp({
+          email: email.trim().toLowerCase(),
+
+          token,
+
+          type: "signup",
+        });
+
+      if (error) {
+        notify.error(
+          "Couldn't verify",
+          error.message
+        );
+
+        return;
+      }
+
+      notify.success(
+        "Email verified!",
+        "Welcome to Momentry 💛"
+      );
+
+      await handleSuccessfulLogin();
+    } catch (error) {
+      console.error(error);
+
+      notify.error(
+        "Something went wrong",
+        "Please try again."
+      );
+    } finally {
+      setVerifying(false);
+    }
+  }
+
+  //---------------------------------------
+  // Resend the OTP code (60s cooldown —
+  // Supabase's built-in email is heavily
+  // rate-limited, so never spam it)
+  //---------------------------------------
+
+  async function handleResendCode() {
+    if (resendCooldown > 0 || verifying) {
+      return;
+    }
+
+    try {
+      const { error } =
+        await supabase.auth.resend({
+          email: email.trim().toLowerCase(),
+
+          type: "signup",
+        });
+
+      if (error) {
+        notify.error(
+          "Couldn't resend",
+          error.message
+        );
+
+        return;
+      }
+
+      setResendCooldown(60);
+
+      notify.success(
+        "Code sent again",
+        "Give it a few seconds to arrive."
+      );
+    } catch (error) {
+      console.error(error);
+
+      notify.error(
+        "Something went wrong",
+        "Please try again."
+      );
+    }
+  }
 
   //---------------------------------------
   // Send reset email
@@ -609,6 +747,78 @@ function Auth({ resetMode = false }) {
       </>
   );
 
+  const verifyForm = (
+    <>
+      <h2 className={styles.formTitle}>
+        Confirm it's you ✉️
+      </h2>
+
+      <p className={styles.formSubtitle}>
+        Enter the 6-digit code we sent to{" "}
+        <strong>{email}</strong>.
+      </p>
+
+      <form
+        className={styles.form}
+        onSubmit={handleVerify}
+      >
+        <label className={styles.field}>
+          <input
+            className={styles.otpInput}
+            type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            placeholder="––––––"
+            maxLength={6}
+            value={otpCode}
+            onChange={(e) =>
+              setOtpCode(
+                e.target.value.replace(/\D/g, "")
+              )
+            }
+            aria-label="6-digit verification code"
+          />
+        </label>
+
+        <button
+          type="submit"
+          className={styles.submit}
+          disabled={
+            verifying ||
+            otpCode.replace(/\D/g, "").length !== 6
+          }
+        >
+          {verifying
+            ? "Verifying…"
+            : "Verify & Continue"}
+        </button>
+      </form>
+
+      <div className={styles.formLinks}>
+        <button
+          className={styles.linkButton}
+          onClick={handleResendCode}
+          disabled={resendCooldown > 0}
+        >
+          {resendCooldown > 0
+            ? `Resend code (${resendCooldown}s)`
+            : "Resend code"}
+        </button>
+
+        <span className={styles.dividerDot}>
+          ·
+        </span>
+
+        <button
+          className={styles.linkButton}
+          onClick={() => setMode("auth")}
+        >
+          Wrong email? Go back
+        </button>
+      </div>
+    </>
+  );
+
   const resetForm = (
     <>
         <h2 className={styles.formTitle}>
@@ -695,6 +905,8 @@ function Auth({ resetMode = false }) {
 
           {mode === "auth"
             ? authForm
+            : mode === "verify"
+            ? verifyForm
             : mode === "forgot"
             ? forgotForm
             : resetForm}

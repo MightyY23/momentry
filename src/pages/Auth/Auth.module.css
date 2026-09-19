@@ -459,3 +459,53 @@
 
   text-decoration: underline;
 }
+
+/* ==========================================
+   OTP VERIFICATION
+   ========================================== */
+
+.otpInput {
+  width: 100%;
+
+  padding: 16px;
+
+  border: 1.5px solid var(--border);
+
+  border-radius: 14px;
+
+  background: var(--surface);
+
+  color: var(--text);
+
+  font-size: 1.7rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.55em;
+
+  text-align: center;
+
+  font-variant-numeric: tabular-nums;
+
+  transition: border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.otpInput:focus {
+  outline: none;
+
+  border-color: var(--accent, #e0507a);
+
+  box-shadow: 0 0 0 3px
+    color-mix(
+      in srgb,
+      var(--accent, #e0507a) 18%,
+      transparent
+    );
+}
+
+.otpInput::placeholder {
+  letter-spacing: 0.55em;
+
+  color: var(--text-tertiary, var(--text-secondary));
+}

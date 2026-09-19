@@ -28,62 +28,48 @@ export const regenerateAIStory =
 /**
  * Kick off AI story generation.
  *
- * Live DB contract:
- *   - ai_stories.story_id is UNIQUE (one row
- *     per story).
- *   - An AFTER INSERT trigger ("Generate AI
- *     Story") POSTs to the edge function.
- *   - The trigger does NOT fire on UPDATE,
- *     so for re-generation we reset the row
- *     AND invoke the function directly.
+ * Flow (both first generation AND
+ * regeneration — no DB trigger involved):
+ *   1. Upsert the ai_stories row to
+ *      "pending" so the UI shows the
+ *      writing state immediately.
+ *   2. Invoke the generate-story Edge
+ *      Function directly with the user's
+ *      session (it verifies JWT + story
+ *      membership server-side).
  */
 export async function startStoryGeneration(
   storyId
 ) {
-  const existing = await getAIStory(
-    storyId
-  );
-
-  if (existing) {
-    // Reset the job so the UI shows the
-    // "writing" state immediately.
-    const { error: resetError } =
-      await supabase
-        .from("ai_stories")
-        .update({
-          status: "pending",
-          error_message: null,
-          started_at: null,
-          completed_at: null,
-        })
-        .eq("story_id", storyId);
-
-    if (resetError) throw resetError;
-
-    // Trigger doesn't fire on update —
-    // call the function ourselves.
-    const { error: fnError } =
-      await supabase.functions.invoke(
-        "generate-story",
-        {
-          body: { storyId },
-        }
-      );
-
-    if (fnError) throw fnError;
-
-    return;
-  }
-
-  // First generation: inserting the job row
-  // fires the "Generate AI Story" trigger,
-  // which invokes the edge function.
-  const { error: insertError } = await supabase
+  // Upsert the job row: first generation
+  // inserts, regeneration resets. story_id
+  // is UNIQUE (migration 033), so this is
+  // safe in both directions.
+  const { error: upsertError } = await supabase
     .from("ai_stories")
-    .insert({
-      story_id: storyId,
-      status: "pending",
-    });
+    .upsert(
+      {
+        story_id: storyId,
+        status: "pending",
+        error_message: null,
+        started_at: null,
+        completed_at: null,
+      },
+      { onConflict: "story_id" }
+    );
 
-  if (insertError) throw insertError;
+  if (upsertError) throw upsertError;
+
+  // Fire the generator with the caller's
+  // session — supabase-js attaches the
+  // JWT automatically.
+  const { error: fnError } =
+    await supabase.functions.invoke(
+      "generate-story",
+      {
+        body: { storyId },
+      }
+    );
+
+  if (fnError) throw fnError;
 }

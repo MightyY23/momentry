@@ -5,6 +5,7 @@ import { Bell, BellOff, X } from "lucide-react";
 import {
   getPushPermission,
   pushSupported,
+  isPushServerConfigured,
   enablePush,
 } from "../../../../services/push/pushService";
 
@@ -56,6 +57,18 @@ function NotificationsNudge() {
       ) {
         return;
       }
+
+      // The server must have VAPID keys set
+      // (setup:push run) — otherwise tapping
+      // Enable could never succeed. Hidden
+      // until notifications are actually
+      // deliverable.
+      const serverReady =
+        await isPushServerConfigured();
+
+      if (cancelled) return;
+
+      if (!serverReady) return;
 
       // Respect a recent dismissal.
       const dismissedAt = Number(

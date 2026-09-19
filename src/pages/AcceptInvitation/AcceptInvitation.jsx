@@ -10,6 +10,9 @@ import styles from "./AcceptInvitation.module.css";
 import { supabase } from "../../services/supabase/supabaseClient";
 import { getPendingInvitation } from "../../services/invitation/getPendingInvitation";
 import { acceptInvitation } from "../../services/invitation/acceptInvitation";
+import {
+  applyPendingAnniversary,
+} from "../../services/story/applyPendingAnniversary";
 import { declineInvitation } from "../../services/invitation/declineInvitation";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
 import useNotification from "../../hooks/useNotification";
@@ -81,6 +84,10 @@ function AcceptInvitation() {
       setAccepting(true);
 
       await acceptInvitation(invitation);
+
+      // Apply the anniversary collected in
+      // onboarding now that membership exists.
+      await applyPendingAnniversary();
 
       // Refresh global story/moments state BEFORE
       // navigating so /home renders real data.
